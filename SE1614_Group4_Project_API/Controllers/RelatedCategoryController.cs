@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -11,7 +12,7 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly IRepository<RelatedCat> _catRepository;
 
-        public RelatedCategoryController(IRepository<RelatedCat> catRepository)
+        public RelatedCategoryController(Repository<RelatedCat> catRepository)
         {
             _catRepository = catRepository;
         }
@@ -22,8 +23,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_catRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpGet("{cid}")]
         public IActionResult GetRelatedCatById(int id)
         {
             try
@@ -62,8 +62,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpDelete("{cid}")]
         public IActionResult DeleteRelatedCat(int id)
         {
             try

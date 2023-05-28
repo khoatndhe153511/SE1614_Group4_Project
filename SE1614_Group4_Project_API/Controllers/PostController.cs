@@ -11,7 +11,7 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly IRepository<Post> _postRepository;
 
-        public PostController(IRepository<Post> postRepository)
+        public PostController(Repository<Post> postRepository)
         {
             _postRepository = postRepository;
         }
@@ -22,8 +22,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_postRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpGet("{pid}")]
         public IActionResult GetPostById(int id)
         {
             try
@@ -62,8 +61,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpDelete("{pid}")]
         public IActionResult DeletePost(int id)
         {
             try

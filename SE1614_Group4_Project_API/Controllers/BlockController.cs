@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -11,7 +12,7 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly IRepository<Block> _blockRepository;
 
-        public BlockController(IRepository<Block> blockRepository)
+        public BlockController(Repository<Block> blockRepository)
         {
             _blockRepository = blockRepository;
         }
@@ -22,8 +23,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_blockRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{bid}")]
+        [HttpGet("{bid}")]
         public IActionResult GetBlockById(int id)
         {
             try
@@ -62,8 +62,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{bid}")]
+        [HttpDelete("{bid}")]
         public IActionResult DeleteBlock(int id)
         {
             try

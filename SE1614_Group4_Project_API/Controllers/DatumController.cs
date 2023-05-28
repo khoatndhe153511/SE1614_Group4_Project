@@ -11,7 +11,7 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly IRepository<Datum> _datumRepository;
 
-        public DatumController(IRepository<Datum> datumRepository)
+        public DatumController(Repository<Datum> datumRepository)
         {
             _datumRepository = datumRepository;
         }
@@ -22,8 +22,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_datumRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{did}")]
+        [HttpGet("{did}")]
         public IActionResult GetDatumById(int id)
         {
             try
@@ -62,8 +61,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{did}")]
+        [HttpDelete("{did}")]
         public IActionResult DeleteDatum(int id)
         {
             try
