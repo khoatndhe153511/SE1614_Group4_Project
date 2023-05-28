@@ -29,7 +29,7 @@ namespace SE1614_Group4_Project_API.Controllers
             try
             {
                 return Ok(_userRepository.Find(id));
-            }   
+            }
             catch (Exception e)
             {
                 return Conflict();
