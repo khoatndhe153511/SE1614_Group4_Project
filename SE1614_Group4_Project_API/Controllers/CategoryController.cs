@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -11,7 +12,7 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly IRepository<Cat> _catRepository;
 
-        public CategoryController(IRepository<Cat> catRepository)
+        public CategoryController(Repository<Cat> catRepository)
         {
             _catRepository = catRepository;
         }
