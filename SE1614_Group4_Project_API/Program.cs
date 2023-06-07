@@ -1,21 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Repository;
+using SE1614_Group4_Project_API.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddTransient<spriderumContext>()
-    .AddScoped(typeof(IRepository<>), typeof(Repository<>));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<spriderumContext>(
-    opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum"))
-    );
+builder.Services.AddDbContext<spriderumContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
