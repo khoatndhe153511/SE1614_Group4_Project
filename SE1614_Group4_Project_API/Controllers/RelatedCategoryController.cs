@@ -18,7 +18,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllCat()
+        public IActionResult GetAllRelatedCat()
         {
             return Ok(_catRepository.GetAll());
         }

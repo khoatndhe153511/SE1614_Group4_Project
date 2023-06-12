@@ -5,11 +5,6 @@ namespace SE1614_Group4_Project_API.Models
 {
     public partial class Block
     {
-        public Block()
-        {
-            Data = new HashSet<Datum>();
-        }
-
         public int Id { get; set; }
         public int? V { get; set; }
         public string Id1 { get; set; } = null!;
@@ -20,6 +15,6 @@ namespace SE1614_Group4_Project_API.Models
         public DateTime? UpdatedAt { get; set; }
 
         public virtual Post? Post { get; set; }
-        public virtual ICollection<Datum> Data { get; set; }
+        public virtual Datum? Datum { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace SE1614_Group4_Project_API.Models
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<RelatedCat> RelatedCats { get; set; } = null!;
         public virtual DbSet<Tag> Tags { get; set; } = null!;
+        public virtual DbSet<Unsplash> Unsplashes { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<YoutubeDatum> YoutubeData { get; set; } = null!;
 
@@ -103,6 +104,9 @@ namespace SE1614_Group4_Project_API.Models
             {
                 entity.ToTable("data");
 
+                entity.HasIndex(e => e.BlockId, "UK_9dr7ikb6porcbqsv942aatrmm")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("id");
@@ -125,20 +129,46 @@ namespace SE1614_Group4_Project_API.Models
 
                 entity.Property(e => e.DockRight).HasColumnName("dock_right");
 
+                entity.Property(e => e.Embed)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("embed");
+
                 entity.Property(e => e.Expanded).HasColumnName("expanded");
+
+                entity.Property(e => e.Height).HasColumnName("height");
+
+                entity.Property(e => e.Level).HasColumnName("level");
 
                 entity.Property(e => e.Link)
                     .IsUnicode(false)
                     .HasColumnName("link");
 
+                entity.Property(e => e.Service)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("service");
+
+                entity.Property(e => e.Source)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("source");
+
                 entity.Property(e => e.Stretched).HasColumnName("stretched");
 
                 entity.Property(e => e.Text).HasColumnName("text");
 
+                entity.Property(e => e.Url)
+                    .IsUnicode(false)
+                    .HasColumnName("url");
+
+                entity.Property(e => e.Width).HasColumnName("width");
+
                 entity.HasOne(d => d.Block)
-                    .WithMany(p => p.Data)
-                    .HasPrincipalKey(p => p.Id1)
-                    .HasForeignKey(d => d.BlockId)
+                    .WithOne(p => p.Datum)
+                    .HasPrincipalKey<Block>(p => p.Id1)
+                    .HasForeignKey<Datum>(d => d.BlockId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK1vn6v2fsdujkg87lycf53e2ms");
             });
 
@@ -146,19 +176,26 @@ namespace SE1614_Group4_Project_API.Models
             {
                 entity.ToTable("_file");
 
+                entity.HasIndex(e => e.DataId, "UK_gjb9uncu29x91c08nccdcv17e")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.DataId).HasColumnName("_data_id");
+                entity.Property(e => e.DataId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("_data_id");
 
                 entity.Property(e => e.Url)
                     .IsUnicode(false)
                     .HasColumnName("url");
 
                 entity.HasOne(d => d.Data)
-                    .WithMany(p => p.Files)
-                    .HasForeignKey(d => d.DataId)
+                    .WithOne(p => p.File)
+                    .HasPrincipalKey<Datum>(p => p.BlockId)
+                    .HasForeignKey<File>(d => d.DataId)
                     .HasConstraintName("FKplbe0ulctr50vb30sj8qcuh18");
             });
 
@@ -170,15 +207,18 @@ namespace SE1614_Group4_Project_API.Models
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.MetaId).HasColumnName("_meta_id");
+                entity.Property(e => e.MetaId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("_meta_id");
 
                 entity.Property(e => e.Url)
-                    .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("url");
 
                 entity.HasOne(d => d.Meta)
                     .WithMany(p => p.Images)
+                    .HasPrincipalKey(p => p.DataId)
                     .HasForeignKey(d => d.MetaId)
                     .HasConstraintName("FK8we8hp07bhhxkk32jcmf8985n");
             });
@@ -191,7 +231,10 @@ namespace SE1614_Group4_Project_API.Models
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.FileId).HasColumnName("_file_id");
+                entity.Property(e => e.FileId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("_file_id");
 
                 entity.Property(e => e.Height).HasColumnName("height");
 
@@ -199,6 +242,7 @@ namespace SE1614_Group4_Project_API.Models
 
                 entity.HasOne(d => d.File)
                     .WithMany(p => p.Infos)
+                    .HasPrincipalKey(p => p.DataId)
                     .HasForeignKey(d => d.FileId)
                     .HasConstraintName("FKgrpb8mq63ogby1kabtpkwvl9n");
             });
@@ -207,19 +251,27 @@ namespace SE1614_Group4_Project_API.Models
             {
                 entity.ToTable("meta");
 
+                entity.HasIndex(e => e.DataId, "UK_nj0vv4r2e7sgee6xobwu9ung2")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .ValueGeneratedNever()
                     .HasColumnName("id");
 
-                entity.Property(e => e.DataId).HasColumnName("_data_id");
+                entity.Property(e => e.DataId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("_data_id");
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.Title).HasColumnName("title");
 
                 entity.HasOne(d => d.Data)
-                    .WithMany(p => p.Meta)
-                    .HasForeignKey(d => d.DataId)
+                    .WithOne(p => p.Metum)
+                    .HasPrincipalKey<Datum>(p => p.BlockId)
+                    .HasForeignKey<Metum>(d => d.DataId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKajhih277jf6kur78w0a5ahxsr");
             });
 
@@ -360,6 +412,35 @@ namespace SE1614_Group4_Project_API.Models
                     .HasPrincipalKey(p => p.Id1)
                     .HasForeignKey(d => d.PostId)
                     .HasConstraintName("FK7tk5hi5tl1txftyn44dtq2mv6");
+            });
+
+            modelBuilder.Entity<Unsplash>(entity =>
+            {
+                entity.ToTable("unsplash");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Author)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("author");
+
+                entity.Property(e => e.DataId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("_data_id");
+
+                entity.Property(e => e.ProfileLink)
+                    .IsUnicode(false)
+                    .HasColumnName("profile_link");
+
+                entity.HasOne(d => d.Data)
+                    .WithMany(p => p.Unsplashes)
+                    .HasPrincipalKey(p => p.BlockId)
+                    .HasForeignKey(d => d.DataId)
+                    .HasConstraintName("FKexohpoplpg2t54sn8rdrfsfav");
             });
 
             modelBuilder.Entity<User>(entity =>
