@@ -18,6 +18,6 @@ namespace SE1614_Group4_Project_API.Models
         public int? Role { get; set; }
         public string? Password { get; set; }
 
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Post>? Posts { get; set; }
     }
 }
