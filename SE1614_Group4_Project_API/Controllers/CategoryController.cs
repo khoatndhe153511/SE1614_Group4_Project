@@ -22,8 +22,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_catRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpGet("{cid}")]
         public IActionResult GetCatById(int id)
         {
             try
@@ -62,8 +61,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{pid}")]
+        [HttpDelete("{cid}")]
         public IActionResult DeleteCat(int id)
         {
             try

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -9,9 +10,9 @@ namespace SE1614_Group4_Project_API.Controllers
     [Route("api/[Controller]/[action]")]
     public class UserController : Controller
     {
-        private readonly IRepository<User> _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserController(IRepository<User> userRepository)
+        public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -19,11 +20,17 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllUser()
         {
-            return Ok(_userRepository.GetAll());
+            try
+            {
+                return Ok(_userRepository.GetAll().Result);
+            }
+            catch (Exception e)
+            {
+                return Conflict();
+            }
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{uid}")]
+        [HttpGet("{uid}")]
         public IActionResult GetUserById(int id)
         {
             try
@@ -62,8 +69,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{uid}")]
+        [HttpDelete("{uid}")]
         public IActionResult DeleteUser(int id)
         {
             try

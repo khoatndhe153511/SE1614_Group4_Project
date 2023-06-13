@@ -6,7 +6,7 @@ namespace SE1614_Group4_Project_API.Models
     public partial class Info
     {
         public int Id { get; set; }
-        public int? FileId { get; set; }
+        public string? FileId { get; set; }
         public int? Height { get; set; }
         public int? Width { get; set; }
 

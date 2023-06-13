@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Repository;
-using SE1614_Group4_Project_API.Repository.Interfaces;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +26,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<spriderumContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));

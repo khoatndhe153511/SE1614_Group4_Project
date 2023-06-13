@@ -22,8 +22,7 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(_blockRepository.GetAll());
         }
 
-        [HttpGet]
-        [Route("api/[controller]/[action]/{bid}")]
+        [HttpGet("{bid}")]
         public IActionResult GetBlockById(int id)
         {
             try
@@ -62,8 +61,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/[action]/{bid}")]
+        [HttpDelete("{bid}")]
         public IActionResult DeleteBlock(int id)
         {
             try

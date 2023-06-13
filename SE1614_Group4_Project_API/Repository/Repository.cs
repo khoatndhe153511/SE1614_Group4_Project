@@ -18,14 +18,9 @@ namespace SE1614_Group4_Project_API.Repository
 
         public DbSet<T> GetDbSet() => _entities;
 
-        public DbSet<Y> GetDbSet<Y>() where Y : class
+        public T Find(params object?[]? objects)
         {
-            return _spriderumContext.Set<Y>();
-        }
-
-        public T Find(params object?[]? key)
-        {
-            var findResult = _entities.Find(key);
+            var findResult = _entities.Find(objects);
             return findResult ?? throw new NullReferenceException("Record not found");
         }
 
@@ -34,7 +29,7 @@ namespace SE1614_Group4_Project_API.Repository
             return _entities.Where(predicate);
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<List<T>> GetAll()
         {
             var Results = await _entities.ToListAsync();
             return Results;
