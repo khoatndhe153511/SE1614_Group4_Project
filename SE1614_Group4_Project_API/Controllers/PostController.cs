@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -9,9 +10,10 @@ namespace SE1614_Group4_Project_API.Controllers
     [Route("api/[Controller]/[action]")]
     public class PostController : Controller
     {
-        private readonly IRepository<Post> _postRepository;
 
-        public PostController(IRepository<Post> postRepository)
+		private readonly IPostRepository _postRepository;
+
+		public PostController(IPostRepository postRepository)
         {
             _postRepository = postRepository;
         }
