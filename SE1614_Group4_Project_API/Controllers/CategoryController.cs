@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
@@ -17,9 +17,10 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllCat()
+        public async Task<ActionResult> GetAllCat()
         {
-            return Ok(_catRepository.GetAll());
+            var categories = await _catRepository.GetAll();
+            return Ok(categories);
         }
 
         [HttpGet("{cid}")]
@@ -35,7 +36,8 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpGet]
+        [Authorize(Roles = "0, 1, 2")]
+        [HttpPut]
         public IActionResult UpdateCat(Cat cat)
         {
             try
@@ -48,6 +50,8 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
+
+        [Authorize(Roles = "0, 1, 2")]
         [HttpPost]
         public IActionResult AddCat(Cat cat)
         {
@@ -61,6 +65,7 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
+        [Authorize(Roles = "0, 1, 2")]
         [HttpDelete("{cid}")]
         public IActionResult DeleteCat(int id)
         {

@@ -81,7 +81,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.Name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("Role", userInfo.Role.ToString())
+                new Claim(ClaimTypes.Role, userInfo.Role.ToString())
             };
 
             var token = new JwtSecurityToken(
