@@ -35,7 +35,7 @@ namespace SE1614_Group4_Project_API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server =(local); database = spriderum;uid=sa;pwd=123;Trust Server Certificate=true;");
+                optionsBuilder.UseSqlServer("server =192.168.0.5; database = spriderum;uid=khoatnd;pwd=123;Trust Server Certificate=true;");
             }
         }
 
@@ -457,9 +457,19 @@ namespace SE1614_Group4_Project_API.Models
                     .IsUnicode(false)
                     .HasColumnName("avatar");
 
+                entity.Property(e => e.Birth)
+                    .HasColumnType("date")
+                    .HasColumnName("birth");
+
                 entity.Property(e => e.DisplayName)
                     .HasMaxLength(255)
                     .HasColumnName("display_name");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(255)
+                    .HasColumnName("email");
+
+                entity.Property(e => e.Gender).HasColumnName("gender");
 
                 entity.Property(e => e.Gravatar)
                     .HasMaxLength(255)
@@ -473,6 +483,10 @@ namespace SE1614_Group4_Project_API.Models
                 entity.Property(e => e.Password)
                     .HasMaxLength(255)
                     .HasColumnName("password");
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasMaxLength(255)
+                    .HasColumnName("phone_number");
 
                 entity.Property(e => e.Role).HasColumnName("role");
             });
