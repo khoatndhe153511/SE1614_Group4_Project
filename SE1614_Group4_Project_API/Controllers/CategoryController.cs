@@ -9,9 +9,9 @@ namespace SE1614_Group4_Project_API.Controllers
     [Route("api/[Controller]/[action]")]
     public class CategoryController : Controller
     {
-        private readonly IRepository<Cat> _catRepository;
+        private readonly ICategoryRepository _catRepository;
 
-        public CategoryController(IRepository<Cat> catRepository)
+        public CategoryController(ICategoryRepository catRepository)
         {
             _catRepository = catRepository;
         }
@@ -29,7 +29,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 return Ok(_catRepository.Find(id));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Conflict();
             }
@@ -42,7 +42,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 return Ok(_catRepository.Update(cat));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Conflict();
             }
@@ -55,7 +55,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 return Ok(_catRepository.Add(cat));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Conflict();
             }
@@ -66,14 +66,14 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                Cat? _ = _catRepository.Find(id);
-                if (_ != null)
+                Cat? _cat = _catRepository.Find(id);
+                if (_cat != null)
                 {
-                    _catRepository.Delete(_);
+                    _catRepository.Delete(_cat);
                 }
                 return Ok();
             }
-            catch (DbUpdateException e)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

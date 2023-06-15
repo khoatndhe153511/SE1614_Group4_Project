@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Utils;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,35 +23,38 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(string username, string password)
+        public ActionResult Login([FromForm] UserLoginDTO loginModel)
         {
-            var user = _context.Users.Where(x => x.Name.Equals(username) && x.Password.Equals(password)).FirstOrDefault();
+            var user = _context.Users.Where(x => x.Name.Equals(loginModel.Name) && x.Password.Equals(loginModel.Password))
+                .FirstOrDefault();
             if (user != null)
             {
                 var tokenStr = GenerateJSONWebToken(user);
+                Response.Cookies.Append("ACCESS_TOKEN", tokenStr);
                 return Ok(new { token = tokenStr });
             }
             else
             {
-                return BadRequest("User does not exist!");
+                return NotFound("User does not exist!");
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult Logout()
         {
+            Response.Cookies.Delete("ACCESS_TOKEN");
             return Ok();
         }
 
         [HttpPost]
-        public ActionResult<User> SignUp(User newUser)
+        public ActionResult<User> SignUp([FromForm] UserRegisterDto newUser)
         {
             var user = new User
             {
                 Id = Guid.NewGuid().ToString(),
-                Avatar = "",
+                Avatar = null,
                 DisplayName = newUser.DisplayName,
-                Gravatar = newUser.Gravatar,
+                Gravatar = null,
                 Name = newUser.Name,
                 Role = (int)Constants.Role.User,
                 Password = newUser.Password
@@ -86,7 +90,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     claims,
                     expires: DateTime.UtcNow.AddMinutes(120),
                     signingCredentials: credentials);
-
+        
             var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodeToken.ToString();
         }

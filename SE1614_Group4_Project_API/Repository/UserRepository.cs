@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
@@ -7,11 +6,13 @@ namespace SE1614_Group4_Project_API.Repository
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        readonly spriderumContext _;
+        private readonly spriderumContext _;
+
         public UserRepository(spriderumContext spriderumContext) : base(spriderumContext)
         {
             _ = spriderumContext;
         }
+
         public new Task Add(User entity)
         {
             _.Users.Add(entity);
