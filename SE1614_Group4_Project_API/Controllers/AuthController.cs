@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Utils;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,61 +17,74 @@ namespace SE1614_Group4_Project_API.Controllers
     {
         private readonly spriderumContext _context;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthController(spriderumContext context, IConfiguration config)
+        public AuthController(spriderumContext context, IConfiguration config, IMapper mapper)
         {
             _context = context;
             _config = config;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public ActionResult Login([FromForm] UserLoginDTO loginModel)
+        public ActionResult Login([FromBody] UserLoginDTO loginModel)
         {
-            var user = _context.Users.Where(x => x.Name.Equals(loginModel.Name) && x.Password.Equals(loginModel.Password))
-                .FirstOrDefault();
-            if (user != null)
-            {
-                var tokenStr = GenerateJSONWebToken(user);
-                Response.Cookies.Append("ACCESS_TOKEN", tokenStr);
-                return Ok(new { token = tokenStr });
-            }
-            else
-            {
-                return NotFound("User does not exist!");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult Logout()
-        {
-            Response.Cookies.Delete("ACCESS_TOKEN");
-            return Ok();
-        }
-
-        [HttpPost]
-        public ActionResult<User> SignUp([FromForm] UserRegisterDto newUser)
-        {
-            var user = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                Avatar = null,
-                DisplayName = newUser.DisplayName,
-                Gravatar = null,
-                Name = newUser.Name,
-                Role = (int)Constants.Role.User,
-                Password = newUser.Password
-            };
-
             try
             {
-                _context.Users.Add(user);
-                _context.SaveChanges();
-                return Ok(user);
+                var user = _context.Users
+                            .Where(x => x.Email.Equals(loginModel.Email) && x.Password.Equals(loginModel.Password))
+                            .FirstOrDefault();
+                if (user != null)
+                {
+                    var tokenStr = GenerateJSONWebToken(user);
+                    Response.Cookies.Append("ACCESS_TOKEN", tokenStr);
+                    return Ok(new { token = tokenStr });
+                }
+                else
+                {
+                    return NotFound("User does not exist!");
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult> Logout()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync();
+                return Ok("Logout Successful");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult<User> SignUp([FromBody] UserRegisterDto newUser)
+        {
+            var user = _context.Users.Where(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
+            if (user is null)
+            {
+                try
+                {
+                    var newMem = _mapper.Map<User>(newUser);
+                    _context.Users.Add(newMem);
+                    _context.SaveChanges();
+                    return Ok(newMem);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return BadRequest("User already exist!");
         }
 
         private string GenerateJSONWebToken(User userInfo)
@@ -79,9 +94,9 @@ namespace SE1614_Group4_Project_API.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Role, userInfo.Role.ToString())
+                new Claim(ClaimTypes.Email, userInfo.Email),
+                new Claim(ClaimTypes.Role, userInfo.Role.ToString()),
             };
 
             var token = new JwtSecurityToken(
@@ -90,7 +105,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     claims,
                     expires: DateTime.UtcNow.AddMinutes(120),
                     signingCredentials: credentials);
-        
+
             var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodeToken.ToString();
         }

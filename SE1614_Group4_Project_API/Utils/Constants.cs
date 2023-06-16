@@ -10,5 +10,7 @@
             User,
             Guest
         }
+
+        public const string ERR001 = "This field must be fill";
     }
 }
