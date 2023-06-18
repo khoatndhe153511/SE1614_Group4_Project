@@ -42,7 +42,14 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-        public new Task<List<User>> GetAll()
+		public User findByName(string name)
+		{
+			var findResult = _.Users.FirstOrDefault(x => x.Name == name);
+			return findResult ?? throw new NullReferenceException("Record not found");
+			throw new NotImplementedException();
+		}
+
+		public new Task<List<User>> GetAll()
         {
             var Results = _.Users.ToListAsync();
             return Results;
