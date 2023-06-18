@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using SE1614_Group4_Project_API.Utils;
+using System.Security.Claims;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -85,6 +87,52 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword([FromBody] ChangePasswordModelDto model)
+        {
+            var currentUser = GetCurrentUser();
+            if (currentUser is null)
+            {
+                return BadRequest(Constants.ERR003);
+            }
+            else
+            {
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword([FromBody] string email)
+        {
+            var user = _userRepository.Find(email);
+            if (user is null)
+            {
+                return NotFound(Constants.ERR002);
+            }
+            else
+            {
+                // send mail, change password
+            }
+            return Ok();
+        }
+
+        private User GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity is not null)
+            {
+                var userClaims = identity.Claims;
+
+                return new User
+                {
+                    Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    Role = int.Parse(userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value)
+                };
+            }
+            return null;
         }
     }
 }

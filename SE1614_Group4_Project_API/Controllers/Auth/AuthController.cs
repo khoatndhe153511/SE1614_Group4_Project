@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
+using SE1614_Group4_Project_API.Repository.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SE1614_Group4_Project_API.Controllers
+namespace SE1614_Group4_Project_API.Controllers.Auth
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -19,7 +20,8 @@ namespace SE1614_Group4_Project_API.Controllers
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public AuthController(spriderumContext context, IConfiguration config, IMapper mapper)
+        public AuthController(spriderumContext context, IConfiguration config, IMapper mapper,
+            IUserRepository userRepository)
         {
             _context = context;
             _config = config;

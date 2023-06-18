@@ -24,4 +24,11 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Editorial\" />
+    <Folder Include="Controllers\Admin\" />
+    <Folder Include="Controllers\Reader\" />
+    <Folder Include="Controllers\Writer\" />
+  </ItemGroup>
+
 </Project>
