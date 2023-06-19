@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
@@ -166,5 +167,32 @@ namespace SE1614_Group4_Project_API.Controllers
             }
             return null;
         }
-    }
+
+        [HttpGet]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult GetDetailProfile()
+		{
+			var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+			if (identity is not null)
+			{
+				var userClaims = identity.Claims;
+                var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+
+                var userProfile = _userRepository.findByName(name);
+                return Ok(new
+                {
+                    username = userProfile.Name,
+                    avatar = userProfile.Avatar,
+                    displayName = userProfile.DisplayName,
+                    grAvatar = userProfile.Gravatar,
+                    phoneNumber = userProfile.PhoneNumber,
+                    email = userProfile.Email,
+                    birth = userProfile.Birth,
+                    gender = userProfile.Gender
+                });
+			}
+			return null;
+		}
+	}
 }
