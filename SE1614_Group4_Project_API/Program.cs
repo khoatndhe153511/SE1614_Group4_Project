@@ -5,6 +5,8 @@ using SE1614_Group4_Project_API.Mapper;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using SE1614_Group4_Project_API.Utils.Interfaces;
+using SE1614_Group4_Project_API.Utils;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,7 @@ builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddSingleton<ILogicHandler, LogicHandler>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -5,5 +5,9 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
     public interface IUserRepository : IRepository<User>
     {
         User findByName(string name);
+
+        User FindByEmail(string email);
+
+        void UpdatePassword(string email, string newPassword);
     }
 }

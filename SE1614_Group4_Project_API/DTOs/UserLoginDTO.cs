@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SE1614_Group4_Project_API.DTOs
 {
-    public class UserLoginDTO
+    public class UserLoginDto
     {
         [Required(ErrorMessage = Constants.ERR001)]
         public string Email { get; set; }

@@ -29,7 +29,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
         }
 
         [HttpPost]
-        public ActionResult Login([FromBody] UserLoginDTO loginModel)
+        public ActionResult Login([FromBody] UserLoginDto loginModel)
         {
             try
             {
@@ -55,11 +55,11 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
             try
             {
-                await HttpContext.SignOutAsync();
+                Response.Cookies.Delete("ACCESS_TOKEN");
                 return Ok("Logout Successful");
             }
             catch (Exception ex)

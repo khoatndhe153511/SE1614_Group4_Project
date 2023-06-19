@@ -5,6 +5,7 @@ using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils;
+using SE1614_Group4_Project_API.Utils.Interfaces;
 using System.Security.Claims;
 
 namespace SE1614_Group4_Project_API.Controllers
@@ -14,10 +15,12 @@ namespace SE1614_Group4_Project_API.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILogicHandler _logicHandler;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, ILogicHandler logicHandler)
         {
             _userRepository = userRepository;
+            _logicHandler = logicHandler;
         }
 
         [HttpGet]
@@ -91,64 +94,68 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult ChangePassword([FromBody] ChangePasswordModelDto model)
         {
             var currentUser = GetCurrentUser();
             if (currentUser is null)
             {
-                return BadRequest(Constants.ERR003);
+                return NotFound(new { errMess = Constants.ERR003 });
             }
-            else
+
+            var user = _userRepository.findByName(currentUser.Name);
+            if (user is null)
             {
-                var user = _userRepository.Find(currentUser.Email);
-                if (user is null)
-                {
-                    return NotFound(Constants.ERR002);
-                }
-                else
-                {
-                    if (user.Password != model.OldPassword)
-                    {
-                        return BadRequest("Your old password is incorrect");
-                    }
-                    else if (model.OldPassword == model.NewPassword)
-                    {
-                        return BadRequest("You cannot set your new password same like old password!");
-                    }
-                    else if (model.NewPassword != model.ConfirmPassword)
-                    {
-                        return BadRequest("Confirm password fail!");
-                    }
-                    else
-                    {
-                        try
-                        {
-                            user.Password = model.NewPassword;
-                            _userRepository.Update(user);
-                        }
-                        catch (Exception e)
-                        {
-                            return BadRequest(e.Message);
-                        }
-                    }
-                }
+                return NotFound(new { errMess = Constants.ERR002 });
             }
-            return Ok("Password changed successfully!");
+
+            if (user.Password != model.OldPassword)
+            {
+                return BadRequest(new { errMess = "Your old password is incorrect" });
+            }
+            else if (model.OldPassword == model.NewPassword)
+            {
+                return BadRequest(new { errMess = "You cannot set your new password same like old password!" });
+            }
+            else if (model.NewPassword != model.ConfirmPassword)
+            {
+                return BadRequest(new
+                {
+                    errMess = "Confirm password failed!"
+                });
+            }
+
+            try
+            {
+                user.Password = model.NewPassword;
+                _userRepository.UpdatePassword(user.Email, model.NewPassword);
+                Response.Cookies.Delete("ACCESS_TOKEN");
+                return Ok(new
+                {
+                    successMess = "Password changed successfully!"
+                });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult ForgotPassword([FromBody] string email)
+        public ActionResult ForgotPassword([FromBody] ForgotPasswordDto model)
         {
-            var user = _userRepository.Find(email);
+            var user = _userRepository.FindByEmail(model.Email);
             if (user is null)
             {
                 return NotFound(Constants.ERR002);
             }
-            else
-            {
-                // send mail, change password
-            }
-            return Ok();
+            string tempPass = _logicHandler.GeneratePassword(12);
+
+            _logicHandler.SendEmailAsync(model.Email, "[Spriderum] Reset Password",
+                $"Your new password is: {tempPass}.");
+
+            _userRepository.UpdatePassword(model.Email, tempPass);
+            return Ok("Password Reset Successfully!");
         }
 
         private User GetCurrentUser()
@@ -161,6 +168,7 @@ namespace SE1614_Group4_Project_API.Controllers
 
                 return new User
                 {
+                    Name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value,
                     Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
                     Role = int.Parse(userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value)
                 };
@@ -169,14 +177,14 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-		[Authorize(Roles = "0, 1, 2, 3")]
-		public IActionResult GetDetailProfile()
-		{
-			var identity = HttpContext.User.Identity as ClaimsIdentity;
+        [Authorize(Roles = "0, 1, 2, 3")]
+        public IActionResult GetDetailProfile()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-			if (identity is not null)
-			{
-				var userClaims = identity.Claims;
+            if (identity is not null)
+            {
+                var userClaims = identity.Claims;
                 var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
 
                 var userProfile = _userRepository.findByName(name);
@@ -191,8 +199,8 @@ namespace SE1614_Group4_Project_API.Controllers
                     birth = userProfile.Birth,
                     gender = userProfile.Gender
                 });
-			}
-			return null;
-		}
-	}
+            }
+            return null;
+        }
+    }
 }
