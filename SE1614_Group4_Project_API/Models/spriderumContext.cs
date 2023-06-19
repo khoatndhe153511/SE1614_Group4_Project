@@ -18,6 +18,7 @@ namespace SE1614_Group4_Project_API.Models
 
         public virtual DbSet<Block> Blocks { get; set; } = null!;
         public virtual DbSet<Cat> Cats { get; set; } = null!;
+        public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Datum> Data { get; set; } = null!;
         public virtual DbSet<File> Files { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
@@ -35,7 +36,7 @@ namespace SE1614_Group4_Project_API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server =192.168.0.5; database = spriderum;uid=khoatnd;pwd=123;Trust Server Certificate=true;");
+                optionsBuilder.UseSqlServer("Server=localhost;Database=spriderum;user=sa;password=123;TrustServerCertificate=true");
             }
         }
 
@@ -98,6 +99,47 @@ namespace SE1614_Group4_Project_API.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("slug");
+            });
+
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.ToTable("comment");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Content).HasColumnName("content");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("date")
+                    .HasColumnName("created_date");
+
+                entity.Property(e => e.IdParent).HasColumnName("id_parent");
+
+                entity.Property(e => e.PostId).HasColumnName("post_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.IdParentNavigation)
+                    .WithMany(p => p.InverseIdParentNavigation)
+                    .HasForeignKey(d => d.IdParent)
+                    .HasConstraintName("FK_comment_comment");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_comment_post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_comment_user");
             });
 
             modelBuilder.Entity<Datum>(entity =>
