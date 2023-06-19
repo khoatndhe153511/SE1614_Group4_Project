@@ -8,6 +8,7 @@ namespace SE1614_Group4_Project_API.Models
         public Post()
         {
             Blocks = new HashSet<Block>();
+            Comments = new HashSet<Comment>();
             RelatedCats = new HashSet<RelatedCat>();
             Tags = new HashSet<Tag>();
             YoutubeData = new HashSet<YoutubeDatum>();
@@ -39,6 +40,7 @@ namespace SE1614_Group4_Project_API.Models
         public virtual Cat? Cat { get; set; }
         public virtual User? Creator { get; set; }
         public virtual ICollection<Block> Blocks { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<RelatedCat> RelatedCats { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
         public virtual ICollection<YoutubeDatum> YoutubeData { get; set; }
