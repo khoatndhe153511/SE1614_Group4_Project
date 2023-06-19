@@ -9,6 +9,9 @@ namespace SE1614_Group4_Project_API.DTOs
         public string Email { get; set; }
 
         [Required(ErrorMessage = Constants.ERR001)]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = Constants.ERR001)]
         public string DisplayName { get; set; }
 
         [Required(ErrorMessage = Constants.ERR001)]

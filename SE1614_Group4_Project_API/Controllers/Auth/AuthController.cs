@@ -29,7 +29,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
         }
 
         [HttpPost]
-        public ActionResult Login([FromBody] UserLoginDTO loginModel)
+        public ActionResult Login([FromBody] UserLoginDto loginModel)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
                 }
                 else
                 {
-                    return NotFound("User does not exist!");
+                    return NotFound("Email or password is wrong!");
                 }
             }
             catch (Exception ex)
@@ -55,11 +55,11 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult> Logout()
+        public ActionResult Logout()
         {
             try
             {
-                await HttpContext.SignOutAsync();
+                Response.Cookies.Delete("ACCESS_TOKEN");
                 return Ok("Logout Successful");
             }
             catch (Exception ex)
@@ -71,9 +71,17 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
         [HttpPost]
         public ActionResult<User> SignUp([FromBody] UserRegisterDto newUser)
         {
-            var user = _context.Users.Where(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
-            if (user is null)
+            var existedUser = _context.Users
+                .Where(x => x.Email.Equals(newUser.Email) && x.Name.Equals(newUser.UserName))
+                .FirstOrDefault();
+
+            if (existedUser == null)
             {
+                if (newUser.Password != newUser.ConfirmPassword)
+                {
+                    return BadRequest("Confirm Password Failed!");
+                }
+
                 try
                 {
                     var newMem = _mapper.Map<User>(newUser);
@@ -86,7 +94,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
                     return BadRequest(ex.Message);
                 }
             }
-            return BadRequest("User already exist!");
+            return BadRequest("Username or email already taken");
         }
 
         private string GenerateJSONWebToken(User userInfo)
