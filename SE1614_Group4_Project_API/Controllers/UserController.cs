@@ -99,8 +99,40 @@ namespace SE1614_Group4_Project_API.Controllers
             }
             else
             {
+                var user = _userRepository.Find(currentUser.Email);
+                if (user is null)
+                {
+                    return NotFound(Constants.ERR002);
+                }
+                else
+                {
+                    if (user.Password != model.OldPassword)
+                    {
+                        return BadRequest("Your old password is incorrect");
+                    }
+                    else if (model.OldPassword == model.NewPassword)
+                    {
+                        return BadRequest("You cannot set your new password same like old password!");
+                    }
+                    else if (model.NewPassword != model.ConfirmPassword)
+                    {
+                        return BadRequest("Confirm password fail!");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            user.Password = model.NewPassword;
+                            _userRepository.Update(user);
+                        }
+                        catch (Exception e)
+                        {
+                            return BadRequest(e.Message);
+                        }
+                    }
+                }
             }
-            return Ok();
+            return Ok("Password changed successfully!");
         }
 
         [HttpPost]
