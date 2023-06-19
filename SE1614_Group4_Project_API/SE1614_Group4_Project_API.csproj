@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Editorial\" />
-    <Folder Include="Controllers\Admin\" />
     <Folder Include="Controllers\Reader\" />
     <Folder Include="Controllers\Writer\" />
   </ItemGroup>

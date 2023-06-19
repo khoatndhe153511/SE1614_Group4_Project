@@ -49,6 +49,17 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
+		public User updateRole(string username, int role)
+		{
+			var findResult = _.Users.Where(x => x.Name == username).FirstOrDefault();
+            if (findResult == null) { throw new NullReferenceException("Record not found"); }
+            findResult.Role = role;
+            _.Users.UpdateRange(findResult);
+            _.SaveChanges();
+            return findResult;
+		}
+
+
         public User FindByEmail(string email)
         {
             var findResult = _.Users.FirstOrDefault(x => x.Email == email);
@@ -86,5 +97,7 @@ namespace SE1614_Group4_Project_API.Repository
                 _.SaveChanges();
             }
         }
+
+
     }
 }
