@@ -60,7 +60,6 @@ namespace SE1614_Group4_Project_API.Repository
 		}
 
 
-		public new Task<List<User>> GetAll()
         public User FindByEmail(string email)
         {
             var findResult = _.Users.FirstOrDefault(x => x.Email == email);
