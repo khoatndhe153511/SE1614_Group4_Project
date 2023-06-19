@@ -7,6 +7,7 @@ namespace SE1614_Group4_Project_API.Models
     {
         public User()
         {
+            Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
         }
 
@@ -22,6 +23,7 @@ namespace SE1614_Group4_Project_API.Models
         public DateTime? Birth { get; set; }
         public bool? Gender { get; set; }
 
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }
