@@ -42,14 +42,21 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-		public User findByName(string name)
-		{
-			var findResult = _.Users.FirstOrDefault(x => x.Name == name);
-			return findResult ?? throw new NullReferenceException("Record not found");
-			throw new NotImplementedException();
-		}
+        public User findByName(string name)
+        {
+            var findResult = _.Users.FirstOrDefault(x => x.Name == name);
+            return findResult ?? throw new NullReferenceException("Record not found");
+            throw new NotImplementedException();
+        }
 
-		public new Task<List<User>> GetAll()
+        public User FindByEmail(string email)
+        {
+            var findResult = _.Users.FirstOrDefault(x => x.Email == email);
+            return findResult;
+            throw new NotImplementedException();
+        }
+
+        public new Task<List<User>> GetAll()
         {
             var Results = _.Users.ToListAsync();
             return Results;
@@ -67,6 +74,17 @@ namespace SE1614_Group4_Project_API.Repository
             _.Users.Update(entity);
             _.SaveChangesAsync();
             throw new NotImplementedException();
+        }
+
+        public void UpdatePassword(string email, string newPass)
+        {
+            var user = _.Users.FirstOrDefault(x => x.Email == email);
+
+            if (user != null)
+            {
+                user.Password = newPass;
+                _.SaveChanges();
+            }
         }
     }
 }
