@@ -62,7 +62,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
         public ActionResult<User> SignUp([FromBody] UserRegisterDto newUser)
         {
             var existedUser = _context.Users
-                .FirstOrDefault(x => x.Email.Equals(newUser.Email) && x.Name.Equals(newUser.UserName));
+                .Where(x => x.Email.Equals(newUser.Email) || x.Name.Equals(newUser.UserName));
 
             if (existedUser != null) return BadRequest("Username or email already taken");
             if (newUser.Password != newUser.ConfirmPassword)
