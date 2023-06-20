@@ -190,6 +190,7 @@ a {
     min-width: 240px;
     margin-top: 15px !important;
     border-color: #edeff2;
+    align-items: center;
 }
 
 .header .dropdown ul li {
