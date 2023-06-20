@@ -19,7 +19,41 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-        public new Task Delete(Post entity)
+		public int CountTotalCommentByUserId(string userId)
+		{
+            int count = 0;
+			if (userId == null) throw new ArgumentNullException("userId");
+            var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
+            foreach(var post in posts)
+            {
+                count += post.CommentCount;
+            }
+            return count;
+			throw new NotImplementedException();
+		}
+
+		public int CountTotalPostByUserId(string userId)
+		{
+            if (userId == null) throw new ArgumentNullException("userId");
+            return _.Posts.Count(x => x.CreatorId.Equals(userId));
+			throw new NotImplementedException();
+		}
+
+		public int CountTotalViewByUserId(string userId)
+		{
+
+			int count = 0;
+			if (userId == null) throw new ArgumentNullException("userId");
+			var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
+			foreach (var post in posts)
+			{
+				count += post.ViewsCount;
+			}
+			return count;
+			throw new NotImplementedException();
+		}
+
+		public new Task Delete(Post entity)
         {
             _.Posts.Remove(entity);
             _.SaveChangesAsync();
@@ -54,7 +88,20 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-        public new Task Update(Post entity)
+		public int TotalPointByUserId(string userId)
+		{
+			int count = 0;
+			if (userId == null) throw new ArgumentNullException("userId");
+			var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
+			foreach (var post in posts)
+			{
+				count += post.Point;
+			}
+			return count;
+			throw new NotImplementedException();
+		}
+
+		public new Task Update(Post entity)
         {
             _.Posts.Update(entity);
             _.SaveChangesAsync();
