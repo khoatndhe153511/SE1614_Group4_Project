@@ -49,6 +49,11 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
+        public List<Cat> GetTop5Category()
+        {
+            return _context.Cats.Take(5).ToList();
+        }
+
         public new DbSet<Cat> GetDbSet()
         {
             return _context.Cats;
