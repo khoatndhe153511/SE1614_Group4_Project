@@ -17,15 +17,17 @@ namespace SE1614_Group4_Project_API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IPostRepository _postRepository;
         private readonly ILogicHandler _logicHandler;
+        private readonly spriderumContext _spriderumContext;
 
-		public UserController(IUserRepository userRepository, IPostRepository postRepository, ILogicHandler logicHandler)
+		public UserController(IUserRepository userRepository, IPostRepository postRepository, ILogicHandler logicHandler, spriderumContext spriderumContext)
 		{
 			_userRepository = userRepository;
 			_postRepository = postRepository;
 			_logicHandler = logicHandler;
+			_spriderumContext = spriderumContext;
 		}
 
-        [HttpGet]
+		[HttpGet]
         public IActionResult GetAllUser()
         {
             try
@@ -214,9 +216,9 @@ namespace SE1614_Group4_Project_API.Controllers
             return null;
         }
 
-		[HttpGet]
+        [HttpGet]
 		[Authorize(Roles = "0, 1, 2, 3")]
-		public IActionResult GetListPostOfUser()
+		public async Task<IActionResult> GetListPostOfUser(int page, int pageSize)
 		{
 			var identity = HttpContext.User.Identity as ClaimsIdentity;
 
@@ -227,11 +229,65 @@ namespace SE1614_Group4_Project_API.Controllers
 
 				var userProfile = _userRepository.findByName(name);
 
-				var posts = _postRepository.GetAllPostsByUserId(userProfile.Id);
+				var query = _spriderumContext.Posts.Where(x => x.CreatorId.Equals(userProfile.Id)).OrderByDescending(x => x.CreatedAt).Select(x => new Post
+				{
+					Id = x.Id,
+					Id1 = x.Id1,
+					CommentCount = x.CommentCount,
+					CatId = x.CatId,
+					ControlversialPoint = x.ControlversialPoint,
+					DatePoint = x.DatePoint,
+					Description = x.Description,
+					CreatedAt = x.CreatedAt,
+					HotPoint = x.HotPoint,
+					NewTitle = x.NewTitle,
+					OgImageUrl = x.OgImageUrl,
+					Point = x.Point,
+					Slug = x.Slug,
+					Title = x.Title,
+					ViewsCount = x.ViewsCount,
+					Thumbnail = x.Thumbnail
+				});
 
-                return Ok(posts);
+				var totalCount = await query.CountAsync();
+
+				var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+				var currentPage = Math.Min(page, totalPages);
+
+				var posts = await query.Skip((currentPage - 1) * pageSize)
+									   .Take(pageSize)
+									   .ToListAsync();
+
+				var result = new PageResult<Post>
+				{
+					TotalCount = totalCount,
+					Page = currentPage,
+					PageSize = pageSize,
+					Results = posts.Select(x => new Post
+					{
+						Id = x.Id,
+						Id1 = x.Id1,
+						CommentCount = x.CommentCount,
+						CatId = x.CatId,
+						ControlversialPoint = x.ControlversialPoint,
+						DatePoint = x.DatePoint,
+						Description = x.Description,
+						CreatedAt = x.CreatedAt,
+						HotPoint = x.HotPoint,
+						NewTitle = x.NewTitle,
+						OgImageUrl = x.OgImageUrl,
+						Point = x.Point,
+						Slug = x.Slug,
+						Title = x.Title,
+						ViewsCount = x.ViewsCount,
+						Thumbnail = x.Thumbnail
+					})
+				};
+
+				return Ok(result);
 			}
 			return null;
+		
 		}
 
 		[HttpGet("{username}")]
