@@ -36,6 +36,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<spriderumContext>(opt => 
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));
+
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(
+options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
