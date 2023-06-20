@@ -213,5 +213,25 @@ namespace SE1614_Group4_Project_API.Controllers
             }
             return null;
         }
-    }
+
+		[HttpGet]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult GetListPostOfUser()
+		{
+			var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+			if (identity is not null)
+			{
+				var userClaims = identity.Claims;
+				var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+
+				var userProfile = _userRepository.findByName(name);
+
+				var posts = _postRepository.GetAllPostsByUserId(userProfile.Id);
+
+                return Ok(posts);
+			}
+			return null;
+		}
+	}
 }
