@@ -83,31 +83,13 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-		public IEnumerable<Post> GetAllPostsByUserId(string userId)
-		{
-			if (userId == null) throw new ArgumentNullException("userId");
-            var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).Select(x => new Post
-            {
-                Id = x.Id,
-				Id1 = x.Id1,
-				CommentCount = x.CommentCount,
-                CatId = x.CatId,
-                ControlversialPoint = x.ControlversialPoint,
-				DatePoint = x.DatePoint,
-				Description = x.Description,
-				CreatedAt = x.CreatedAt,
-				HotPoint = x.HotPoint,
-				NewTitle = x.NewTitle,
-				OgImageUrl = x.OgImageUrl,
-				Point = x.Point,
-				Slug = x.Slug,
-				Title = x.Title,
-				ViewsCount = x.ViewsCount,
-				Thumbnail = x.Thumbnail
-			}).ToList();
-            return posts;
-			throw new NotImplementedException();
-		}
+		//public Post GetAllPostsByUserId(string userId)
+		//{
+		//	if (userId == null) throw new ArgumentNullException("userId");
+  //          var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).OrderByDescending(x => x.CreatedAt);
+  //          return posts;
+		//	throw new NotImplementedException();
+		//}
 
 		public new DbSet<Post> GetDbSet()
         {
