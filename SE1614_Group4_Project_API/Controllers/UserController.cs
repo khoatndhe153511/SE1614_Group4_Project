@@ -15,13 +15,15 @@ namespace SE1614_Group4_Project_API.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPostRepository _postRepository;
         private readonly ILogicHandler _logicHandler;
 
-        public UserController(IUserRepository userRepository, ILogicHandler logicHandler)
-        {
-            _userRepository = userRepository;
-            _logicHandler = logicHandler;
-        }
+		public UserController(IUserRepository userRepository, IPostRepository postRepository, ILogicHandler logicHandler)
+		{
+			_userRepository = userRepository;
+			_postRepository = postRepository;
+			_logicHandler = logicHandler;
+		}
 
         [HttpGet]
         public IActionResult GetAllUser()
@@ -188,6 +190,11 @@ namespace SE1614_Group4_Project_API.Controllers
                 var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
 
                 var userProfile = _userRepository.findByName(name);
+
+                var _totalPost = _postRepository.CountTotalPostByUserId(userProfile.Id);
+                var _totalComment = _postRepository.CountTotalCommentByUserId(userProfile.Id);
+                var _totalPoint = _postRepository.TotalPointByUserId(userProfile.Id);
+                var _totalView = _postRepository.CountTotalViewByUserId(userProfile.Id);
                 return Ok(new
                 {
                     username = userProfile.Name,
@@ -197,7 +204,11 @@ namespace SE1614_Group4_Project_API.Controllers
                     phoneNumber = userProfile.PhoneNumber,
                     email = userProfile.Email,
                     birth = userProfile.Birth,
-                    gender = userProfile.Gender
+                    gender = userProfile.Gender,
+                    totalPost = _totalPost,
+                    totalView = _totalView,
+                    totalComment = _totalComment,
+                    totalPoint = _totalPoint,
                 });
             }
             return null;
