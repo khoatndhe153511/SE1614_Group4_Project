@@ -233,5 +233,21 @@ namespace SE1614_Group4_Project_API.Controllers
 			}
 			return null;
 		}
+
+		[HttpGet("{username}")]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult CheckUsernameExist(string username)
+		{
+			var check = _userRepository.checkUsername(username);
+			return Ok(check);
+		}
+
+		[HttpGet("{email}")]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult CheckEmailExist(string email)
+		{
+			var check = _userRepository.checkEmail(email);
+			return Ok(check);
+		}
 	}
 }

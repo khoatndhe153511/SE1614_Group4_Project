@@ -10,5 +10,8 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
         User FindByEmail(string email);
 
         void UpdatePassword(string email, string newPassword);
+
+        bool checkUsername(string username);
+        bool checkEmail(string email);
     }
 }

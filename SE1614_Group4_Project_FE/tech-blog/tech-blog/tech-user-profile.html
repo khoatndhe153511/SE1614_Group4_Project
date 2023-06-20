@@ -1,203 +1,213 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
 
-    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script> -->
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-    <!------ Include the above in your HEAD tag ---------->
-    
-        <!-- Design fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet"> 
+<!------ Include the above in your HEAD tag ---------->
 
-        <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.css" rel="stylesheet">
-    
-        <!-- FontAwesome Icons core CSS -->
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-        <link href="css/userProfile.css" rel="stylesheet">
-        <!-- FontAwesome Icons core CSS -->
-        <link href="css/font-awesome.min.css" rel="stylesheet">
-    
-        <!-- Custom styles for this template -->
-        <link href="style.css" rel="stylesheet">
-    
-        <!-- Responsive styles for this template -->
-        <link href="css/responsive.css" rel="stylesheet">
-    
-        <!-- Colors for this template -->
-        <link href="css/colors.css" rel="stylesheet">
-    
-        <!-- Version Tech CSS for this template -->
-        <link href="css/version/tech.css" rel="stylesheet">
+<!-- Design fonts -->
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.css" rel="stylesheet">
+
+<!-- FontAwesome Icons core CSS -->
+<link href="css/font-awesome.min.css" rel="stylesheet">
+<link href="css/userProfile.css" rel="stylesheet">
+<!-- FontAwesome Icons core CSS -->
+<link href="css/font-awesome.min.css" rel="stylesheet">
+
+<!-- Responsive styles for this template -->
+<link href="css/responsive.css" rel="stylesheet">
+
+<!-- Colors for this template -->
+<link href="css/colors.css" rel="stylesheet">
+
+<!-- Version Tech CSS for this template -->
+<link href="css/version/tech.css" rel="stylesheet">
 </head>
-<body>
-    <div id="header"></div>
 
-    <div class="container emp-profile">
-        <form method="post">
+<body>
+    <!-- Nhúng header -->
+    <div id="header"></div>
+    <div style="margin-top: 5%;" class="container emp-profile">
+        <form>
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-img">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog"
+                            id="imgAvatar" alt="" />
                         <div class="file btn btn-lg btn-primary">
                             Change Photo
-                            <input type="file" name="file"/>
+                            <input type="file" name="file" />
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="profile-head">
-                                <h5>
-                                    Kshiti Ghelani
-                                </h5>
-                                <h6>
-                                    Web Developer and Designer
-                                </h6>
-                                <p class="proile-rating">RANKINGS : <span>8/10</span></p>
+                        <h5 id="displayNameTitle">
+
+                        </h5>
+                        <h6>
+                            Web Developer and Designer
+                        </h6>
+                        <!-- <p class="proile-rating">RANKINGS : <span>8/10</span></p> -->
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                    aria-controls="home" aria-selected="true">About</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Timeline</a>
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                    aria-controls="profile" aria-selected="false">Total</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                    aria-controls="profile" aria-selected="false">Post</a>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                    <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"
+                        id="submitbtn" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="profile-work">
                         <p>WORK LINK</p>
-                        <a href="">Website Link</a><br/>
-                        <a href="">Bootsnipp Profile</a><br/>
-                        <a href="">Bootply Profile</a>
+                        <a href="">Website Link</a><br />
                         <p>SKILLS</p>
-                        <a href="">Web Designer</a><br/>
-                        <a href="">Web Developer</a><br/>
-                        <a href="">WordPress</a><br/>
-                        <a href="">WooCommerce</a><br/>
-                        <a href="">PHP, .Net</a><br/>
+                        <a href="">Web Designer</a><br />
+                        <a href="">Web Developer</a><br />
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div class="tab-content profile-tab" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>User Id</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>Kshiti123</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Name</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>Kshiti Ghelani</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Email</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>kshitighelani@gmail.com</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Phone</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>123 456 7890</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Profession</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>Web Developer and Designer</p>
-                                        </div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>UserName</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input required placeholder="Input your user name" name="userName" id="userName" />
+                                    <small id="usercheck" style="color: red;">
+                                        **Username is missing
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Display Name</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input placeholder="Input your display name" name="displayName" id="displayName" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Email</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input required placeholder="Input your email" name="email" id="email" />
+                                    <small id="emailvalid" class="form-text text-muted invalid-feedback"
+                                        style="color: red;">
+                                        Your email must be a valid email
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Phone Number</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input placeholder="Input your phone number" name="phoneNumber" id="phoneNumber" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Birthdate</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="date" name="birth" id="birth" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Gender</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="radio" name="gender" id="male" value="Male" /> Male
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="radio" name="gender" id="female" value="Female" /> Female
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Experience</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>Expert</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Hourly Rate</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>10$/hr</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Total Projects</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>230</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>English Level</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>Expert</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Availability</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p>6 months</p>
-                                        </div>
-                                    </div>
                             <div class="row">
-                                <div class="col-md-12">
-                                    <label>Your Bio</label><br/>
-                                    <p>Your detail description</p>
+                                <div class="col-md-4">
+                                    <label>Total Post</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input style="border: 0px;" readonly name="totalPost" id="totalPost" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Total Comment</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input style="border: 0px;" readonly name="totalComment" id="totalComment" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Total View</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input style="border: 0px;" readonly name="totalView" id="totalView" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label>Total View</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input style="border: 0px;" readonly name="totalPoint" id="totalPoint" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>           
+        </form>
     </div>
-    
+
+    <!-- Nhúng footer -->
     <div id="footer"></div>
 
     <script src="js/bootstrap.min.js"></script>
     <!-- MDB -->
-    <script
-            type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"
-    ></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+
+    <script src="js/user_proflie.js">
+   
+    </script>
     <script>
         $(() => {
             $("#header").load("Utils/header.html")
             $("#footer").load("Utils/footer.html")
         })
     </script>
+    <script src="js/validation_user.js"></script>
 </body>
+
 </html>
