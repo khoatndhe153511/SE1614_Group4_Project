@@ -23,6 +23,15 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(categories);
         }
 
+        [HttpGet]
+        public ActionResult GetTop5Category()
+        {
+            var categories = _catRepository.GetTop5Category();
+            if (categories.Count == 0) return BadRequest(new { errMess = "Does not have any categories in list" });
+
+            return Ok(categories);
+        }
+
         [HttpGet("{cid}")]
         public IActionResult GetCatById(int id)
         {
@@ -76,6 +85,7 @@ namespace SE1614_Group4_Project_API.Controllers
                 {
                     _catRepository.Delete(_cat);
                 }
+
                 return Ok();
             }
             catch (Exception)
