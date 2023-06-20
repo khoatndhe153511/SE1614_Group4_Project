@@ -44,7 +44,8 @@ namespace SE1614_Group4_Project_API.Repository
 
         public User findByName(string name)
         {
-            var findResult = _.Users.FirstOrDefault(x => x.Name == name);
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("userId");
+			var findResult = _.Users.FirstOrDefault(x => x.Name == name);
             return findResult ?? throw new NullReferenceException("Record not found");
             throw new NotImplementedException();
         }
