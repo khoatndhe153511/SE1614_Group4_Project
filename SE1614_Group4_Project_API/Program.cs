@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", build => build.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials().Build());
+    options.AddPolicy("CorsPolicy", build => build.AllowAnyMethod()
+        .AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(hostName => true).Build());
 });
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -33,7 +34,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<spriderumContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));
+builder.Services.AddDbContext<spriderumContext>(opt => 
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -48,6 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

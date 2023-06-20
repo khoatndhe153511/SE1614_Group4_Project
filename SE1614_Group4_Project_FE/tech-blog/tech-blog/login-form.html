@@ -24,7 +24,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				height: 100vh; /* Điều chỉnh chiều cao theo nhu cầu */
+				height: 100vh;
 			}
 		</style>
 	</head>
@@ -46,9 +46,7 @@
 							<div
 								class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start"
 							>
-								<h1>
-									Sign in
-								</h1>
+								<h1>Sign in</h1>
 							</div>
 
 							<div class="divider d-flex align-items-center my-4">
@@ -59,11 +57,11 @@
 							<div class="form-outline mb-4">
 								<input
 									type="email"
-									id="form3Example3"
+									id="email-input"
 									class="form-control form-control-lg"
 									placeholder="Enter a valid email address"
 								/>
-								<label class="form-label" for="form3Example3"
+								<label class="form-label" for="email-input"
 									>Email address</label
 								>
 							</div>
@@ -72,11 +70,11 @@
 							<div class="form-outline mb-3">
 								<input
 									type="password"
-									id="form3Example4"
+									id="password-input"
 									class="form-control form-control-lg"
 									placeholder="Enter password"
 								/>
-								<label class="form-label" for="form3Example4"
+								<label class="form-label" for="password-input"
 									>Password</label
 								>
 							</div>
@@ -84,7 +82,6 @@
 							<div
 								class="d-flex justify-content-between align-items-center"
 							>
-								
 								<a href="#!" class="text-body"
 									>Forgot password?</a
 								>
@@ -93,6 +90,7 @@
 							<div class="text-center text-lg-start mt-4 pt-2">
 								<button
 									type="button"
+									id="login-btn"
 									class="btn btn-primary btn-lg"
 									style="
 										padding-left: 2.5rem;
@@ -114,9 +112,36 @@
 			</div>
 		</section>
 		<!-- MDB -->
+		<script src="js/slim_notifier.js"></script>
 		<script
 			type="text/javascript"
 			src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"
 		></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+			$(document).ready(() => {
+				$("#login-btn").click(() => {
+					var user = {
+						email: $("#email-input").val(),
+						password: $("#password-input").val(),
+					};
+					$.ajax({
+						url: "http://localhost:7065/api/Auth/Login",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(user),
+						success: function (response) {
+							setTimeout(() => {
+								window.location.href = "tech-index.html"
+							}, 3000)
+							SlimNotifierJs.notification('success', 'Successfully', 'Redirecting...', 3000)
+						},
+						error: function (xhr, status, error) {
+							SlimNotifierJs.notification('error', 'Error', 'Login Failed!', 3000)
+						},
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
