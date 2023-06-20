@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using System.Xml.Linq;
 
 namespace SE1614_Group4_Project_API.Repository
 {
@@ -99,6 +100,22 @@ namespace SE1614_Group4_Project_API.Repository
             }
         }
 
+		public bool checkUsername(string username)
+        {
+			if (string.IsNullOrEmpty(username)) throw new ArgumentNullException("username");
+			var user = _.Users.FirstOrDefault(x => x.Name.Equals(username));
+            if (user != null) return true;
+            else return false;
+			throw new NotImplementedException();
+		}
 
+		public bool checkEmail(string email)
+		{
+			if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+			var user = _.Users.FirstOrDefault(x => x.Email.Equals(email));
+			if (user != null) return true;
+			else return false;
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -131,8 +131,9 @@
 						contentType: "application/json",
 						data: JSON.stringify(user),
 						success: function (response) {
+							localStorage.setItem("token", response?.token)
 							setTimeout(() => {
-								window.location.href = "tech-index.html"
+								window.location.href = "../tech-index.html"
 							}, 3000)
 							SlimNotifierJs.notification('success', 'Successfully', 'Redirecting...', 3000)
 						},
