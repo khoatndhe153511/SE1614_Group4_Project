@@ -500,28 +500,9 @@
                                 <a class="nav-link" href="../tech-contact.html">Contact Us</a>
                             </li>
                         </ul>
-                        <div>
-                            <!-- <li
-                            class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down"> -->
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false"></a>
-                                <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
-                                    <li>
-                                        <div class="container">
-                                            <div class="mega-menu-content ">
-                                                <div id="user-profile-location" class="tab" style="float: right;">
-                                                </div>
-                                            </div>
-                                        </div>  
-                                    </li>   
-                                    </ul>
-                            <!-- <button class="btn btn-primary" type="button" data-toggle="dropdown">
-                                <i class="fa fa-bars" aria-hidden="true"></i></button> -->
-                                <!-- <ul id="user-profile-location" class="dropdown-menu">
+                        <ul id="user-profile-location" class="navbar-nav mr-auto">
 
-                                </ul> -->
-                        </div>
-
+                        </ul>
                     </div>
                 </nav>
             </div><!-- end container-fluid -->
@@ -540,31 +521,25 @@
             var userProfile = $("#user-profile-location")
             if (token === null) {
                 userProfile.append(
+                    `<li class="nav-item">
+                        <a class="nav-link reg" href="./auth/login-form.html">
+                            <i class="fa-solid fa-right-to-bracket"></i> Login
+                        </a>
+                    </li>`
+                )
+            } else {
+                userProfile.append(
                     `<button class="tablinks">
-                        <a class="nav-link reg" href="./tech-user-profile.html">
+                        <a class="nav-link reg" href="./auth/login-form.html">
                             <i class="fa fa-user-o" aria-hidden="true">Profile</i>
                         </a>
                     </button>
                     <button class="tablinks">
-                        <a class="nav-link reg" href="./tech-user-profile.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Log out</i>
+                        <a class="nav-link reg" href="./auth/register-form.html">
+                            <i class="fa fa-user-o" aria-hidden="true">Logout</i>
                         </a>
-                    </button>
-                     `
+                    </button>`
                 )
-            } else {
-                userProfile.append(
-                `<button class="tablinks">
-                    <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Login</i>
-                        </a>
-                    </button>
-                    <button class="tablinks">
-                    <a class="nav-link reg" href="./auth/register-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Sign up</i>
-                        </a>
-                    </button>
-                `)
             }
         })
     </script>
