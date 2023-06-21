@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -19,9 +21,24 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllPost()
+        public IActionResult GetAllPost(int page, int pageSize)
         {
-            return Ok(_postRepository.GetAll());
+            var posts = _context.Posts.Where(_ => _.IsEditorPick == null).Select(_ => new
+            {
+                id = _.Id,
+                Created = _.CreatedAt,
+                Modified = _.ModifiedAt,
+                Title = _.Title,
+                CategoryName = _.Cat.Name,
+                AuthorName = _.Creator.Name
+            }).ToList();
+
+            var totalPosts = posts.Count;
+            var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+            var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
         }
 
         [HttpGet("{pid}")]
