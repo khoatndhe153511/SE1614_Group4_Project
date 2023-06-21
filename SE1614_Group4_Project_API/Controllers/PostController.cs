@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -12,20 +11,19 @@ namespace SE1614_Group4_Project_API.Controllers
     [Route("api/[Controller]/[action]")]
     public class PostController : Controller
     {
-
         private readonly IPostRepository _postRepository;
-        private readonly spriderumContext _spriderumContext;
+        private readonly spriderumContext _context;
 
-        public PostController(IPostRepository postRepository,spriderumContext spriderumContext)
+        public PostController(IPostRepository postRepository, spriderumContext context)
         {
-            _spriderumContext = spriderumContext;
             _postRepository = postRepository;
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _spriderumContext.Posts.Where(_ => _.IsEditorPick == null).Select(_ => new
+            var posts = _context.Posts.Where(_ => _.IsEditorPick == null).Select(_ => new
             {
                 id = _.Id,
                 Created = _.CreatedAt,
@@ -53,6 +51,56 @@ namespace SE1614_Group4_Project_API.Controllers
             catch (Exception e)
             {
                 return Conflict();
+            }
+        }
+
+        [HttpGet("{cateId:int}")]
+        public ActionResult GetPostsByCate(int cateId)
+        {
+            try
+            {
+                var posts = _context.Posts.Where(x => x.CatId == cateId)
+                    .Select(x => new
+                    {
+                        Image = x.OgImageUrl,
+                        CategoryName = x.Cat.Name,
+                        Title = x.Title,
+                        NewTitle = x.NewTitle,
+                        Description = x.Description,
+                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatorName = x.Creator.Name,
+                        ViewsCount = x.ViewsCount
+                    })
+                    .ToList();
+                if (posts.Count == 0)
+                {
+                    return NotFound("Does not have any Post in this Category");
+                }
+
+                return Ok(posts);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetPopularPosts()
+        {
+            try
+            {
+                var popularPosts = _postRepository.GetPopularPosts();
+                if (popularPosts.Count == 0)
+                {
+                    return NotFound("Does not have Posts");
+                }
+
+                return Ok(popularPosts);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
             }
         }
 
@@ -92,6 +140,7 @@ namespace SE1614_Group4_Project_API.Controllers
                 {
                     _postRepository.Delete(_);
                 }
+
                 return Ok();
             }
             catch (DbUpdateException e)

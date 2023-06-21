@@ -32,12 +32,18 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("{cid}")]
-        public IActionResult GetCatById(int id)
+        [HttpGet("{cid:int}")]
+        public IActionResult GetCatById(int cid)
         {
             try
             {
-                return Ok(_catRepository.Find(id));
+                var category = _catRepository.GetCategoryById(cid);
+                if (category is null)
+                {
+                    return NotFound("Category is not exist");
+                }
+
+                return Ok(category);
             }
             catch (Exception)
             {
