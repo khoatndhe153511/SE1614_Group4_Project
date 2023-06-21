@@ -305,5 +305,40 @@ namespace SE1614_Group4_Project_API.Controllers
 			var check = _userRepository.checkEmail(email);
 			return Ok(check);
 		}
+
+		[HttpPost]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult ChangePasswordUser([FromBody] ChangePassDTO model)
+		{
+			var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity is not null)
+            {
+                var userClaims = identity.Claims;
+                var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+                var user = _userRepository.findByName(name);
+                var checkPass = checkCurrentPass(user, model.OldPassword);
+
+                if (checkPass)
+                {
+                    user.Password = model.NewPassword;
+                    _userRepository.UpdatePassword(user.Email, model.NewPassword);
+                    return Ok(true);
+                }
+                else return Ok(false);
+			} else return BadRequest();
+		}
+
+		private bool checkCurrentPass(User user, string password)
+		{
+			if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password");
+			if (user != null)
+			{
+				if (user.Password == password) return true;
+				else return false;
+			}
+			else return false;
+			throw new NotImplementedException();
+		}
 	}
 }
