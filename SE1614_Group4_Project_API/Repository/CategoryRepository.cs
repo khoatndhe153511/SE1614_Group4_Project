@@ -66,5 +66,11 @@ namespace SE1614_Group4_Project_API.Repository
             _context.SaveChangesAsync();
             throw new NotImplementedException();
         }
+
+        public Cat GetCategoryById(int cateId)
+        {
+            return _context.Cats.FirstOrDefault(x => x.Id == cateId);
+            throw new NotImplementedException();
+        }
     }
 }
