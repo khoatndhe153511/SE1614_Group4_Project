@@ -508,18 +508,13 @@
                                 <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
                                     <li>
                                         <div class="container">
-                                            <div class="mega-menu-content ">
+                                            <div class="mega-menu-content">
                                                 <div id="user-profile-location" class="tab" style="float: right;">
                                                 </div>
                                             </div>
                                         </div>  
                                     </li>   
-                                    </ul>
-                            <!-- <button class="btn btn-primary" type="button" data-toggle="dropdown">
-                                <i class="fa fa-bars" aria-hidden="true"></i></button> -->
-                                <!-- <ul id="user-profile-location" class="dropdown-menu">
-
-                                </ul> -->
+                                </ul>                       
                         </div>
 
                     </div>
@@ -538,30 +533,30 @@
         $(document).ready(() => {
             var token = localStorage.getItem("token")
             var userProfile = $("#user-profile-location")
-            if (token === null) {
+            if (token !== null) {
                 userProfile.append(
-                    `<button class="tablinks">
+                    `<button class="tablinks_drop">
                         <a class="nav-link reg" href="./tech-user-profile.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Profile</i>
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Profile
                         </a>
                     </button>
-                    <button class="tablinks">
+                    <button class="tablinks_drop">
                         <a class="nav-link reg" href="./tech-user-profile.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Log out</i>
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Log out
                         </a>
                     </button>
                      `
                 )
             } else {
                 userProfile.append(
-                `<button class="tablinks">
+                `<button class="tablinks_drop">
                     <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Login</i>
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Login
                         </a>
                     </button>
-                    <button class="tablinks">
+                    <button class="tablinks_drop">
                     <a class="nav-link reg" href="./auth/register-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Sign up</i>
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Sign up
                         </a>
                     </button>
                 `)
