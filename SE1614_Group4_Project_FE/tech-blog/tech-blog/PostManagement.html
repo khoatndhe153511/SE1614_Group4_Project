@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Site Metas -->
+<title>Tech Blog - Stylish Magazine Blog Template</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Site Icons -->
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+<!-- Design fonts -->
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.css" rel="stylesheet">
+
+<!-- FontAwesome Icons core CSS -->
+<link href="css/font-awesome.min.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="style.css" rel="stylesheet">
+
+<!-- Responsive styles for this template -->
+<link href="css/responsive.css" rel="stylesheet">
+
+<!-- Colors for this template -->
+<link href="css/colors.css" rel="stylesheet">
+
+<!-- Version Tech CSS for this template -->
+<link href="css/version/tech.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <iframe src="header.html" frameborder="0" width="100%" height="100px"></iframe>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pagination li {
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        .pagination li a {
+            padding: 5px 10px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .pagination li.active a {
+            background-color: #337ab7;
+            color: #fff;
+        }
+
+        table td,
+        table th {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        thead th {
+            color: #fff;
+        }
+
+        .card {
+            border-radius: .5rem;
+        }
+
+        .table-scroll {
+            border-radius: .5rem;
+        }
+
+        .table-scroll table thead th {
+            font-size: 1.25rem;
+        }
+
+        thead {
+            top: 0;
+            position: sticky;
+        }
+    </style>
+
+    <div id="wrapper ">
+        <section class="intro" style="height: 100%;">
+            <div class="bg-image h-100">
+                <div class="mask d-flex align-items-center h-100">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-18">
+                                <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
+                                    style="position: relative; height: 700px">
+                                    <table class="table table-striped mb-0">
+                                        <thead
+                                            style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                            <tr class="text-center">
+                                                <th scope="col" class="text-center">No.</th>
+                                                <th scope="col" class="text-center">Title</th>
+                                                <th scope="col" class="text-center">Author</th>
+                                                <th scope="col" class="text-center">Category</th>
+                                                <th scope="col" class="text-center">Created Date</th>
+                                                <th scope="col" class="text-center">Modified Date</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tableBody" id="postsBody">
+                                        </tbody>
+                                    </table>
+                                    
+                                    <script>
+                                        $(document).ready(function () {
+
+                                            function formatDate(dateString) {
+                                                var date = new Date(dateString);
+                                                return date.toLocaleDateString('en-GB');
+                                            }
+
+                                            var page = 1;
+                                            var pageSize = 12;
+
+                                            function loadData() {
+                                                $.ajax({
+                                                    url: 'https://localhost:44367/api/Post/GetAllPost?page=' + page + '&pageSize=' + pageSize,
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (response) {
+                                                        var data = response.posts;
+                                                        var totalPosts = response.totalPosts;
+                                                        var totalPages = response.totalPages;
+                                                        var tableBody = $('#postsBody');
+                                                        tableBody.empty();
+
+                                                        $.each(data, function (index, item) {
+                                                            var row = $('<tr>').appendTo(postsBody);
+                                                            $('<td class="text-center">').text(index + 1).appendTo(row);
+                                                            $('<td>').text(item.title).appendTo(row);
+                                                            $('<td>').text(item.authorName).appendTo(row);
+                                                            $('<td>').text(item.categoryName).appendTo(row);
+                                                            $('<td class="text-center">').text(formatDate(item.created)).appendTo(row);
+                                                            $('<td class="text-center">').text(formatDate(item.modified)).appendTo(row);
+                                                            $('<td>').html('<a href="/edit/' + item.id + '">detail</a>').appendTo(row);
+                                                            $('<td>').html('<a  style="color: green;" href="/delete/' + item.id + '">accept</a>').appendTo(row);
+                                                            $('<td>').html('<a  style="color: red;" href="/delete/' + item.id + '">denied</a>').appendTo(row);
+                                                        });
+
+                                                        var pagination = $('#pagination');
+                                                        pagination.empty();
+
+                                                        var startPage = Math.max(1, page - 2);
+                                                        var endPage = Math.min(startPage + 4, totalPages);
+
+                                                        if (startPage > 1) {
+                                                            $('<li>').append($('<a>').text('...')).appendTo(pagination);
+                                                        }
+
+                                                        for (var i = startPage; i <= endPage; i++) {
+                                                            var li = $('<li>');
+                                                            var link = $('<a>').text(i);
+
+                                                            if (i === page) {
+                                                                li.addClass('active');
+                                                            }
+
+                                                            li.append(link);
+                                                            pagination.append(li);
+                                                        }
+
+                                                        if (endPage < totalPages) {
+                                                            $('<li>').append($('<a>').text('...')).appendTo(pagination);
+                                                        }
+
+                                                        pagination.on('click', 'a', function () {
+                                                            var clickedPage = parseInt($(this).text());
+
+                                                            if (isNaN(clickedPage)) {
+                                                                if ($(this).text() === '...') {
+                                                                    if ($(this).parent().index() === 0) {
+                                                                        page = Math.max(1, page - 5);
+                                                                    } else {
+                                                                        page = Math.min(page + 5, totalPages);
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                page = clickedPage;
+                                                            }
+
+                                                            loadData();
+                                                        });
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        console.log('AJAX Error: ' + error);
+                                                    }
+                                                });
+                                            }
+                                            loadData();
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="pagination" id="pagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div><!-- end wrapper -->
+
+    <!-- Core JavaScript
+    ================================================== -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/tether.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
+    <footer>
+        <iframe src="footer.html" frameborder="0" width="100%" height="417px"></iframe>
+    </footer>
+
+</body>
+
+</html>
