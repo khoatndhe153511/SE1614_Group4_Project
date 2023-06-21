@@ -93,3 +93,19 @@ body{
     font-weight: 600;
     color: #0062cc;
 }
+
+.profile-tab input{
+    font-weight: 600;
+    color: #0062cc;
+    border: 1px;
+}
+
+.profile-tab input text{
+    font-weight: 600;
+    color: #0062cc;
+    border: 1px;
+}
+
+.invalid-input {
+    border: 1px solid red;
+  }

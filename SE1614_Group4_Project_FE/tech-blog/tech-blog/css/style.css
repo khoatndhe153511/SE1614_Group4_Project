@@ -190,6 +190,7 @@ a {
     min-width: 240px;
     margin-top: 15px !important;
     border-color: #edeff2;
+    align-items: center;
 }
 
 .header .dropdown ul li {
@@ -1673,4 +1674,8 @@ hr.invis3 {
     -ms-border-radius: 50%;
     -o-border-radius: 50%;
     border-radius: 50%
+}
+
+.tablinks_drop .nav-link {
+    margin: 10px;
 }
