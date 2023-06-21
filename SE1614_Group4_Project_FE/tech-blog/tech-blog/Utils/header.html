@@ -500,7 +500,22 @@
                                 <a class="nav-link" href="../tech-contact.html">Contact Us</a>
                             </li>
                         </ul>
-                        <ul id="user-profile-location" class="navbar-nav mr-auto">
+                        <div>
+                            <!-- <li
+                            class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down"> -->
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false"></a>
+                                <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
+                                    <li>
+                                        <div class="container">
+                                            <div class="mega-menu-content">
+                                                <div id="user-profile-location" class="tab" style="float: right;">
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </li>   
+                                </ul>                       
+                        </div>
 
                         </ul>
                     </div>
@@ -519,28 +534,38 @@
         $(document).ready(() => {
             var token = localStorage.getItem("token")
             var userProfile = $("#user-profile-location")
-            if (token === null) {
+            if (token !== null) {
                 userProfile.append(
-                    `<li class="nav-item">
-                        <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa-solid fa-right-to-bracket"></i> Login
-                        </a>
-                    </li>`
-                )
-            } else {
-                userProfile.append(
-                    `<button class="tablinks">
-                        <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Profile</i>
+                    `<button class="tablinks_drop">
+                        <a class="nav-link reg" href="./tech-user-profile.html">
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Profile
                         </a>
                     </button>
-                    <button class="tablinks">
-                        <a class="nav-link reg" href="./auth/register-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true">Logout</i>
+                    <button class="tablinks_drop">
+                        <a id="logout-btn" class="nav-link reg" href="./tech-user-profile.html">
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Log out
                         </a>
                     </button>`
                 )
+            } else {
+                userProfile.append(
+                `<button class="tablinks_drop">
+                    <a class="nav-link reg" href="./auth/login-form.html">
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Login
+                        </a>
+                    </button>
+                    <button class="tablinks_drop">
+                    <a class="nav-link reg" href="./auth/register-form.html">
+                            <i class="fa fa-user-o" aria-hidden="true"></i> Sign up
+                        </a>
+                    </button>
+                `)
             }
+
+            $("#logout-btn").click(() => {
+                localStorage.clear()
+                window.location.href = "./tech-index.html"
+            })
         })
     </script>
 </body>

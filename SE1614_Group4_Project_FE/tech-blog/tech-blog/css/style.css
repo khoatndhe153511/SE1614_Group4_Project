@@ -1675,3 +1675,7 @@ hr.invis3 {
     -o-border-radius: 50%;
     border-radius: 50%
 }
+
+.tablinks_drop .nav-link {
+    margin: 10px;
+}
