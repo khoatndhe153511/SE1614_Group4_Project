@@ -517,6 +517,7 @@
                                 </ul>                       
                         </div>
 
+                        </ul>
                     </div>
                 </nav>
             </div><!-- end container-fluid -->
@@ -541,26 +542,30 @@
                         </a>
                     </button>
                     <button class="tablinks_drop">
-                        <a class="nav-link reg" href="./tech-user-profile.html">
+                        <a id="logout-btn" class="nav-link reg" href="#">
                             <i class="fa fa-user-o" aria-hidden="true"></i> Log out
                         </a>
-                    </button>
-                     `
+                    </button>`
                 )
             } else {
                 userProfile.append(
-                `<button class="tablinks_drop">
-                    <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true"></i> Login
-                        </a>
+                    `<button class="tablinks_drop">
+                        <a class="nav-link reg" href="./auth/login-form.html">
+                                <i class="fa fa-user-o" aria-hidden="true"></i> Login
+                            </a>
                     </button>
                     <button class="tablinks_drop">
-                    <a class="nav-link reg" href="./auth/register-form.html">
-                            <i class="fa fa-user-o" aria-hidden="true"></i> Sign up
-                        </a>
-                    </button>
-                `)
+                        <a class="nav-link reg" href="./auth/register-form.html">
+                                <i class="fa fa-user-o" aria-hidden="true"></i> Sign up
+                            </a>
+                    </button>`
+                )
             }
+
+            $("#logout-btn").click(() => {
+                localStorage.clear()
+                window.location.href = "./tech-index.html"
+            })
         })
     </script>
 </body>
