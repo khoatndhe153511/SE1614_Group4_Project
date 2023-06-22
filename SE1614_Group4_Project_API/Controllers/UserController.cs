@@ -338,7 +338,23 @@ namespace SE1614_Group4_Project_API.Controllers
             else return BadRequest();
         }
 
-        private bool checkCurrentPass(User user, string password)
+		[HttpPost]
+		[Authorize(Roles = "0, 1, 2, 3")]
+		public IActionResult UpdateUserProfile([FromBody] UpdateUserProfile model)
+		{
+			var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+			if (identity is not null)
+			{
+				var userClaims = identity.Claims;
+				var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+				var user = _userRepository.findByName(name);
+				return Ok(_userRepository.updateUserProfile(user, model));
+			}
+			else return BadRequest();
+		}
+
+		private bool checkCurrentPass(User user, string password)
         {
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password");
             if (user != null)
