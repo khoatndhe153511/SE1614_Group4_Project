@@ -25,12 +25,12 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _spriderumContext.Posts.Where(_ => _.IsEditorPick == null).Select(_ => new
+            var posts = _spriderumContext.Posts.Select(_ => new
             {
                 id = _.Id,
                 Created = _.CreatedAt,
                 Modified = _.ModifiedAt,
-                Title = _.Title,
+                title = _.Title,
                 CategoryName = _.Cat.Name,
                 AuthorName = _.Creator.Name
             }).ToList();
@@ -43,12 +43,23 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
         }
 
-        [HttpGet("{pid}")]
+        [HttpGet("{id}")]
         public IActionResult GetPostById(int id)
         {
             try
             {
-                return Ok(_postRepository.Find(id));
+                 var post = _spriderumContext.Posts.Where(_ => _.Id == id).Select(_ => new
+                {
+                    id = _.Id,
+                    title = _.Title,
+                    isEditorPick = _.IsEditorPick,
+                    categoryName = _.Cat.Name,
+                    authorName = _.Creator.Name,
+                    slug = _.Slug,
+                    description = _.Description,
+                    ogImageUrl = _.OgImageUrl
+                }).First();
+                return Ok(post);
             }
             catch (Exception e)
             {
