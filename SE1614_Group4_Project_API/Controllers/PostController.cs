@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -23,7 +21,7 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _spriderumContext.Posts.Select(_ => new
+            var posts = _context.Posts.Select(_ => new
             {
                 id = _.Id,
                 Created = _.CreatedAt,
@@ -46,7 +44,7 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                 var post = _spriderumContext.Posts.Where(_ => _.Id == id).Select(_ => new
+                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
                     title = _.Title,
@@ -66,7 +64,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet("{cateId:int}")]
-        public ActionResult GetPostsByCate(int cateId)
+        public ActionResult GetPostsByCate(int cateId, int page, int pageSize)
         {
             try
             {
@@ -83,12 +81,18 @@ namespace SE1614_Group4_Project_API.Controllers
                         ViewsCount = x.ViewsCount
                     })
                     .ToList();
-                if (posts.Count == 0)
+                var totalPosts = posts.Count;
+
+                if (totalPosts == 0)
                 {
-                    return NotFound("Does not have any Post in this Category");
+                    return NotFound("Does not have any Post for this Category");
                 }
 
-                return Ok(posts);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception ex)
             {

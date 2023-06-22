@@ -9,13 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <!-- Site Metas -->
-    <title>Tech Blog - Stylish Magazine Blog Template</title>
+    <title>Group 4 - News</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
     
     <!-- Site Icons -->
-    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../images/favicon.ico" type="../image/x-icon" />
     <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
     
     <!-- Design fonts -->
@@ -50,6 +50,10 @@
             align-items: center;
             justify-content: center;
             margin-left: 350px;
+        }
+
+        .post-img {
+            height: 230px!important;
         }
     </style>
 </head>
@@ -145,7 +149,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-start">
+                                    <ul id="pagination" class="pagination justify-content-start">
                                         <li class="page-item"><a class="page-link" href="#">1</a></li>
                                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                                         <li class="page-item"><a class="page-link" href="#">3</a></li>
@@ -176,12 +180,12 @@
     <script src="../js/slim_notifier.js"></script>
     <script>
         $(() => {
-            $("#header").load("../Utils/header.html")
-            $("#footer").load("../Utils/footer.html")
-        })
+            $("#header").load("../Utils/header.html");
+            $("#footer").load("../Utils/footer.html");
+        });
 
-        var urlParam = new URLSearchParams(window.location.search)
-        var attributeValue = urlParam.get('cateId')
+        var urlParam = new URLSearchParams(window.location.search);
+        var attributeValue = urlParam.get("cateId");
 
         $.ajax({
             url: "http://localhost:7065/api/Category/GetCatById/" + attributeValue,
@@ -198,60 +202,25 @@
                             <li class="breadcrumb-item active">${response.name}</li>
                         </ol>
                     </div>`
-                )
+                );
             },
             error: function (xhr, status, error) {
-                SlimNotifierJs.notification('error', 'Error', xhr.responseText, 3000)
+                SlimNotifierJs.notification("error", "Error", xhr.responseText, 3000);
             },
-        })
+        });
 
         function truncate(str, n) {
-            return (str.length > n) ? str.slice(0, n-1) + "&hellip;" : str
+            return str.length > n ? str.slice(0, n - 1) + "&hellip;" : str;
         }
 
         $(document).ready(() => {
-            $.ajax({
-                url: "http://localhost:7065/api/Post/GetPostsByCate/" + attributeValue,
-                method: "GET",
-                contentType: "application/json",
-                success: function (response) {
-                    $("#post-list").append(
-                        response.map((post) => (
-                            `<div class="col-md-6">
-                                <div class="blog-box">
-                                    <div class="post-media">
-                                        <a href="../post/tech-single.html" title="">
-                                            <img src="${post.image}" alt="" class="img-fluid">
-                                            <div class="hovereffect">
-                                                <span></span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="blog-meta big-meta">
-                                        <span class="color-orange"><a href="../post/tech-category-01.html" title="">${post.categoryName}</a></span>
-                                        <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
-                                        <p>${post.description}</p>
-                                        <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
-                                        <small><a href="../post/tech-author.html" title="">by ${post.creatorName}</a></small>
-                                        <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
-                                    </div>
-                                </div>
-                            </div>`
-                        ))
-                    )
-                },
-                error: function (xhr, status, error) {
-                    SlimNotifierJs.notification('error', 'Error', xhr.responseText, 3000)
-                }, 
-            })
-
             $.ajax({
                 url: "http://localhost:7065/api/Post/GetPopularPosts",
                 method: "GET",
                 contentType: "application/json",
                 success: function (response) {
                     $("#popular-post").append(
-                        response.map((post) => (
+                        response.map((post) =>
                             `<div class="blog-box">
                                 <div class="post-media">
                                     <a href="../post/tech-single.html" title="">
@@ -262,27 +231,124 @@
                                     </a>
                                 </div>
                                 <div class="blog-meta">
-                                    <h4><a href="../post/tech-single.html" title="">${truncate(post.newTitle, 50)}</a></h4>
+                                    <h4><a href="../post/tech-single.html" title="">${truncate(post.title,50)}</a></h4>
                                 </div>
                             </div>
 
                             <hr class="invis">`
-                        ))
-                    )
+                        )
+                    );
                 },
                 error: function (xhr, status, error) {
-                    SlimNotifierJs.notification('error', 'Error', xhr.responseText, 3000)
+                    SlimNotifierJs.notification(
+                        "error",
+                        "Error",
+                        xhr.responseText,
+                        3000
+                    );
                 },
-            })
+            });
 
             $(document).ajaxStart(() => {
-                $("#loading-data").show()
-            })
+                $("#loading-data").show();
+            });
 
             $(document).ajaxStop(() => {
-                $("#loading-data").hide()
-            })
-        })
-    </script>
+                $("#loading-data").hide();
+            });
+
+            var page = 1;
+            var pageSize = 10;
+
+            function loadData() {
+                $.ajax({
+                    url: "http://localhost:7065/api/Post/GetPostsByCate/" + attributeValue + "?page=" + page + "&pageSize=" + pageSize,
+                    method: "GET",
+                    contentType: "application/json",
+                    success: function (response) {
+                        var data = response.posts;
+                        var totalPages = response.totalPages;
+                        var postList = $("#post-list");
+                        postList.empty();
+                        postList.append(
+                            data.map((post) =>
+                                `<div class="col-md-6">
+                                    <div class="blog-box">
+                                        <div class="post-media">
+                                            <a href="../post/tech-single.html" title="">
+                                                <img src="${post.image}" alt="${post.title}" class="img-fluid post-img">
+                                                <div class="hovereffect">
+                                                    <span></span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="blog-meta big-meta">
+                                            <span class="color-orange"><a href="../post/tech-category-01.html" title="">${post.categoryName}</a></span>
+                                            <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
+                                            <p>${post.description}</p>
+                                            <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
+                                            <small><a href="../tech-author.html" title="">by ${post.creatorName}</a></small>
+                                            <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
+                                        </div>
+                                    </div>
+                                </div>`
+                            )
+                        );
+
+                        var pagination = $("#pagination");
+                        pagination.empty();
+
+                        var startPage = Math.max(1, page - 2);
+                        var endPage = Math.min(startPage + 4, totalPages);
+
+                        if (startPage > 1) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">...</a></li>`
+                            )
+                        }
+
+                        for (var i = startPage; i <= endPage; i++) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">${i}</a></li>`
+                            )
+                        }
+
+                        if (endPage < totalPages) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">...</a></li>`
+                            )
+                        }
+
+                        pagination.on("click", "a", function () {
+                            var clickedPage = parseInt($(this).text());
+
+                            if (isNaN(clickedPage)) {
+                                if ($(this).text() === "...") {
+                                    if ($(this).parent().index() === 0) {
+                                        page = Math.max(1, page - 5);
+                                    } else {
+                                        page = Math.min(page + 5, totalPages);
+                                    }
+                                }
+                            } else {
+                                page = clickedPage;
+                            }
+
+                            loadData();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        SlimNotifierJs.notification(
+                            "error",
+                            "Error",
+                            xhr.responseText,
+                            3000
+                        );
+                    },
+                });
+            }
+            loadData();
+        });
+</script>
 </body>
 </html>
