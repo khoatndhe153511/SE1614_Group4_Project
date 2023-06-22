@@ -1,18 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Drawing;
 
 namespace SE1614_Group4_Project_API.Repository
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
         readonly spriderumContext _;
+
         public PostRepository(spriderumContext spriderumContext) : base(spriderumContext)
         {
             _ = spriderumContext;
         }
+
         public new Task Add(Post entity)
         {
             _.Posts.Add(entity);
@@ -20,41 +20,42 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-		public int CountTotalCommentByUserId(string userId)
-		{
+        public int CountTotalCommentByUserId(string userId)
+        {
             int count = 0;
-			if (userId == null) throw new ArgumentNullException("userId");
+            if (userId == null) throw new ArgumentNullException("userId");
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
-            foreach(var post in posts)
+            foreach (var post in posts)
             {
                 count += post.CommentCount;
             }
-            return count;
-			throw new NotImplementedException();
-		}
 
-		public int CountTotalPostByUserId(string userId)
-		{
+            return count;
+            throw new NotImplementedException();
+        }
+
+        public int CountTotalPostByUserId(string userId)
+        {
             if (userId == null) throw new ArgumentNullException("userId");
             return _.Posts.Count(x => x.CreatorId.Equals(userId));
-			throw new NotImplementedException();
-		}
+            throw new NotImplementedException();
+        }
 
-		public int CountTotalViewByUserId(string userId)
-		{
+        public int CountTotalViewByUserId(string userId)
+        {
+            int count = 0;
+            if (userId == null) throw new ArgumentNullException("userId");
+            var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
+            foreach (var post in posts)
+            {
+                count += post.ViewsCount;
+            }
 
-			int count = 0;
-			if (userId == null) throw new ArgumentNullException("userId");
-			var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
-			foreach (var post in posts)
-			{
-				count += post.ViewsCount;
-			}
-			return count;
-			throw new NotImplementedException();
-		}
+            return count;
+            throw new NotImplementedException();
+        }
 
-		public new Task Delete(Post entity)
+        public new Task Delete(Post entity)
         {
             _.Posts.Remove(entity);
             _.SaveChangesAsync();
@@ -83,37 +84,44 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-		//public Post GetAllPostsByUserId(string userId)
-		//{
-		//	if (userId == null) throw new ArgumentNullException("userId");
-  //          var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).OrderByDescending(x => x.CreatedAt);
-  //          return posts;
-		//	throw new NotImplementedException();
-		//}
+        //public Post GetAllPostsByUserId(string userId)
+        //{
+        //	if (userId == null) throw new ArgumentNullException("userId");
+        //          var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).OrderByDescending(x => x.CreatedAt);
+        //          return posts;
+        //	throw new NotImplementedException();
+        //}
 
-		public new DbSet<Post> GetDbSet()
+        public new DbSet<Post> GetDbSet()
         {
             return _.Posts;
             throw new NotImplementedException();
         }
 
-		public int TotalPointByUserId(string userId)
-		{
-			int count = 0;
-			if (userId == null) throw new ArgumentNullException("userId");
-			var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
-			foreach (var post in posts)
-			{
-				count += post.Point;
-			}
-			return count;
-			throw new NotImplementedException();
-		}
+        public int TotalPointByUserId(string userId)
+        {
+            int count = 0;
+            if (userId == null) throw new ArgumentNullException("userId");
+            var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
+            foreach (var post in posts)
+            {
+                count += post.Point;
+            }
 
-		public new Task Update(Post entity)
+            return count;
+            throw new NotImplementedException();
+        }
+
+        public new Task Update(Post entity)
         {
             _.Posts.Update(entity);
             _.SaveChangesAsync();
+            throw new NotImplementedException();
+        }
+
+        public List<Post> GetPopularPosts()
+        {
+            return _.Posts.OrderByDescending(x => x.ViewsCount).Take(3).ToList();
             throw new NotImplementedException();
         }
     }
