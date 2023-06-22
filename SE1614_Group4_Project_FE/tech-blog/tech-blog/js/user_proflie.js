@@ -25,8 +25,8 @@ $(document).ready(function () {
                  document.getElementById("totalPost").value = data?.totalPost;
                  document.getElementById("totalView").value = data?.totalView;
                  document.getElementById("totalComment").value = data?.totalComment;
-                 document.getElementById("totalPoint").value = data?.totalPoint;
-
+                 document.getElementById("totalPoint").value = data?.totalPoint;                 
+                 $('#imgAvatar').attr("src", data?.avatar);
  
                  const genderValue = data?.gender;
                  var maleRadio = document.getElementById("male");
