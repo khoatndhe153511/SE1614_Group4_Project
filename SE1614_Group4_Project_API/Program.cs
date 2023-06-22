@@ -8,6 +8,9 @@ using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils.Interfaces;
 using SE1614_Group4_Project_API.Utils;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,20 +21,31 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader().AllowCredentials().SetIsOriginAllowed(hostName => true).Build());
 });
 builder.Services.AddControllers();
+
+//builder.Services.AddAuthentication("Cookies")
+//	 .AddCookie("Cookies");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
+.AddJwtBearer(options =>
+ {
+	 options.TokenValidationParameters = new TokenValidationParameters
+	 {
+		 ValidateIssuer = true,
+		 ValidateAudience = true,
+		 ValidateLifetime = true,
+		 ValidateIssuerSigningKey = true,
+		 ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		 ValidAudience = builder.Configuration["Jwt:Issuer"],
+		 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+	 };
+ })
+.AddGoogle(options =>
+{
+	options.ClientId = builder.Configuration["Authentication:Google:ClientId"]; // Replace with your own client ID
+	options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]; // Replace with your own client secret
+});
+;
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<spriderumContext>(opt => 

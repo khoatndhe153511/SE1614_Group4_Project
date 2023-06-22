@@ -329,7 +329,7 @@
                 newPassword
             }
             apiClient({
-                url: "http://localhost:7065/api/User/ChangePasswordUser",
+                url: "https://localhost:7065/api/User/ChangePasswordUser",
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem('token')
                 },
@@ -350,6 +350,10 @@
             })
         }
 
+        const handleChangeProfileUser = () => {
+            const userName = $("#userName").val();
+            const newPassword = $("#newPassword").val();
+        }
 
         const apiClient = ({ url, data, method }, successFnc, errorFnc) =>
             $.ajax({
@@ -395,14 +399,14 @@
         }
 
         $(document).ready(() => {
-            const url = `http://localhost:7065/api/User/GetListPostOfUser?page=1&pageSize=5`
+            const url = `https://localhost:7065/api/User/GetListPostOfUser?page=1&pageSize=5`
             apiClient({ url: url }, (data) => {
                 handleDataTable(data)
                 handlePagination(data.totalPage)
             })
         });
         const handlePagePagination = (pageNumber) => {
-            const url = `http://localhost:7065/api/User/GetListPostOfUser?page=${pageNumber}&pageSize=5`
+            const url = `https://localhost:7065/api/User/GetListPostOfUser?page=${pageNumber}&pageSize=5`
             apiClient({ url: url }, (data) => {
                 handleDataTable(data)
             })

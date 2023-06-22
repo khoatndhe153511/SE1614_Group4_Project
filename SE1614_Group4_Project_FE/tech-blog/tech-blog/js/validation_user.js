@@ -24,7 +24,7 @@ $(document).ready(function () {
         };
         const token = localStorage.getItem('token')
         // Gửi yêu cầu tới API
-        xhttp.open("GET", "http://localhost:7065/api/User/CheckUsernameExist/" + usernameValue, true);
+        xhttp.open("GET", "https://localhost:7065/api/User/CheckUsernameExist/" + usernameValue, true);
         // Thiết lập header Authorization với giá trị token
         xhttp.setRequestHeader("Authorization", "Bearer " + token);
         xhttp.send();
