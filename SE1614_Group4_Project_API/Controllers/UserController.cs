@@ -250,7 +250,6 @@ namespace SE1614_Group4_Project_API.Controllers
 				});
 
 				var totalCount = await query.CountAsync();
-
 				var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 				var currentPage = Math.Min(page, totalPages);
 
@@ -260,6 +259,7 @@ namespace SE1614_Group4_Project_API.Controllers
 
 				var result = new PageResult<Post>
 				{
+                    TotalPage = totalPages,
 					TotalCount = totalCount,
 					Page = currentPage,
 					PageSize = pageSize,
