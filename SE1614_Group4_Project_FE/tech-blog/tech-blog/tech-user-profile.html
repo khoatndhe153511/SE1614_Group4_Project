@@ -71,7 +71,7 @@
                         id="imgAvatar" alt="" />
                     <div class="file btn btn-lg btn-primary">
                         Change Photo
-                        <input type="file" name="file" />
+                        <input id="avatar" type="file" name="file" />
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile" id="submitbtn" />
+                <button class="btn btn-primary" type="button" class="profile-edit-btn" onclick="handleChangeProfileUser()" name="btnAddMore" id="submitbtn" >Edit Profile </button>
             </div>
         </div>
         <div class="row">
@@ -352,7 +352,46 @@
 
         const handleChangeProfileUser = () => {
             const userName = $("#userName").val();
-            const newPassword = $("#newPassword").val();
+            const displayName = $("#displayName").val();
+            const phoneNumber = $("#phoneNumber").val();
+            const email = $("#email").val();
+            const birth = $("#birth").val();
+            let gender = "";
+            if ($("#male").val() == "Male") {
+                gender = true;
+            } 
+            if ($("#female").val() == "Female") { 
+                gender = false;
+            }
+            const avatar = $("#avatar").val();
+
+            const data = {
+                userName,
+                displayName,
+                email,
+                birth,
+                gender,
+                avatar,
+                phoneNumber
+            }
+            apiClient({
+                url: "https://localhost:7065/api/User/UpdateUserProfile",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
+                method: "POST",
+                data
+            }, (response) => {
+                if (response === true) {
+                    SlimNotifierJs.notification('success', 'Successfully', 'Update successful', 1000)
+                    localStorage.removeItem('token')
+                    setTimeout(() => {
+                        window.location.href = "../auth/login-form.html"
+                    }, 1000)
+                } else {
+                    SlimNotifierJs.notification('error', 'Error', 'Update failed!', 2000)
+                }
+            })
         }
 
         const apiClient = ({ url, data, method }, successFnc, errorFnc) =>
@@ -380,6 +419,17 @@
             })
             $('#pagination').html(pagination)
         }
+        function padTo2Digits(num) {
+            return num.toString().padStart(2, '0');
+            }
+
+        function formatDate(date) {
+            return [
+                padTo2Digits(date.getDate()),
+                padTo2Digits(date.getMonth() + 1),
+                date.getFullYear(),
+            ].join('/');
+        }
         const handleDataTable = (data) => {
             let tabelContent = '';
             data.results.map((item, index) => {
@@ -387,7 +437,7 @@
                                     <td>${index}</td>
                                     <td>${item?.title}</td>
                                     <td>${item?.commentCount}</td>
-                                    <td>${item?.createdAt}</td>
+                                    <td>${formatDate(new Date(item?.createdAt))}</td>
                                     <td>${item?.viewsCount}</td>
                                     <td>
                                        ${item?.point}

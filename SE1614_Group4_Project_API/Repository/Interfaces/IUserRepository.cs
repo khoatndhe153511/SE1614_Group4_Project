@@ -1,4 +1,5 @@
-﻿using SE1614_Group4_Project_API.Models;
+﻿using SE1614_Group4_Project_API.DTOs;
+using SE1614_Group4_Project_API.Models;
 
 namespace SE1614_Group4_Project_API.Repository.Interfaces
 {
@@ -12,6 +13,9 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
         void UpdatePassword(string email, string newPassword);
 
         bool checkUsername(string username);
+
         bool checkEmail(string email);
+
+        bool updateUserProfile(User user, UpdateUserProfile userUpdate);
     }
 }
