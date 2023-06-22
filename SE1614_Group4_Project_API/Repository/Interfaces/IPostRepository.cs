@@ -15,5 +15,7 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
         //Post GetAllPostsByUserId(string userId);
 
         List<Post> GetPopularPosts();
+
+        List<Post> SearchPosts(string title);
     }
 }

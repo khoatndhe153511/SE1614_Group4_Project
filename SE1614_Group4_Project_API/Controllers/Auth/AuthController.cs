@@ -36,7 +36,8 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
             try
             {
                 var user = _context.Users
-                    .FirstOrDefault(x => x.Email.Equals(loginModel.Email) && x.Password.Equals(loginModel.Password));
+                    .FirstOrDefault(x => (x.Email.Equals(loginModel.Email) || x.Name.Equals(loginModel.Email)) 
+                                         && x.Password.Equals(loginModel.Password));
                 if (user == null) return NotFound("Email or password is wrong!");
                 var tokenStr = GenerateJsonWebToken(user);
                 Response.Cookies.Append("ACCESS_TOKEN", tokenStr);
