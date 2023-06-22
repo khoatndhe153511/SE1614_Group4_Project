@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.DTOs;
@@ -7,6 +6,7 @@ using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils;
 using SE1614_Group4_Project_API.Utils.Interfaces;
+using System.Security.Claims;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -265,31 +265,32 @@ namespace SE1614_Group4_Project_API.Controllers
                     .Take(pageSize)
                     .ToListAsync();
 
-                var result = new PageResult<Post>
-                {
-                    TotalCount = totalCount,
-                    Page = currentPage,
-                    PageSize = pageSize,
-                    Results = posts.Select(x => new Post
-                    {
-                        Id = x.Id,
-                        Id1 = x.Id1,
-                        CommentCount = x.CommentCount,
-                        CatId = x.CatId,
-                        ControlversialPoint = x.ControlversialPoint,
-                        DatePoint = x.DatePoint,
-                        Description = x.Description,
-                        CreatedAt = x.CreatedAt,
-                        HotPoint = x.HotPoint,
-                        NewTitle = x.NewTitle,
-                        OgImageUrl = x.OgImageUrl,
-                        Point = x.Point,
-                        Slug = x.Slug,
-                        Title = x.Title,
-                        ViewsCount = x.ViewsCount,
-                        Thumbnail = x.Thumbnail
-                    })
-                };
+				var result = new PageResult<Post>
+				{
+                    TotalPage = totalPages,
+					TotalCount = totalCount,
+					Page = currentPage,
+					PageSize = pageSize,
+					Results = posts.Select(x => new Post
+					{
+						Id = x.Id,
+						Id1 = x.Id1,
+						CommentCount = x.CommentCount,
+						CatId = x.CatId,
+						ControlversialPoint = x.ControlversialPoint,
+						DatePoint = x.DatePoint,
+						Description = x.Description,
+						CreatedAt = x.CreatedAt,
+						HotPoint = x.HotPoint,
+						NewTitle = x.NewTitle,
+						OgImageUrl = x.OgImageUrl,
+						Point = x.Point,
+						Slug = x.Slug,
+						Title = x.Title,
+						ViewsCount = x.ViewsCount,
+						Thumbnail = x.Thumbnail
+					})
+				};
 
                 return Ok(result);
             }

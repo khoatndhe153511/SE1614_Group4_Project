@@ -2,11 +2,16 @@
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Newtonsoft.Json.Linq;
 
 namespace SE1614_Group4_Project_API.Controllers.Auth
 {
@@ -106,5 +111,67 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
             var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
             return encodeToken.ToString();
         }
-    }
+
+		[HttpGet]
+        [Route("/api/google-login")]
+		public IActionResult GoogleLogin()
+		{
+			var properties = new AuthenticationProperties
+			{
+				RedirectUri = Url.Action(nameof(GoogleCallback))
+			};
+
+			return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+		}
+
+		[HttpGet]
+        [Route("/api/google-callback")]
+		public async Task<IActionResult> GoogleCallback()
+		{
+			var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+			// Handle the authentication result, retrieve user information, and generate a JWT token
+
+			// Example: If authentication is successful, generate a JWT token and return it to the client
+			if (authenticateResult.Succeeded)
+			{
+				// Retrieve user information from authenticateResult and generate a JWT token
+				// Return the JWT token to the client
+				// Example:
+				var token = GenerateJwtToken(authenticateResult.Principal.Identity.Name);
+				return Ok(new { Token = token });
+			}
+			else
+			{
+				// Authentication failed
+				return BadRequest("Authentication failed");
+			}
+		}
+
+		// Helper method to generate a JWT token
+		private string GenerateJwtToken(string username)
+		{
+			// Generate a JWT token using a library like System.IdentityModel.Tokens.Jwt
+			// Example:
+			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+			var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256); // Replace with your own secret key
+
+			var claims = new[]
+			{
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+				new Claim(ClaimTypes.Name, username),
+			};
+
+			var token = new JwtSecurityToken(
+				issuer: _config["Jwt:Issuer"],
+				audience: _config["Jwt:Issuer"],
+				claims,
+				expires: DateTime.UtcNow.AddMinutes(120),
+				signingCredentials: credentials);
+
+			var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
+			return encodeToken.ToString();
+		}
+	}
+
 }
