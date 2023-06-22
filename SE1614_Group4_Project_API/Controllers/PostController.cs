@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
-using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -12,25 +9,24 @@ namespace SE1614_Group4_Project_API.Controllers
     [Route("api/[Controller]/[action]")]
     public class PostController : Controller
     {
-
         private readonly IPostRepository _postRepository;
-        private readonly spriderumContext _spriderumContext;
+        private readonly spriderumContext _context;
 
-        public PostController(IPostRepository postRepository,spriderumContext spriderumContext)
+        public PostController(IPostRepository postRepository, spriderumContext context)
         {
-            _spriderumContext = spriderumContext;
             _postRepository = postRepository;
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _spriderumContext.Posts.Where(_ => _.IsEditorPick == null).Select(_ => new
+            var posts = _context.Posts.Select(_ => new
             {
                 id = _.Id,
                 Created = _.CreatedAt,
                 Modified = _.ModifiedAt,
-                Title = _.Title,
+                title = _.Title,
                 CategoryName = _.Cat.Name,
                 AuthorName = _.Creator.Name
             }).ToList();
@@ -43,16 +39,83 @@ namespace SE1614_Group4_Project_API.Controllers
             return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
         }
 
-        [HttpGet("{pid}")]
+        [HttpGet("{id}")]
         public IActionResult GetPostById(int id)
         {
             try
             {
-                return Ok(_postRepository.Find(id));
+                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
+                {
+                    id = _.Id,
+                    title = _.Title,
+                    isEditorPick = _.IsEditorPick,
+                    categoryName = _.Cat.Name,
+                    authorName = _.Creator.Name,
+                    slug = _.Slug,
+                    description = _.Description,
+                    ogImageUrl = _.OgImageUrl
+                }).First();
+                return Ok(post);
             }
             catch (Exception e)
             {
                 return Conflict();
+            }
+        }
+
+        [HttpGet("{cateId:int}")]
+        public ActionResult GetPostsByCate(int cateId, int page, int pageSize)
+        {
+            try
+            {
+                var posts = _context.Posts.Where(x => x.CatId == cateId)
+                    .Select(x => new
+                    {
+                        Image = x.OgImageUrl,
+                        CategoryName = x.Cat.Name,
+                        Title = x.Title,
+                        NewTitle = x.NewTitle,
+                        Description = x.Description,
+                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatorName = x.Creator.Name,
+                        ViewsCount = x.ViewsCount
+                    })
+                    .ToList();
+                var totalPosts = posts.Count;
+
+                if (totalPosts == 0)
+                {
+                    return NotFound("Does not have any Post for this Category");
+                }
+
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetPopularPosts()
+        {
+            try
+            {
+                var popularPosts = _postRepository.GetPopularPosts();
+                if (popularPosts.Count == 0)
+                {
+                    return NotFound("Does not have Posts");
+                }
+
+                return Ok(popularPosts);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
             }
         }
 
@@ -92,6 +155,7 @@ namespace SE1614_Group4_Project_API.Controllers
                 {
                     _postRepository.Delete(_);
                 }
+
                 return Ok();
             }
             catch (DbUpdateException e)

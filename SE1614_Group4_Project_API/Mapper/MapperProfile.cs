@@ -10,9 +10,12 @@ namespace SE1614_Group4_Project_API.Mapper
         public MapperProfile()
         {
             CreateMap<UserRegisterDto, User>()
-                .ForMember(des => des.Id, otp => otp.MapFrom(src => Guid.NewGuid()))
-                .ForMember(des => des.Role, otp => otp.MapFrom(src => Constants.Role.User))
-                .ForMember(des => des.Name, otp => otp.MapFrom(src => src.UserName));
+                .ForMember(des => des.Id,
+                    otp => otp.MapFrom(src => Guid.NewGuid()))
+                .ForMember(des => des.Role,
+                    otp => otp.MapFrom(src => Constants.Role.User))
+                .ForMember(des => des.Name,
+                    otp => otp.MapFrom(src => src.UserName));
         }
     }
 }
