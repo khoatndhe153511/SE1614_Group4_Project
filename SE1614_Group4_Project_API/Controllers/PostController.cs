@@ -24,11 +24,14 @@ namespace SE1614_Group4_Project_API.Controllers
             var posts = _context.Posts.Select(_ => new
             {
                 id = _.Id,
-                Created = _.CreatedAt,
-                Modified = _.ModifiedAt,
+                Image = _.OgImageUrl,
+                Description = _.Description,
+                Created = string.Format("{0:dd MMM,yyyy}", _.CreatedAt),
+                Modified = string.Format("{0:dd MMM,yyyy}", _.ModifiedAt),
                 title = _.Title,
                 CategoryName = _.Cat.Name,
-                AuthorName = _.Creator.Name
+                AuthorName = _.Creator.Name,
+                ViewsCount = _.ViewsCount
             }).ToList();
 
             var totalPosts = posts.Count;
@@ -112,6 +115,20 @@ namespace SE1614_Group4_Project_API.Controllers
                 }
 
                 return Ok(popularPosts);
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult SearchPostByName(string title)
+        {
+            try
+            {
+                var posts = _postRepository.SearchPosts(title);
+                return Ok(posts);
             }
             catch (Exception ex)
             {

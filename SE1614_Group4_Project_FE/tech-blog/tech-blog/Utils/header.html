@@ -29,6 +29,7 @@
 
 <!-- Custom styles for this template -->
 <link href="../css/style.css" rel="stylesheet">
+<link href="../css/search.css" rel="stylesheet">
 
 <!-- Responsive styles for this template -->
 <link href="../css/responsive.css" rel="stylesheet">
@@ -48,9 +49,7 @@
 </head>
 
 <body>
-
     <div id="wrapper">
-
         <header class="tech-header header">
             <div class="container-fluid">
                 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
@@ -65,24 +64,30 @@
                         <ul id="categories" class="navbar-nav mr-auto">
                         </ul>
 
+                        <div class="search">
+                            <div class="icon"></div>
+                            <div class="input">
+                                <form class="search-form">
+                                    <input id="mysearch" type="text" placeholder="Search">
+                                </form>
+                            </div>
+                            <span class="clear"></span>
+                        </div>
+                        
                         <div>
-                            <!-- <li
-                            class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down"> -->
                             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false"></a>
-                                <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
-                                    <li>
-                                        <div class="container">
-                                            <div class="mega-menu-content">
-                                                <div id="user-profile-location" class="tab" style="float: right;">
-                                                </div>
+                            <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
+                                <li>
+                                    <div class="container">
+                                        <div class="mega-menu-content">
+                                            <div id="user-profile-location" class="tab" style="float: right;">
                                             </div>
-                                        </div>  
-                                    </li>   
-                                </ul>                       
+                                        </div>
+                                    </div>  
+                                </li>   
+                            </ul>                       
                         </div>
-
-                        </ul>
                     </div>
                 </nav>
             </div><!-- end container-fluid -->
@@ -96,6 +101,7 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
+    <script src="../js/search.js"></script>
     <script>
         $(document).ready(() => {
             var token = localStorage.getItem("token")
@@ -136,7 +142,7 @@
             var categories = $("#categories")
 
             $.ajax({
-                url: "http://localhost:7065/api/Category/GetTop5Category",
+                url: "https://localhost:7065/api/Category/GetTop5Category",
                 method: "GET",
                 contentType: "application/json",
                 success: function (response) {
@@ -154,7 +160,7 @@
                     )
                     categories.append(
                         `<li class="nav-item">
-                            <a class="nav-link" href="../category/tech-category-01.html">Khác</a>
+                            <a class="nav-link" href="../category/tech-category-01.html">Tất Cả</a>
                         </li>`
                     )
                 },
@@ -163,7 +169,11 @@
                 },
             })
 
-
+            $(".search-form").submit((event) => {
+                event.preventDefault();
+                var input = $("#mysearch").val()
+                window.location.href = "../search/search-result.html?title=" + input;
+            })
         })
     </script>
 </body>

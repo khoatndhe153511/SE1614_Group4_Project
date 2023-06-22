@@ -65,6 +65,15 @@
         <div class="page-title lb single-wrapper">
             <div class="container">
                 <div id="page-title" class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                        <h2><i class="fa fa-gears bg-orange"></i>Tất cả</h2>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Tất cả</li>
+                        </ol>
+                    </div>
                 </div><!-- end row -->
             </div><!-- end container -->
         </div><!-- end page-title -->
@@ -165,7 +174,7 @@
             </div><!-- end container -->
         </section>
 
-        <div id="footer"></div>        
+        <div id="footer"></div>
 
         <div class="dmtop">Scroll to Top</div>
         
@@ -184,38 +193,41 @@
             $("#footer").load("../Utils/footer.html");
         });
 
-        var urlParam = new URLSearchParams(window.location.search);
-        var attributeValue = urlParam.get("cateId");
-
-        $.ajax({
-            url: "http://localhost:7065/api/Category/GetCatById/" + attributeValue,
-            method: "GET",
-            contentType: "application/json",
-            success: function (response) {
-                $("#page-title").append(
-                    `<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                        <h2><i class="fa fa-gears bg-orange"></i> ${response.name}</h2>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">${response.name}</li>
-                        </ol>
-                    </div>`
-                );
-            },
-            error: function (xhr, status, error) {
-                SlimNotifierJs.notification("error", "Error", xhr.responseText, 3000);
-            },
-        });
-
         function truncate(str, n) {
             return str.length > n ? str.slice(0, n - 1) + "&hellip;" : str;
         }
 
+        var urlParam = new URLSearchParams(window.location.search);
+        var attributeValue = urlParam.get("cateId");
+
+        if (attributeValue !== null) {
+            $.ajax({
+                url: "https://localhost:7065/api/Category/GetCatById/" + attributeValue,
+                method: "GET",
+                contentType: "application/json",
+                success: function (response) {
+                    $("#page-title").empty();
+                    $("#page-title").append(
+                        `<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                            <h2><i class="fa fa-gears bg-orange"></i> ${response.name}</h2>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">${response.name}</li>
+                            </ol>
+                        </div>`
+                    );
+                },
+                error: function (xhr, status, error) {
+                    SlimNotifierJs.notification("error", "Error", xhr.responseText, 3000);
+                },
+            });
+        }
+
         $(document).ready(() => {
             $.ajax({
-                url: "http://localhost:7065/api/Post/GetPopularPosts",
+                url: "https://localhost:7065/api/Post/GetPopularPosts",
                 method: "GET",
                 contentType: "application/json",
                 success: function (response) {
@@ -260,9 +272,9 @@
             var page = 1;
             var pageSize = 10;
 
-            function loadData() {
+            function loadDataWithCate() {
                 $.ajax({
-                    url: "http://localhost:7065/api/Post/GetPostsByCate/" + attributeValue + "?page=" + page + "&pageSize=" + pageSize,
+                    url: "https://localhost:7065/api/Post/GetPostsByCate/" + attributeValue + "?page=" + page + "&pageSize=" + pageSize,
                     method: "GET",
                     contentType: "application/json",
                     success: function (response) {
@@ -334,7 +346,7 @@
                                 page = clickedPage;
                             }
 
-                            loadData();
+                            loadDataWithCate();
                         });
                     },
                     error: function (xhr, status, error) {
@@ -347,7 +359,100 @@
                     },
                 });
             }
-            loadData();
+            
+            function loadAllPost() {
+                $.ajax({
+                    url: "https://localhost:7065/api/Post/GetAllPost?page=" + page + "&pageSize=" + pageSize,
+                    method: "GET",
+                    contentType: "application/json",
+                    success: function (response) {
+                        var data = response.posts;
+                        var totalPages = response.totalPages;
+                        var postList = $("#post-list");
+                        postList.empty();
+                        postList.append(
+                            data.map((post) =>
+                                `<div class="col-md-6">
+                                    <div class="blog-box">
+                                        <div class="post-media">
+                                            <a href="../post/tech-single.html" title="">
+                                                <img src="${post.image}" alt="${post.title}" class="img-fluid post-img">
+                                                <div class="hovereffect">
+                                                    <span></span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="blog-meta big-meta">
+                                            <span class="color-orange"><a href="../post/tech-category-01.html" title="">${post.categoryName}</a></span>
+                                            <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
+                                            <p>${post.description}</p>
+                                            <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
+                                            <small><a href="../tech-author.html" title="">by ${post.creatorName}</a></small>
+                                            <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
+                                        </div>
+                                    </div>
+                                </div>`
+                            )
+                        );
+
+                        var pagination = $("#pagination");
+                        pagination.empty();
+
+                        var startPage = Math.max(1, page - 2);
+                        var endPage = Math.min(startPage + 4, totalPages);
+
+                        if (startPage > 1) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">...</a></li>`
+                            )
+                        }
+
+                        for (var i = startPage; i <= endPage; i++) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">${i}</a></li>`
+                            )
+                        }
+
+                        if (endPage < totalPages) {
+                            pagination.append(
+                                `<li class="page-item"><a class="page-link">...</a></li>`
+                            )
+                        }
+
+                        pagination.on("click", "a", function () {
+                            var clickedPage = parseInt($(this).text());
+
+                            if (isNaN(clickedPage)) {
+                                if ($(this).text() === "...") {
+                                    if ($(this).parent().index() === 0) {
+                                        page = Math.max(1, page - 5);
+                                    } else {
+                                        page = Math.min(page + 5, totalPages);
+                                    }
+                                }
+                            } else {
+                                page = clickedPage;
+                            }
+
+                            loadAllPost();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        SlimNotifierJs.notification(
+                            "error",
+                            "Error",
+                            xhr.responseText,
+                            3000
+                        );
+                    },
+                });
+            }
+            
+            if (attributeValue !== null) {
+                loadDataWithCate();
+            } else {
+                loadAllPost();
+            }
         });
 </script>
 </body>
