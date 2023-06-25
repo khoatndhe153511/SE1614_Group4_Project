@@ -7,6 +7,7 @@
 	transition: 0.5s;
 	box-shadow: 0 0 0 2px #2573ef;
     overflow: hidden;
+    margin-right: 20px;
 }
 
 .search.active {

@@ -2,7 +2,6 @@
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Xml.Linq;
 
 namespace SE1614_Group4_Project_API.Repository
 {

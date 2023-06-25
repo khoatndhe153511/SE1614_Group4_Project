@@ -110,7 +110,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
                 signingCredentials: credentials);
 
             var encodeToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return encodeToken.ToString();
+            return encodeToken;
         }
 
 		[HttpGet]
