@@ -2,6 +2,7 @@
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using System.Xml.Linq;
 
 namespace SE1614_Group4_Project_API.Repository
 {
@@ -167,6 +168,14 @@ namespace SE1614_Group4_Project_API.Repository
 			_.Users.Update(user);
 			_.SaveChangesAsync();
 			return true;
+		}
+
+		public User findById(string id)
+        {
+			if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("userId");
+			var findResult = _.Users.FirstOrDefault(x => x.Id.Equals(id));
+			return findResult ?? throw new NullReferenceException("Record not found");
+			throw new NotImplementedException();
 		}
 	}
 }
