@@ -19,10 +19,13 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 
 		private readonly IUserRepository _userRepository;
 
-		public AdminController(IUserRepository userRepository)
+		public AdminController(spriderumContext spriderumContext, IUserRepository userRepository)
 		{
+			_spriderumContext = spriderumContext;
 			_userRepository = userRepository;
 		}
+
+
 
 		//[HttpGet]
 		//[Authorize(Roles = "0")]
