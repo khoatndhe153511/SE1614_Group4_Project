@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SE1614_Group4_Project_API.Mapper;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using SE1614_Group4_Project_API.Utils.Interfaces;
 using SE1614_Group4_Project_API.Utils;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using SE1614_Group4_Project_API.Utils.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,33 +24,33 @@ builder.Services.AddControllers();
 //	 .AddCookie("Cookies");
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
- {
-	 options.TokenValidationParameters = new TokenValidationParameters
-	 {
-		 ValidateIssuer = true,
-		 ValidateAudience = true,
-		 ValidateLifetime = true,
-		 ValidateIssuerSigningKey = true,
-		 ValidIssuer = builder.Configuration["Jwt:Issuer"],
-		 ValidAudience = builder.Configuration["Jwt:Issuer"],
-		 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-	 };
- })
-.AddGoogle(options =>
-{
-	options.ClientId = builder.Configuration["Authentication:Google:ClientId"]; // Replace with your own client ID
-	options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]; // Replace with your own client secret
-});
-;
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"]; // Replace with your own client ID
+        options.ClientSecret =
+            builder.Configuration["Authentication:Google:ClientSecret"]; // Replace with your own client secret
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<spriderumContext>(opt => 
+builder.Services.AddDbContext<spriderumContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Spriderum")));
 
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(
-options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+    options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
