@@ -26,17 +26,6 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 		}
 
 
-
-		//[HttpGet]
-		//[Authorize(Roles = "0")]
-		//public IActionResult GetAllUser()
-		//{
-		//	var users = _context.Users.ToList();
-
-		//	return Ok(users);
-		//}
-
-
 		[HttpPost]
 		[Authorize(Roles ="0")]
 		public IActionResult updateRole([FromBody] ChangeRoleDTO changeRoleDTO)
@@ -45,13 +34,14 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 			return Ok(user);
 		}
 
+
 		[HttpGet]
 		[Authorize(Roles = "0")]
 		public async Task<IActionResult> GetListUser(int page, int pageSize)
 		{
-				var query = _spriderumContext.Users
-					.OrderByDescending(x => x.DisplayName)
-					.Select(x => new User
+				var query = _spriderumContext.Users.Include(x => x.Posts).Include(x => x.Comments)
+					.OrderBy(x => x.DisplayName)
+					.Select(x => new UserDTO
 					{
 						Id = x.Id,
 						Avatar = x.Avatar,
@@ -62,6 +52,9 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 						Email = x.Email,
 						Birth = x.Birth,
 						Gender = x.Gender,
+						TotalPost = x.Posts.Count(),
+						TotalComment = x.Comments.Count()
+
 					});
 
 				var totalCount = await query.CountAsync();
@@ -73,13 +66,13 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 					.Take(pageSize)
 					.ToListAsync();
 
-				var result = new PageResult<User>
+				var result = new PageResult<UserDTO>
 				{
 					TotalPage = totalPages,
 					TotalCount = totalCount,
 					Page = currentPage,
 					PageSize = pageSize,
-					Results = users.Select(x => new User
+					Results = users.Select(x => new UserDTO
 					{
 						Id = x.Id,
 						Avatar = x.Avatar,
@@ -90,13 +83,27 @@ namespace SE1614_Group4_Project_API.Controllers.Admin
 						Email = x.Email,
 						Birth = x.Birth,
 						Gender = x.Gender,
+						TotalPost = x.TotalPost,
+						TotalComment = x.TotalComment
 					})
 				};
 
 				return Ok(result);
-			
-
 	
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "0")]
+		public async Task<IActionResult> GetTotalIndex()
+		{
+			var totalPost = _spriderumContext.Posts.Count();
+			var totalComment = _spriderumContext.Comments.Count();
+			var totalUser = _spriderumContext.Users.Count();
+
+			return Ok(new { TotalComment = totalComment
+				, TotalPost =totalPost
+				, TotalUser = totalUser });
+
 		}
 	}
 }
