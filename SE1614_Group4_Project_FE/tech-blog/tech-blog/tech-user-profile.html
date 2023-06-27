@@ -238,7 +238,7 @@
                                                             <th style="width: 40px">Label</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="idTabel">
+                                                    <tbody id="idTable">
 
                                                     </tbody>
                                                 </table>
@@ -431,9 +431,9 @@
             ].join('/');
         }
         const handleDataTable = (data) => {
-            let tabelContent = '';
+            let tableContent = '';
             data.results.map((item, index) => {
-                tabelContent += `<tr>
+                tableContent += `<tr>
                                     <td>${index}</td>
                                     <td>${item?.title}</td>
                                     <td>${item?.commentCount}</td>
@@ -445,7 +445,7 @@
                                     <td></td>
                                 </tr>`
             })
-            $('#idTabel').html(tabelContent);
+            $('#idTable').html(tableContent);
         }
 
         $(document).ready(() => {
@@ -464,7 +464,7 @@
         }
     </script>
     <script src="js/validation_user.js"></script>
-    <script src="../js/slim_notifier.js"></script>
+    <script src="js/slim_notifier.js"></script>
 
     <script>
         // Add validation logic
