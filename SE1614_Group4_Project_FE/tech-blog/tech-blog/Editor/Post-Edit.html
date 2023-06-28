@@ -36,7 +36,6 @@
 
     <!-- Responsive styles for this template -->
     <link href="../css/responsive.css" rel="stylesheet">
-
     <!-- Colors for this template -->
     <link href="../css/colors.css" rel="stylesheet">
 
@@ -47,11 +46,6 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-
-</head>
-
-<body>
-    <div id="header"></div>
 
     <style>
         body {
@@ -137,6 +131,7 @@
             top: 0;
         }
 
+        textarea,
         select,
         option {
             background-color: #fff;
@@ -145,50 +140,56 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin: 20px auto;
             padding: 20px;
-            width: 10%;
+            width: 100%;
             height: auto;
+        }
+
+        button {
+
+            color: #ddd;
+            background-color: #337ab7;
+            border: black;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 20px;
+            width: 40%;
+            height: 60px;
+            text-align: center;
         }
 
         input {
             background: #337ab7;
             border: none;
             border-radius: 1.5rem;
-            width: 5%;
+            width: 70%;
+            padding: 2%;
             font-weight: 600;
             color: #333;
             cursor: pointer;
 
         }
     </style>
+
+</head>
+
+<body>
+    <div id="header"></div>
     <div id="wrapper" style="margin-top: 100px;">
         <div style="display: flex;
-        margin-left: 200px;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-around;
         align-items: baseline;">
-            <h2 style=" width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Detail Post:<span id="postTitleHeading"></span></h2>
-            <select style="margin-right: -300px;" id="postStatusSelect">
-                <option value="null">Choose Status</option>
-                <option value="false">denied</option>
-                <option value="true">accept</option>
-            </select>
-            <a style="margin-right:-300px;" id="change" href="#"><i class="fa-solid fa-play fa-2xl"></i></a>
-            <a style="margin-right: 195px;" id="edit" href="#"><i class="fa-solid fa-pen-to-square fa-2xl"></i></a>
+            <h2 style=" width: 1500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Update Post:<span id="postTitleHeading"></span></h2>
         </div>
-        <div class="card col-lg-10">
+        <form id="postForm" class="card col-lg-10">
             <table class="table col-lg-10">
                 <tr>
-                    <th>ID</th>
-                    <td><span id="postId"></span></td>
-                </tr>
-                <tr>
                     <th>Category</th>
-                    <td><span id="postCategory"></span></td>
-                </tr>
-                <tr>
-                    <th>Status</th>
-                    <td><span id="postStatus"></span></td>
+                    <td><select id="postCategorySelect">
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <th>Image</th>
@@ -196,30 +197,31 @@
                 </tr>
                 <tr>
                     <th>Title</th>
-                    <td><span id="postTitle"></span></td>
+                    <td><textarea id="postTitle"></textarea></td>
                 </tr>
                 <tr>
                     <th>Slug</th>
-                    <td><span id="postSlug"></span></td>
+                    <td><textarea id="postSlug"></textarea></td>
                 </tr>
                 <tr>
                     <th>Description</th>
                     <td>
-                        <div id="postDescription"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Content</th>
-                    <td>
-                        <div id="postContent"></div>
+                        <div class="centered">
+                            <div id="editor">
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <th>Author</th>
-                    <td><span id="postAuthor"></span></td>
+                    <td><textarea id="postAuthor"></textarea></td>
                 </tr>
             </table>
-        </div>
+            <div style="display: flex;">
+                <input class="profile-edit-btn" type="submit" value="Save">
+                <input class="profile-edit-btn" style="margin-left: 20px;" type="submit" value="Cancel">
+            </div>
+        </form>
 
 
     </div><!-- end wrapper -->
@@ -237,78 +239,103 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
 
+    <script src="../PostEditor/ckeditor.js"></script>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+            })
+            .then(editor => {
+                window.editor = editor;
+            })
+            .catch(err => {
+                console.error(err.stack);
+            });
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            var urlParam = new URLSearchParams(window.location.search);
-            var postId = urlParam.get('postId');
+            var urlParams = new URLSearchParams(window.location.search);
+            var postId = urlParams.get('id');
+            function loadPostData() {
+                $.ajax({
+                    url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (response) {
+                        var post = response;
+                        $('#postTitleHeading').text(post.title);
+                        $('#postTitle').val(post.title);
+                        $('#postSlug').val(post.slug);
+                        $('#postImage').attr('src', post.ogImageUrl);
+                        $('#postAuthor').val(post.authorName);
+                        editor.setData(post.description);
+                        $.ajax({
+                            url: 'https://localhost:44367/api/Category/GetAllCat',
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (categoriesResponse) {
+                                var categories = categoriesResponse;
+                                var selectCategory = $('#postCategorySelect');
+                                categories.forEach(function (category) {
+                                    var option = $('<option></option>').val(category.id).text(category.name);
+                                    if (category.id === post.catId) {
+                                        option = $('<option selected="selected"></option>').val(category.id).text(category.name);
+                                    }
 
-            function loadPostDetails() {
-                if (postId !== null) {
-                    $.ajax({
-                        url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
-                        method: 'GET',
-                        dataType: 'json',
-                        success: function (response) {
-                            var data = response;
-
-                            var editLink = document.getElementById("edit");
-                            editLink.href = "post-edit.html?id=" + data.id;
-
-                            $('#postId').text(data.id);
-                            $('#postCategory').text(data.categoryName);
-                            var statusText = "";
-                            if (data.isEditorPick === null) {
-                                statusText = "processing";
-                            } else if (data.isEditorPick === true) {
-                                statusText = "accept";
-                            } else {
-                                statusText = "denied";
+                                    selectCategory.append(option);
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                alert('Category Error!');
+                                console.log('AJAX Error: ' + error);
                             }
-                            $('#postStatus').text(statusText);
-                            $('#postImage').attr('src', data.ogImageUrl);
-                            $('#postTitle').text(data.title);
-                            $('#postSlug').text(data.slug);
-                            $('#postDescription').text(data.description);
-                            var postDescription = document.getElementById("postDescription");
-                            postDescription.innerHTML = data.description;
-                            $('#postAuthor').text(data.authorName);
-                            $('#postTitleHeading').text(data.title);
-                        },
-                        error: function (xhr, status, error) {
-                            console.log('AJAX Error: ' + error);
-                        }
-                    });
-                }
+                        });
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Post Error!');
+                        console.log('AJAX Error: ' + error);
+                    }
+                });
             }
 
-            $('#postStatusSelect').change(function () {
-                var urlParam = new URLSearchParams(window.location.search);
-                var postId = urlParam.get('postId');
-                var selectedCategoryId = JSON.parse($(this).val());
+            function handleFormSubmit(event) {
+                event.preventDefault();
+                var urlParams = new URLSearchParams(window.location.search);
+                var postId = urlParams.get('id');
                 var formData = {
                     id: parseInt(postId),
-                    status: selectedCategoryId,
+                    categoryId: parseInt(document.getElementById("postCategorySelect").value),
+                    title: document.getElementById("postTitle").value,
+                    slug: document.getElementById("postSlug").value,
+                    description: editor.getData(),
+                    author: document.getElementById("postAuthor").value
                 };
-                var updateApiUrl = 'https://localhost:44367/api/Post/UpdateStatus/';
-                fetch(
-                    updateApiUrl, {
+                var updateApiUrl = "https://localhost:44367/api/Post/UpdatePost";
+                fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",
                     headers: { "Content-type": "application/json" },
                     body: JSON.stringify(formData)
-                }).then(response => response.json())
+                })
+                    .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
-
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                var editLink = document.getElementById("change");
-                editLink.href = "../Editor/Post-Detail.html?postId=" + postId;
-            });
+                window.location.href = '../Editor/Post-Detail.html?postId=' + postId;
+            }
+            window.onload = function () {
+                loadPostData();
+            };
 
-            loadPostDetails();
+            $('#postForm').submit(handleFormSubmit);
+            loadPostData();
         });
     </script>
 </body>

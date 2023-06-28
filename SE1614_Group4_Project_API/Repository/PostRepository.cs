@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 
@@ -117,6 +118,56 @@ namespace SE1614_Group4_Project_API.Repository
             _.Posts.Update(entity);
             _.SaveChangesAsync();
             throw new NotImplementedException();
+        }
+
+        public void UpdatePostRecently(UpdatePostDTO entity)
+        {
+            var post = _.Posts.Find(entity.Id);
+            var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).Select(_ => _.Id).First();
+
+            if (post != null)
+            {
+                post.Title = entity.Title;
+                post.Description = entity.Description;
+                post.CreatorId = author;
+                post.CatId = entity.CategoryId;
+                post.Slug = entity.Slug;
+                _.Posts.Update(post);
+                _.SaveChangesAsync();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void UpdateStatus(UpdateStatusDTO entity)
+        {
+            var post = _.Posts.Find(entity.Id);
+            post.IsEditorPick = entity.Status;
+
+            _.Posts.Update(post);
+            _.SaveChangesAsync();
+
+        }
+
+        public string GetTextPost(int id)
+        {
+            string result = "";
+            try
+            {
+                var post = _.Posts.Find(id);
+                var blocks = _.Blocks.Include(_ => _.Datum).Where(_ => _.PostId == post.Id1).ToList();
+                foreach (var item in blocks)
+                {
+                    result = result + item.Datum.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return result;
         }
 
         public List<Post> GetPopularPosts()

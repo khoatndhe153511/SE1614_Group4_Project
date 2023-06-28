@@ -4,6 +4,8 @@ using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using SE1614_Group4_Project_API.DTOs;
+using Microsoft.Extensions.Hosting;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -23,10 +25,11 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _spriderumContext.Posts.Select(_ => new
+            var posts = _context.Posts.Select(_ => new
             {
                 id = _.Id,
                 Created = _.CreatedAt,
+                isEditorPick = _.IsEditorPick,
                 Modified = _.ModifiedAt,
                 title = _.Title,
                 CategoryName = _.Cat.Name,
@@ -46,20 +49,23 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                 var post = _spriderumContext.Posts.Where(_ => _.Id == id).Select(_ => new
+                 var data = _postRepository.GetTextPost(id);
+                 var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
                     title = _.Title,
                     isEditorPick = _.IsEditorPick,
                     categoryName = _.Cat.Name,
                     authorName = _.Creator.Name,
+                    catId = _.CatId,
+                    content = data,
                     slug = _.Slug,
                     description = _.Description,
                     ogImageUrl = _.OgImageUrl
                 }).First();
                 return Ok(post);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Conflict();
             }
@@ -115,12 +121,27 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult UpdatePost(Post post)
+        [HttpPost]
+        public IActionResult UpdatePost([FromBody] UpdatePostDTO post)
         {
             try
             {
-                return Ok(_postRepository.Update(post));
+                _postRepository.UpdatePostRecently(post);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
+        {
+            try
+            {
+                _postRepository.UpdateStatus(status);
+                return Ok();
             }
             catch (Exception e)
             {
