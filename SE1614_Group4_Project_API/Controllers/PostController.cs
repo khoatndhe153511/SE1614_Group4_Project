@@ -124,12 +124,37 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult SearchPostByName(string title)
+        public ActionResult SearchPostByName(string title, int page, int pageSize)
         {
             try
             {
-                var posts = _postRepository.SearchPosts(title);
-                return Ok(posts);
+                var posts = _context.Posts
+                    .Where(x => x.Title.ToLower().Contains(title.ToLower()))
+                    .Select(x => new
+                    {
+                        Image = x.OgImageUrl,
+                        CategoryName = x.Cat.Name,
+                        Title = x.Title,
+                        NewTitle = x.NewTitle,
+                        Description = x.Description,
+                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatorName = x.Creator.DisplayName,
+                        CreatorId = x.CreatorId,
+                        ViewsCount = x.ViewsCount
+                    })
+                    .ToList();
+                var totalPosts = posts.Count;
+
+                if (totalPosts == 0)
+                {
+                    return NotFound("Does not have any Post for this Category");
+                }
+
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception ex)
             {

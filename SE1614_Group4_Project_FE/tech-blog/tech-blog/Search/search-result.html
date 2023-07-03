@@ -67,29 +67,7 @@
                 <div class="row">
                     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
                         <div class="page-wrapper">
-                            <div class="blog-list clearfix">
-                                <div class="blog-box row">
-                                    <div class="col-md-4">
-                                        <div class="post-media">
-                                            <a href="../tech-single.html" title="">
-                                                <img src="../upload/tech_blog_01.jpg" alt="" class="img-fluid">
-                                                <div class="hovereffect"></div>
-                                            </a>
-                                        </div><!-- end media -->
-                                    </div><!-- end col -->
-
-                                    <div class="blog-meta big-meta col-md-8">
-                                        <h4><a href="../tech-single.html" title="">Top 10 phone applications and 2017 mobile design awards</a></h4>
-                                        <p>Aenean interdum arcu blandit, vehicula magna non, placerat elit. Mauris et pharetratortor. Suspendissea sodales urna. In at augue elit. Vivamus enim nibh, maximus ac felis nec, maximus tempor odio.</p>
-                                        <small class="firstsmall"><a class="bg-orange" href="../tech-category-01.html" title="">Reviews</a></small>
-                                        <small><a href="../tech-single.html" title="">21 July, 2017</a></small>
-                                        <small><a href="../tech-author.html" title="">by Matilda</a></small>
-                                        <small><a href="../tech-single.html" title=""><i class="fa fa-eye"></i> 1114</a></small>
-                                    </div><!-- end meta -->
-                                </div><!-- end blog-box -->
-
-                                <hr class="invis">
-
+                            <div id="post-list" class="blog-list clearfix">
                             </div><!-- end blog-list -->
                         </div><!-- end page-wrapper -->
 
@@ -98,13 +76,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-start">
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
+                                    <ul id="pagination" class="pagination justify-content-start">
                                     </ul>
                                 </nav>
                             </div><!-- end col -->
@@ -132,26 +104,7 @@
             $("#header").load("../Utils/header.html");
             $("#footer").load("../Utils/footer.html");
         });
-
-        $(document).ready(() => {
-            var urlParam = new URLSearchParams(window.location.search);
-            var attributeValue = urlParam.get("title");
-
-            $("#search-result-for").append(`Kết Quả Tìm kiếm: ${attributeValue}`)
-
-            $.ajax({
-                url: "https://localhost:7065/api/Post/SearchPostByName?title=" + title,
-                type: "GET",
-                contentType: "application/json",
-                success: function(response) {
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    SlimNotifierJs.notification('error', 'Error', xhr.responseText, 3000)
-                }
-            })
-        })
     </script>
-
+    <script src="../js/search-result.js"></script>
 </body>
 </html>
