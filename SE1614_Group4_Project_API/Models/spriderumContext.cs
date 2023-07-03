@@ -35,7 +35,11 @@ namespace SE1614_Group4_Project_API.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                // optionsBuilder.UseSqlServer("Server=localhost;Database=spriderum;user=sa;password=123;TrustServerCertificate=true");
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                IConfigurationRoot configuration = builder.Build();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Spriderum"));
             }
         }
 

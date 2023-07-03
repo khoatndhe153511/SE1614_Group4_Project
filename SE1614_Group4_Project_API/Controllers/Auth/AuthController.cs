@@ -97,6 +97,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Sid, userInfo.Id),
                 new Claim(ClaimTypes.Name, userInfo.Name),
                 new Claim(ClaimTypes.Email, userInfo.Email),
                 new Claim(ClaimTypes.Role, userInfo.Role.ToString()),

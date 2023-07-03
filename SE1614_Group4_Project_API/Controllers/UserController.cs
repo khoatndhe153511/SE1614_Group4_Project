@@ -193,9 +193,9 @@ namespace SE1614_Group4_Project_API.Controllers
             if (identity is not null)
             {
                 var userClaims = identity.Claims;
-                var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+                var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
 
-                var userProfile = _userRepository.findByName(name);
+                var userProfile = _userRepository.findById(id);
 
                 var _totalPost = _postRepository.CountTotalPostByUserId(userProfile.Id);
                 var _totalComment = _postRepository.CountTotalCommentByUserId(userProfile.Id);
@@ -230,9 +230,9 @@ namespace SE1614_Group4_Project_API.Controllers
             if (identity is not null)
             {
                 var userClaims = identity.Claims;
-                var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
+                var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
 
-                var userProfile = _userRepository.findByName(name);
+                var userProfile = _userRepository.findById(id);
 
                 var query = _spriderumContext.Posts.Where(x => x.CreatorId.Equals(userProfile.Id))
                     .OrderByDescending(x => x.CreatedAt)
@@ -323,8 +323,8 @@ namespace SE1614_Group4_Project_API.Controllers
             if (identity is not null)
             {
                 var userClaims = identity.Claims;
-                var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
-                var user = _userRepository.findByName(name);
+                var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+                var user = _userRepository.findById(id);
                 var checkPass = checkCurrentPass(user, model.OldPassword);
 
                 if (checkPass)
@@ -347,8 +347,8 @@ namespace SE1614_Group4_Project_API.Controllers
 			if (identity is not null)
 			{
 				var userClaims = identity.Claims;
-				var name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value;
-				var user = _userRepository.findByName(name);
+				var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+				var user = _userRepository.findById(id);
 				return Ok(_userRepository.updateUserProfile(user, model));
 			}
 			else return BadRequest();
