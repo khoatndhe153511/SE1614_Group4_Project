@@ -35,12 +35,12 @@ namespace SE1614_Group4_Project_API.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-				var builder = new ConfigurationBuilder()
-											  .SetBasePath(Directory.GetCurrentDirectory())
-											  .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-				IConfigurationRoot configuration = builder.Build();
-				optionsBuilder.UseSqlServer(configuration.GetConnectionString("Spriderum"));
-			}
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                IConfigurationRoot configuration = builder.Build();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Spriderum"));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -80,7 +80,7 @@ namespace SE1614_Group4_Project_API.Controllers
                         NewTitle = x.NewTitle,
                         Description = x.Description,
                         CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
-                        CreatorName = x.Creator.Name,
+                        CreatorName = x.Creator.DisplayName,
                         CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
                     })
