@@ -236,7 +236,7 @@
                             `<div class="blog-box">
                                 <div class="post-media">
                                     <a href="../post/tech-single.html" title="">
-                                        <img src="${post.ogImageUrl}" alt="" class="img-fluid">
+                                        <img src="${post.image}" alt="" class="img-fluid">
                                         <div class="hovereffect">
                                             <span class="videohover"></span>
                                         </div>
@@ -387,7 +387,11 @@
                                             <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
                                             <p>${post.description}</p>
                                             <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
-                                            <small><a href="../tech-author.html" title="">by ${post.creatorName}</a></small>
+                                            <small>
+                                                <a href="../author/tech-author.html?creatorId=${post.authorId}" title="">
+                                                    by ${post.creatorName}
+                                                </a>
+                                            </small>
                                             <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
                                         </div>
                                     </div>
