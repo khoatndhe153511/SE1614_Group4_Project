@@ -22,7 +22,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="../css/bootstrap.css" rel="stylesheet">
-
+    <link href="../Quill/quill.snow.css" rel="stylesheet">
     <!-- FontAwesome Icons core CSS -->
     <link href="../css/font-awesome.min.css" rel="stylesheet">
 
@@ -205,8 +205,53 @@
                 </tr>
                 <tr>
                     <th>Description</th>
+                    <td><textarea id="postDescription"></textarea></td>
+                </tr>
+                <tr>
+                    <th>Content</th>
                     <td>
                         <div class="centered">
+                            <div style=" overflow-x: auto;" id="toolbar-container">
+                                <span class="ql-formats">
+                                  <select class="ql-font"></select>
+                                  <select class="ql-size"></select>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-bold"></button>
+                                  <button class="ql-italic"></button>
+                                  <button class="ql-underline"></button>
+                                  <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats">
+                                  <select class="ql-color"></select>
+                                  <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-header" value="1"></button>
+                                  <button class="ql-header" value="2"></button>
+                                  <button class="ql-blockquote"></button>
+                                  <button class="ql-code-block"></button>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-list" value="ordered"></button>
+                                  <button class="ql-list" value="bullet"></button>
+                                  <button class="ql-indent" value="-1"></button>
+                                  <button class="ql-indent" value="+1"></button>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-direction" value="rtl"></button>
+                                  <select class="ql-align"></select>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-link"></button>
+                                  <button class="ql-image"></button>
+                                  <button class="ql-video"></button>
+                                  <button class="ql-formula"></button>
+                                </span>
+                                <span class="ql-formats">
+                                  <button class="ql-clean"></button>
+                                </span>
+                              </div>
                             <div id="editor">
                             </div>
                         </div>
@@ -238,30 +283,25 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
-
-    <script src="../PostEditor/ckeditor.js"></script>
-
+    <script src="../Quill/quill.js"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
-            })
-            .then(editor => {
-                window.editor = editor;
-            })
-            .catch(err => {
-                console.error(err.stack);
-            });
+        var quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar-container'
+            },
+            theme: 'snow'
+        });
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
             var urlParams = new URLSearchParams(window.location.search);
-            var postId = urlParams.get('id');
+            var Id = urlParams.get('id');
+            var postId;
             function loadPostData() {
                 $.ajax({
-                    url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
+                    url: 'https://localhost:44367/api/Post/GetPostById/' + Id,
                     method: 'GET',
                     dataType: 'json',
                     success: function (response) {
@@ -271,7 +311,9 @@
                         $('#postSlug').val(post.slug);
                         $('#postImage').attr('src', post.ogImageUrl);
                         $('#postAuthor').val(post.authorName);
-                        editor.setData(post.description);
+                        $('#postDescription').val(post.description);
+                        postId = post.postId;
+                        quill.clipboard.dangerouslyPasteHTML(post.content);
                         $.ajax({
                             url: 'https://localhost:44367/api/Category/GetAllCat',
                             method: 'GET',
@@ -305,15 +347,20 @@
             function handleFormSubmit(event) {
                 event.preventDefault();
                 var urlParams = new URLSearchParams(window.location.search);
-                var postId = urlParams.get('id');
+                var Id = urlParams.get('id');
+                var editorElement = document.querySelector('.ql-editor');
+                var c = editorElement.innerHTML;
                 var formData = {
-                    id: parseInt(postId),
+                    id: parseInt(Id),
+                    postId : postId,
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
                     slug: document.getElementById("postSlug").value,
-                    description: editor.getData(),
+                    description: document.getElementById("postDescription").value,
+                    content: c,
                     author: document.getElementById("postAuthor").value
                 };
+                console.log(c);
                 var updateApiUrl = "https://localhost:44367/api/Post/UpdatePost";
                 fetch(updateApiUrl, {
                     method: 'POST',
@@ -328,7 +375,7 @@
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                window.location.href = '../Editor/Post-Detail.html?postId=' + postId;
+                window.location.href = '../Editor/Post-Detail.html?postId=' + Id;
             }
             window.onload = function () {
                 loadPostData();

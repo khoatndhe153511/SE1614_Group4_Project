@@ -34,7 +34,7 @@ namespace SE1614_Group4_Project_API.Controllers
                 title = _.Title,
                 CategoryName = _.Cat.Name,
                 AuthorName = _.Creator.Name
-            }).ToList();
+            }).OrderByDescending(_ => _.Created).ToList();
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
@@ -53,6 +53,7 @@ namespace SE1614_Group4_Project_API.Controllers
                  var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
+                    postId = _.Id1,
                     title = _.Title,
                     isEditorPick = _.IsEditorPick,
                     categoryName = _.Cat.Name,

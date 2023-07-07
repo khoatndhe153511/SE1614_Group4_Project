@@ -2,16 +2,20 @@
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using HtmlAgilityPack;
+using SE1614_Group4_Project_API.Utils.Interfaces;
 
 namespace SE1614_Group4_Project_API.Repository
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
         readonly spriderumContext _;
+        private readonly ILogicHandler _logicHandler;
 
-        public PostRepository(spriderumContext spriderumContext) : base(spriderumContext)
+        public PostRepository(spriderumContext spriderumContext,ILogicHandler logicHandler) : base(spriderumContext)
         {
             _ = spriderumContext;
+            _logicHandler = logicHandler;
         }
 
         public new Task Add(Post entity)
@@ -122,6 +126,61 @@ namespace SE1614_Group4_Project_API.Repository
 
         public void UpdatePostRecently(UpdatePostDTO entity)
         {
+            List<string> contents = new List<string>();
+            string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
+
+            string[] paragraphs = entity.Content.Split(new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < paragraphs.Length; i++)
+            {
+                string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
+                var blockCollections = _.Posts.Include(_ => _.Blocks).Where(_ => _.Id == entity.Id).Select(_ => _.Blocks).ToList();
+                List<Block> blocks = blockCollections.SelectMany(collection => collection).ToList();
+                if (paragraphs.Length > blocks.Count())
+                {
+                    _.Blocks.Add(new Block() { Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                    _.SaveChanges();
+                }
+                Block block = blocks.ElementAt(i);
+                Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
+                switch (firstTag)
+                {
+                    case "h2":
+                        block.Type = "biggerHeader";
+                        datum.Text = paragraphs[i].Split("<h2>").ToString();
+                        break;
+                    case "h3":
+                        block.Type = "smallerHeader";
+                        datum.Text = paragraphs[i].Split("<h3>").ToString();
+                        break;
+                    case "img":
+                        block.Type = "image";
+                        datum.Url = _logicHandler.GetNode(paragraphs[i],"img","src");
+                        break;
+                    case "iframe":
+                        block.Type = "embed";
+                        datum.Embed = _logicHandler.GetNode(paragraphs[i], "iframe", "src");
+                        datum.Width = int.Parse(_logicHandler.GetNode(paragraphs[i], "iframe", "width"));
+                        datum.Height = int.Parse(_logicHandler.GetNode(paragraphs[i], "iframe", "height"));
+                        break;
+                    case "a":
+                        block.Type = "linkTool";
+                        datum.Link = _logicHandler.GetNode(paragraphs[i], "a", "href");
+                        break;
+                    case "blockquote":
+                        block.Type = "quote";
+                        datum.Text = paragraphs[i].Split("<blockquote>").ToString();
+                        break;
+                    default:
+                        block.Type = "paragraph";
+                        datum.Text = paragraphs[i].ToString();
+                        break;
+                }
+                _.Blocks.Update(block);
+                _.Data.Update(datum);
+                //_.SaveChanges();
+            }
+
             var post = _.Posts.Find(entity.Id);
             var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).Select(_ => _.Id).First();
 
@@ -160,7 +219,44 @@ namespace SE1614_Group4_Project_API.Repository
                 var blocks = _.Blocks.Include(_ => _.Datum).Where(_ => _.PostId == post.Id1).ToList();
                 foreach (var item in blocks)
                 {
-                    result = result + item.Datum.Text;
+                    if (item.Datum != null)
+                    {
+                        switch (item.Type)
+                        {
+                            case "biggerHeader":
+                                result = result + "<h2>" + item.Datum.Text + "</h2>";
+                                break;
+                            case "smallerHeader":
+                                result = result + "<h3>" + item.Datum.Text + "</h3>";
+                                break;
+                            case "image":
+                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url + "\" alt=\"PostImage\"> </img></figure>";
+                                break;
+                            case "embed":
+                                result = result + "<iframe src=\"" + item.Datum.Embed + "\" width=\"" + item.Datum.Width + "\" height=\"" + item.Datum.Height + "\"></iframe>\r\n";
+                                break;
+                            case "linkTool":
+                                result = result + "<a href=\"" + item.Datum.Link + "\">" + item.Datum.Link + "</a>";
+                                break;
+                            case "unsplash":
+                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url + "\" alt=\"PostImage\"> </img></figure>";
+                                break;
+                            case "quote":
+                                result = result + "<blockquote>" + item.Datum.Text + "</blockquote>";
+                                break;
+                            case "pullquote":
+                                result = result + "<blockquote>" + item.Datum.Text + "</blockquote>";
+                                break;
+                            default:
+                                result = result + "<p>" + item.Datum.Text + "</p>";
+                                break;
+                        }
+
+                    }
+                    else
+                    {
+                        result = result;
+                    }
                 }
             }
             catch (Exception ex)

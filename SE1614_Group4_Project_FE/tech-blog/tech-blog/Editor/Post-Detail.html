@@ -159,6 +159,10 @@
             cursor: pointer;
 
         }
+
+        .hidden-div {
+            display: none;
+        }
     </style>
     <div id="wrapper" style="margin-top: 100px;">
         <div style="display: flex;
@@ -166,7 +170,7 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: baseline;">
-            <h2 style=" width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <h2 style="width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 Detail Post:<span id="postTitleHeading"></span></h2>
             <select style="margin-right: -300px;" id="postStatusSelect">
                 <option value="null">Choose Status</option>
@@ -211,7 +215,9 @@
                 <tr>
                     <th>Content</th>
                     <td>
-                        <div id="postContent"></div>
+                        <a href="javascript:void(0);" onclick="toggleDiv();">Content</a>
+                        <div class="hidden-div" style="white-space: normal; word-wrap: break-word;" id="postContent">
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -238,6 +244,10 @@
     <script src="../js/custom.js"></script>
 
     <script>
+        function toggleDiv() {
+            var div = document.getElementById('postContent');
+            div.style.display = (div.style.display === 'none') ? 'block' : 'none';
+        }
         $(document).ready(function () {
             var urlParam = new URLSearchParams(window.location.search);
             var postId = urlParam.get('postId');
@@ -269,8 +279,8 @@
                             $('#postTitle').text(data.title);
                             $('#postSlug').text(data.slug);
                             $('#postDescription').text(data.description);
-                            var postDescription = document.getElementById("postDescription");
-                            postDescription.innerHTML = data.description;
+                            var postDescription = document.getElementById("postContent");
+                            postDescription.innerHTML = data.content;
                             $('#postAuthor').text(data.authorName);
                             $('#postTitleHeading').text(data.title);
                         },

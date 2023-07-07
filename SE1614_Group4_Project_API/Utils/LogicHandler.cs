@@ -1,4 +1,5 @@
-﻿using SE1614_Group4_Project_API.Utils.Interfaces;
+﻿using HtmlAgilityPack;
+using SE1614_Group4_Project_API.Utils.Interfaces;
 using System.Net;
 using System.Net.Mail;
 
@@ -49,6 +50,39 @@ namespace SE1614_Group4_Project_API.Utils
                 Console.WriteLine("Error: " + ex.Message);
                 return false;
             }
+        }
+        public static string GetFirstTag(string html)
+        {
+            if (html.StartsWith("<"))
+            {
+                int endIndex = html.IndexOf('>');
+                if (endIndex >= 0 && endIndex > html.IndexOf('<'))
+                {
+                    string tagWithAttributes = html.Substring(html.IndexOf('<') + 1, endIndex - html.IndexOf('<') - 1).Trim();
+                    int spaceIndex = tagWithAttributes.IndexOf(' ');
+                    string firstTag = spaceIndex >= 0 ? tagWithAttributes.Substring(0, spaceIndex) : tagWithAttributes;
+                    return firstTag.Split(new[] { '/', ' ' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+            }
+            else
+            {
+                return "p";
+            }
+            return html;
+        }
+
+        public static string GetNode(string url, string type, string element)
+        {
+            string node = "";
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(url);
+
+            HtmlNode imgNode = doc.DocumentNode.SelectSingleNode("//" + type + "[@" + element + "]");
+            if (imgNode != null)
+            {
+                node = imgNode.GetAttributeValue(element, "");
+            }
+            return node;
         }
     }
 }
