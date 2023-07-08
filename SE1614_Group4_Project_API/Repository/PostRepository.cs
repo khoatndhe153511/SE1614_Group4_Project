@@ -12,7 +12,7 @@ namespace SE1614_Group4_Project_API.Repository
         readonly spriderumContext _;
         private readonly ILogicHandler _logicHandler;
 
-        public PostRepository(spriderumContext spriderumContext,ILogicHandler logicHandler) : base(spriderumContext)
+        public PostRepository(spriderumContext spriderumContext, ILogicHandler logicHandler) : base(spriderumContext)
         {
             _ = spriderumContext;
             _logicHandler = logicHandler;
@@ -136,7 +136,7 @@ namespace SE1614_Group4_Project_API.Repository
                 string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
                 var blockCollections = _.Posts.Include(_ => _.Blocks).Where(_ => _.Id == entity.Id).Select(_ => _.Blocks).ToList();
                 List<Block> blocks = blockCollections.SelectMany(collection => collection).ToList();
-                if (paragraphs.Length > blocks.Count())
+                while (paragraphs.Length > blocks.Count())
                 {
                     _.Blocks.Add(new Block() { Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
                     _.SaveChanges();
@@ -155,7 +155,7 @@ namespace SE1614_Group4_Project_API.Repository
                         break;
                     case "img":
                         block.Type = "image";
-                        datum.Url = _logicHandler.GetNode(paragraphs[i],"img","src");
+                        datum.Url = _logicHandler.GetNode(paragraphs[i], "img", "src");
                         break;
                     case "iframe":
                         block.Type = "embed";
@@ -197,6 +197,104 @@ namespace SE1614_Group4_Project_API.Repository
             else
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        public void AddPostRecently(UpdatePostDTO entity)
+        {
+            string TempId = "";
+            try
+            {
+                    var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).FirstOrDefault();
+                    var category = _.Cats.Where(_ => _.Id == entity.CategoryId).First();
+
+                    if (author != null)
+                    {
+                        var post = new Post
+                        {
+                            Id1 = Guid.NewGuid().ToString(),
+                            Creator = author,
+                            Cat = category,
+                            CatId = category.Id,
+                            Slug = entity.Slug,
+                            Description = entity.Description,
+                            Title = entity.Title,
+                            CreatedAt = DateTime.Now,
+                        };
+
+                        TempId = post.Id1;
+                        _.Posts.Add(post);
+                        _.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                
+                List<string> contents = new List<string>();
+                string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
+                string[] paragraphs = entity.Content.Split(new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < paragraphs.Length; i++)
+                {
+                    string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
+                    for (int j = 0; j < paragraphs.Length; j++)
+                    {
+                        _.Blocks.Add(new Block() { Id1 = Guid.NewGuid().ToString(), PostId = TempId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                    }
+                    _.SaveChanges();
+
+                    var blockCollections = _.Posts.Include(_ => _.Blocks).Where(_ => _.Id1 == TempId).Select(_ => _.Blocks).ToList();
+                    List<Block> blocks = blockCollections.SelectMany(collection => collection).ToList();
+                    foreach(var item in blocks)
+                    {
+                        _.Data.Add(new Datum() {BlockId = item.Id1});
+                        _.SaveChanges();
+                    }
+                    Block block = blocks.ElementAt(i);
+                    Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
+
+                    switch (firstTag)
+                    {
+                        case "h2":
+                            block.Type = "biggerHeader";
+                            datum.Text = paragraphs[i].Split("<h2>").ToString();
+                            break;
+                        case "h3":
+                            block.Type = "smallerHeader";
+                            datum.Text = paragraphs[i].Split("<h3>").ToString();
+                            break;
+                        case "img":
+                            block.Type = "image";
+                            datum.Url = _logicHandler.GetNode(paragraphs[i], "img", "src");
+                            break;
+                        case "iframe":
+                            block.Type = "embed";
+                            datum.Embed = _logicHandler.GetNode(paragraphs[i], "iframe", "src");
+                            datum.Width = int.Parse(_logicHandler.GetNode(paragraphs[i], "iframe", "width"));
+                            datum.Height = int.Parse(_logicHandler.GetNode(paragraphs[i], "iframe", "height"));
+                            break;
+                        case "a":
+                            block.Type = "linkTool";
+                            datum.Link = _logicHandler.GetNode(paragraphs[i], "a", "href");
+                            break;
+                        case "blockquote":
+                            block.Type = "quote";
+                            datum.Text = paragraphs[i].Split("<blockquote>").ToString();
+                            break;
+                        default:
+                            block.Type = "paragraph";
+                            datum.Text = paragraphs[i].ToString();
+                            break;
+                    }
+                    _.Blocks.Update(block);
+                    _.Data.Update(datum);
+                    //_.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 

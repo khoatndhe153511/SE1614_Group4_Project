@@ -151,11 +151,12 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPost(Post post)
+        public IActionResult AddPost([FromBody] UpdatePostDTO post)
         {
             try
             {
-                return Ok(_postRepository.Add(post));
+                _postRepository.AddPostRecently(post);
+                return Ok();
             }
             catch (Exception e)
             {

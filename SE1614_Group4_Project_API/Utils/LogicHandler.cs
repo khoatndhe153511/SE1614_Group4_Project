@@ -51,7 +51,7 @@ namespace SE1614_Group4_Project_API.Utils
                 return false;
             }
         }
-        public static string GetFirstTag(string html)
+        public string GetFirstTag(string html)
         {
             if (html.StartsWith("<"))
             {
@@ -71,7 +71,7 @@ namespace SE1614_Group4_Project_API.Utils
             return html;
         }
 
-        public static string GetNode(string url, string type, string element)
+        public string GetNode(string url, string type, string element)
         {
             string node = "";
             HtmlDocument doc = new HtmlDocument();

@@ -213,45 +213,45 @@
                         <div class="centered">
                             <div style=" overflow-x: auto;" id="toolbar-container">
                                 <span class="ql-formats">
-                                  <select class="ql-font"></select>
-                                  <select class="ql-size"></select>
+                                    <select class="ql-font"></select>
+                                    <select class="ql-size"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-bold"></button>
-                                  <button class="ql-italic"></button>
-                                  <button class="ql-underline"></button>
-                                  <button class="ql-strike"></button>
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <select class="ql-color"></select>
-                                  <select class="ql-background"></select>
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-header" value="1"></button>
-                                  <button class="ql-header" value="2"></button>
-                                  <button class="ql-blockquote"></button>
-                                  <button class="ql-code-block"></button>
+                                    <button class="ql-header" value="1"></button>
+                                    <button class="ql-header" value="2"></button>
+                                    <button class="ql-blockquote"></button>
+                                    <button class="ql-code-block"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-list" value="ordered"></button>
-                                  <button class="ql-list" value="bullet"></button>
-                                  <button class="ql-indent" value="-1"></button>
-                                  <button class="ql-indent" value="+1"></button>
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                    <button class="ql-indent" value="-1"></button>
+                                    <button class="ql-indent" value="+1"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-direction" value="rtl"></button>
-                                  <select class="ql-align"></select>
+                                    <button class="ql-direction" value="rtl"></button>
+                                    <select class="ql-align"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-link"></button>
-                                  <button class="ql-image"></button>
-                                  <button class="ql-video"></button>
-                                  <button class="ql-formula"></button>
+                                    <button class="ql-link"></button>
+                                    <button class="ql-image"></button>
+                                    <button class="ql-video"></button>
+                                    <button class="ql-formula"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-clean"></button>
+                                    <button class="ql-clean"></button>
                                 </span>
-                              </div>
+                            </div>
                             <div id="editor">
                             </div>
                         </div>
@@ -301,58 +301,32 @@
             var postId;
             function loadPostData() {
                 $.ajax({
-                    url: 'https://localhost:44367/api/Post/GetPostById/' + Id,
+                    url: 'https://localhost:44367/api/Category/GetAllCat',
                     method: 'GET',
                     dataType: 'json',
-                    success: function (response) {
-                        var post = response;
-                        $('#postTitleHeading').text(post.title);
-                        $('#postTitle').val(post.title);
-                        $('#postSlug').val(post.slug);
-                        $('#postImage').attr('src', post.ogImageUrl);
-                        $('#postAuthor').val(post.authorName);
-                        $('#postDescription').val(post.description);
-                        postId = post.postId;
-                        quill.clipboard.dangerouslyPasteHTML(post.content);
-                        $.ajax({
-                            url: 'https://localhost:44367/api/Category/GetAllCat',
-                            method: 'GET',
-                            dataType: 'json',
-                            success: function (categoriesResponse) {
-                                var categories = categoriesResponse;
-                                var selectCategory = $('#postCategorySelect');
-                                categories.forEach(function (category) {
-                                    var option = $('<option></option>').val(category.id).text(category.name);
-                                    if (category.id === post.catId) {
-                                        option = $('<option selected="selected"></option>').val(category.id).text(category.name);
-                                    }
-
-                                    selectCategory.append(option);
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                alert('Category Error!');
-                                console.log('AJAX Error: ' + error);
-                            }
+                    success: function (categoriesResponse) {
+                        var categories = categoriesResponse;
+                        var selectCategory = $('#postCategorySelect');
+                        categories.forEach(function (category) {
+                            var option = $('<option></option>').val(category.id).text(category.name);
+                            selectCategory.append(option);
                         });
-
                     },
                     error: function (xhr, status, error) {
-                        alert('Post Error!');
+                        alert('Category Error!');
                         console.log('AJAX Error: ' + error);
                     }
                 });
+
             }
 
             function handleFormSubmit(event) {
                 event.preventDefault();
-                var urlParams = new URLSearchParams(window.location.search);
-                var Id = urlParams.get('id');
                 var editorElement = document.querySelector('.ql-editor');
                 var c = editorElement.innerHTML;
                 var formData = {
                     id: parseInt(Id),
-                    postId : postId,
+                    postId: postId,
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
                     slug: document.getElementById("postSlug").value,
@@ -361,7 +335,7 @@
                     author: document.getElementById("postAuthor").value
                 };
                 console.log(c);
-                var updateApiUrl = "https://localhost:44367/api/Post/UpdatePost";
+                var updateApiUrl = "https://localhost:44367/api/Post/AddPost";
                 fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",
