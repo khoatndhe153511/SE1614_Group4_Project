@@ -146,8 +146,6 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
         [HttpGet]
         public ActionResult SearchPostByName(string title, int page, int pageSize)
         {
@@ -187,8 +185,8 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult UpdatePost(Post post)
+        [HttpPost]
+        public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
         {
             try
             {
