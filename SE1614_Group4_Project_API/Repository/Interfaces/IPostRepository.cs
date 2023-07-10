@@ -15,7 +15,7 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
 
         //Post GetAllPostsByUserId(string userId);
         public void UpdatePostRecently(UpdatePostDTO entity);
-        public void AddPostRecently(UpdatePostDTO entity);
+        public void AddPostRecently(AddPostDTO entity);
 
         public void UpdateStatus(UpdateStatusDTO entity);
 

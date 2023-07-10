@@ -151,7 +151,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPost([FromBody] UpdatePostDTO post)
+        public IActionResult AddPost([FromBody] AddPostDTO post)
         {
             try
             {

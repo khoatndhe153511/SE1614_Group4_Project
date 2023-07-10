@@ -1,9 +1,7 @@
 ﻿namespace SE1614_Group4_Project_API.DTOs
 {
-    public class UpdatePostDTO
+    public class AddPostDTO
     {
-        public int Id { get; set; }
-        public string PostId { get; set; }
         public int CategoryId { get; set; }
         public string Title { get; set; }
         public string Slug { get; set; }

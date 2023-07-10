@@ -193,7 +193,10 @@
                 </tr>
                 <tr>
                     <th>Image</th>
-                    <td><img id="postImage" src="" alt="Post Image"></td>
+                    <td><img id="postImage" src="">
+                        <br>
+                        <input type="file" id="uploadButton">
+                    </td>
                 </tr>
                 <tr>
                     <th>Title</th>
@@ -356,6 +359,7 @@
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
                     slug: document.getElementById("postSlug").value,
+                    ogImageUrl: document.getElementById('postImage').src,
                     description: document.getElementById("postDescription").value,
                     content: c,
                     author: document.getElementById("postAuthor").value
@@ -377,6 +381,24 @@
                     });
                 window.location.href = '../Editor/Post-Detail.html?postId=' + Id;
             }
+
+            document.getElementById('uploadButton').addEventListener('change', function (event) {
+                var file = event.target.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    reader.onload = function () {
+                        var imgDataUrl = reader.result;
+
+                        var imgElement = document.getElementById('postImage');
+                        imgElement.src = imgDataUrl;
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
             window.onload = function () {
                 loadPostData();
             };

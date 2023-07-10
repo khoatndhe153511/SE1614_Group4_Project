@@ -134,11 +134,17 @@ namespace SE1614_Group4_Project_API.Repository
             for (int i = 0; i < paragraphs.Length; i++)
             {
                 string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
-                var blockCollections = _.Posts.Include(_ => _.Blocks).Where(_ => _.Id == entity.Id).Select(_ => _.Blocks).ToList();
-                List<Block> blocks = blockCollections.SelectMany(collection => collection).ToList();
+                var blocks = _.Blocks.Where(_ => _.PostId == entity.PostId).ToList();
+                var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+                var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
                 while (paragraphs.Length > blocks.Count())
                 {
-                    _.Blocks.Add(new Block() { Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                    var newBlock = new Block() { Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now };
+                    var newData = new Datum() {Id = lastDataId +1, BlockId = newBlock.Id1 };
+                    _.Blocks.Add(newBlock);
+                    _.Data.Add(newData);
+                    lastDataId++;
+                    lastBlockId++;
                     _.SaveChanges();
                 }
                 Block block = blocks.ElementAt(i);
@@ -178,7 +184,7 @@ namespace SE1614_Group4_Project_API.Repository
                 }
                 _.Blocks.Update(block);
                 _.Data.Update(datum);
-                //_.SaveChanges();
+                _.SaveChanges();
             }
 
             var post = _.Posts.Find(entity.Id);
@@ -191,6 +197,7 @@ namespace SE1614_Group4_Project_API.Repository
                 post.CreatorId = author;
                 post.CatId = entity.CategoryId;
                 post.Slug = entity.Slug;
+                post.OgImageUrl = entity.ogImageUrl;
                 _.Posts.Update(post);
                 _.SaveChangesAsync();
             }
@@ -200,7 +207,7 @@ namespace SE1614_Group4_Project_API.Repository
             }
         }
 
-        public void AddPostRecently(UpdatePostDTO entity)
+        public void AddPostRecently(AddPostDTO entity)
         {
             string TempId = "";
             try
@@ -238,19 +245,23 @@ namespace SE1614_Group4_Project_API.Repository
                 for (int i = 0; i < paragraphs.Length; i++)
                 {
                     string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
+                    var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+
                     for (int j = 0; j < paragraphs.Length; j++)
                     {
-                        _.Blocks.Add(new Block() { Id1 = Guid.NewGuid().ToString(), PostId = TempId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                        _.Blocks.Add(new Block() {Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = TempId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                        lastBlockId++;
                     }
                     _.SaveChanges();
-
-                    var blockCollections = _.Posts.Include(_ => _.Blocks).Where(_ => _.Id1 == TempId).Select(_ => _.Blocks).ToList();
-                    List<Block> blocks = blockCollections.SelectMany(collection => collection).ToList();
+         
+                    var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+                    var blocks = _.Blocks.Where(_ => _.PostId == TempId).ToList();
                     foreach(var item in blocks)
                     {
-                        _.Data.Add(new Datum() {BlockId = item.Id1});
-                        _.SaveChanges();
+                        _.Data.Add(new Datum() {Id = lastDataId + 1 ,BlockId = item.Id1});
+                        lastDataId++;                     
                     }
+                    _.SaveChanges();
                     Block block = blocks.ElementAt(i);
                     Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
 
@@ -289,7 +300,7 @@ namespace SE1614_Group4_Project_API.Repository
                     }
                     _.Blocks.Update(block);
                     _.Data.Update(datum);
-                    //_.SaveChanges();
+                    _.SaveChanges();
                 }
             }
             catch (Exception e)

@@ -145,7 +145,6 @@
         }
 
         button {
-
             color: #ddd;
             background-color: #337ab7;
             border: black;
@@ -167,10 +166,8 @@
             font-weight: 600;
             color: #333;
             cursor: pointer;
-
         }
     </style>
-
 </head>
 
 <body>
@@ -181,7 +178,7 @@
         justify-content: space-around;
         align-items: baseline;">
             <h2 style=" width: 1500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Update Post:<span id="postTitleHeading"></span></h2>
+                Write Post<span id="postTitleHeading"></span></h2>
         </div>
         <form id="postForm" class="card col-lg-10">
             <table class="table col-lg-10">
@@ -193,7 +190,10 @@
                 </tr>
                 <tr>
                     <th>Image</th>
-                    <td><img id="postImage" src="" alt="Post Image"></td>
+                    <td><img id="postImage" src="">
+                        <br>
+                        <input type="file" id="uploadButton">
+                    </td>
                 </tr>
                 <tr>
                     <th>Title</th>
@@ -324,12 +324,12 @@
                 event.preventDefault();
                 var editorElement = document.querySelector('.ql-editor');
                 var c = editorElement.innerHTML;
+                debugger
                 var formData = {
-                    id: parseInt(Id),
-                    postId: postId,
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
                     slug: document.getElementById("postSlug").value,
+                    ogImageUrl: document.getElementById('postImage').src,
                     description: document.getElementById("postDescription").value,
                     content: c,
                     author: document.getElementById("postAuthor").value
@@ -349,8 +349,25 @@
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                window.location.href = '../Editor/Post-Detail.html?postId=' + Id;
             }
+
+            document.getElementById('uploadButton').addEventListener('change', function (event) {
+                var file = event.target.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    reader.onload = function () {
+                        var imgDataUrl = reader.result;
+
+                        var imgElement = document.getElementById('postImage');
+                        imgElement.src = imgDataUrl;
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
             window.onload = function () {
                 loadPostData();
             };
