@@ -11,6 +11,7 @@ $(document).ready(() => {
         $("#loading-data").hide();
     });
 
+    loadSidePost()
     loadRecentPost();
 
     $.ajax({
@@ -70,7 +71,9 @@ function loadRecentPost() {
                         <div class="blog-meta big-meta col-md-8">
                             <h4><a href="./Post/tech-single.html" title="">${post.title}</p>
                             <small class="firstsmall">
-                                <a class="bg-orange" href="./Category/tech-category-01.html" title="">${post.categoryName}</a>
+                                <a class="bg-orange" href="./Category/tech-category-01.html?cateId=${post.categoryId}" title="">
+                                    ${post.categoryName}
+                                </a>
                             </small>
                             <small><a href="./Post/tech-single.html?id=${post.id}" title="">21 July, 2017</a></small>
                             <small><a href="./author/tech-author.html?creatorId=${post.authorId}" title="">${post.authorName}</a></small>
@@ -137,4 +140,105 @@ function loadRecentPost() {
             );
         },
     });
+}
+
+function loadSidePost() {
+    $.ajax({
+        url: "https://localhost:7065/api/Post/GetPopularPosts",
+        method: "GET",
+        contentType: "application/json",
+        success: function (response) {
+            let masonryBlog = $(".masonry-blog")
+
+            masonryBlog.empty()
+
+            for(let i = 0; i < response.length; i++) {
+                if (i == 0) {
+                    result = 
+                        `<div class="first-slot">
+                            <div class="masonry-box post-media">
+                                <img src="${response[i].image}" alt="" class="img-fluid" style="width: 939px; height: 528px;">
+                                <div class="shadoweffect">
+                                    <div class="shadow-desc">
+                                        <div class="blog-meta">
+                                            <span class="bg-orange">
+                                                <a href="./Category/tech-category-01.html?cateId=${response[i].categoryId}" title="">
+                                                    ${response[i].categoryName}
+                                                </a>
+                                            </span>
+                                            <h4>
+                                                <a href="./Post/tech-single.html" title="">${response[i].title}</a>
+                                            </h4>
+                                            <small><a href="./Post/tech-single.html" title="">${response[i].createdAt}</a></small>
+                                            <small>
+                                                <a href="./authortech-author.html?creatorId=${response[i].creatorId}" title="">
+                                                    by ${response[i].creatorName}
+                                                </a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                }
+                if (i == 1) {
+                    result = 
+                        `<div class="second-slot">
+                            <div class="masonry-box post-media">
+                                <img src="${response[i].image}" alt="" class="img-fluid" style="width: 464px; height: 528px;">
+                                <div class="shadoweffect">
+                                    <div class="shadow-desc">
+                                        <div class="blog-meta">
+                                            <span class="bg-orange">
+                                                <a href="./Category/tech-category-01.html?cateId=${response[i].categoryId}" title="">${response[i].categoryName}</a>
+                                            </span>
+                                            <h4><a href="./Post/tech-single.html" title="">${response[i].title}</a></h4>
+                                            <small><a href="./Post/tech-single.html" title="">${response[i].createdAt}</a></small>
+                                            <small>
+                                                <a href="./author/tech-author.html?creatorId=${response[i].creatorId}" title="">
+                                                    by ${response[i].creatorName}
+                                                </a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                }
+                if (i == 2) {
+                    result = 
+                        `<div class="last-slot">
+                            <div class="masonry-box post-media">
+                                <img src="${response[i].image}" alt="" class="img-fluid" style="width: 464px; height: 528px;">
+                                <div class="shadoweffect">
+                                    <div class="shadow-desc">
+                                        <div class="blog-meta">
+                                            <span class="bg-orange">
+                                                <a href="./Category/tech-category-01.html?cateId=${response[i].categoryId}" title="">${response[i].categoryName}</a>
+                                            </span>
+                                            <h4><a href="./Post/tech-single.html" title="">${response[i].title}</a></h4>
+                                            <small><a href="./Post/tech-single.html" title="">${response[i].createdAt}</a></small>
+                                            <small>
+                                                <a href="./author/tech-author.html?creatorId=${response[i].creatorId}" title="">
+                                                    by ${response[i].creatorName}
+                                                </a>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                }
+                masonryBlog.append(result)
+            }
+        },
+        error: function (xhr) {
+            SlimNotifierJs.notification(
+                "error",
+                "Error",
+                xhr.responseText,
+                3000
+            );
+        },
+    })
 }

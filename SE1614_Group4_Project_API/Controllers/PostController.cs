@@ -30,14 +30,14 @@ namespace SE1614_Group4_Project_API.Controllers
                 id = _.Id,
                 Image = _.OgImageUrl,
                 Description = _.Description,
-                Created = $"{_.CreatedAt:dd MMM,yyyy}",
-                Modified = $"{_.ModifiedAt:dd MMM,yyyy}",
+                Created = $"{_.CreatedAt:dd MMM, yyyy}",
+                Modified = $"{_.ModifiedAt:dd MMM, yyyy}",
                 isEditorPick = _.IsEditorPick,
                 title = _.Title,
                 CategoryName = _.Cat.Name,
                 AuthorId = _.CreatorId,
                 AuthorName = _.Creator.Name,
-                ViewsCount = _.ViewsCount           
+                ViewsCount = _.ViewsCount
             }).OrderByDescending(_ => _.Created).ToList();
 
             var totalPosts = posts.Count;
@@ -60,9 +60,10 @@ namespace SE1614_Group4_Project_API.Controllers
                         Id = x.Id,
                         Image = x.OgImageUrl,
                         Description = x.Description,
-                        Created = $"{x.CreatedAt:dd MMM,yyyy}",
-                        Modified = $"{x.ModifiedAt:dd MMM,yyyy}",
+                        Created = $"{x.CreatedAt:dd MMM, yyyy}",
+                        Modified = $"{x.ModifiedAt:dd MMM, yyyy}",
                         Title = x.Title,
+                        CategoryId = x.CatId,
                         CategoryName = x.Cat.Name,
                         AuthorId = x.CreatorId,
                         AuthorName = x.Creator.Name,
@@ -87,8 +88,8 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                 var data = _postRepository.GetTextPost(id);
-                 var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
+                var data = _postRepository.GetTextPost(id);
+                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
                     postId = _.Id1,
@@ -124,7 +125,7 @@ namespace SE1614_Group4_Project_API.Controllers
                         Title = x.Title,
                         NewTitle = x.NewTitle,
                         Description = x.Description,
-                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatedAt = string.Format("{0:dd MMM, yyyy}", x.CreatedAt),
                         CreatorName = x.Creator.DisplayName,
                         CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
@@ -157,11 +158,12 @@ namespace SE1614_Group4_Project_API.Controllers
                 var result = _context.Posts.Select(x => new
                 {
                     Image = x.OgImageUrl,
+                    CategoryId = x.CatId,
                     CategoryName = x.Cat.Name,
                     Title = x.Title,
                     NewTitle = x.NewTitle,
                     Description = x.Description,
-                    CreatedAt = $"{x.CreatedAt:dd MMM,yyyy}",
+                    CreatedAt = $"{x.CreatedAt:dd MMM, yyyy}",
                     CreatorName = x.Creator.DisplayName,
                     CreatorId = x.CreatorId,
                     ViewsCount = x.ViewsCount
