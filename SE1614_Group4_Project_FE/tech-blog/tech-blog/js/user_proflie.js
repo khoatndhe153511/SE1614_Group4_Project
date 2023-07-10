@@ -25,8 +25,8 @@ $(document).ready(function () {
                  document.getElementById("totalPost").value = data?.totalPost;
                  document.getElementById("totalView").value = data?.totalView;
                  document.getElementById("totalComment").value = data?.totalComment;
-                 document.getElementById("totalPoint").value = data?.totalPoint;
-
+                 document.getElementById("totalPoint").value = data?.totalPoint;                 
+                 $('#imgAvatar').attr("src", data?.avatar);
  
                  const genderValue = data?.gender;
                  var maleRadio = document.getElementById("male");
@@ -55,7 +55,7 @@ $(document).ready(function () {
          }
          const token = localStorage.getItem('token')
          // Gửi yêu cầu tới API
-         xhttp.open("GET", "http://localhost:7065/api/User/GetDetailProfile", true);
+         xhttp.open("GET", "https://localhost:7065/api/User/GetDetailProfile", true);
          // Thiết lập header Authorization với giá trị token
          xhttp.setRequestHeader("Authorization", "Bearer " + token);
          xhttp.send();

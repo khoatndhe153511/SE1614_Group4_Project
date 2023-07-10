@@ -28,12 +28,15 @@ namespace SE1614_Group4_Project_API.Controllers
             var posts = _context.Posts.Select(_ => new
             {
                 id = _.Id,
-                Created = _.CreatedAt,
+                Image = _.OgImageUrl,
+                Description = _.Description,
+                Created = string.Format("{0:dd MMM,yyyy}", _.CreatedAt),
+                Modified = string.Format("{0:dd MMM,yyyy}", _.ModifiedAt),
                 isEditorPick = _.IsEditorPick,
-                Modified = _.ModifiedAt,
                 title = _.Title,
                 CategoryName = _.Cat.Name,
-                AuthorName = _.Creator.Name
+                AuthorName = _.Creator.Name,
+                ViewsCount = _.ViewsCount           
             }).OrderByDescending(_ => _.Created).ToList();
 
             var totalPosts = posts.Count;
@@ -73,7 +76,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet("{cateId:int}")]
-        public ActionResult GetPostsByCate(int cateId)
+        public ActionResult GetPostsByCate(int cateId, int page, int pageSize)
         {
             try
             {
@@ -86,16 +89,23 @@ namespace SE1614_Group4_Project_API.Controllers
                         NewTitle = x.NewTitle,
                         Description = x.Description,
                         CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
-                        CreatorName = x.Creator.Name,
+                        CreatorName = x.Creator.DisplayName,
+                        CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
                     })
                     .ToList();
-                if (posts.Count == 0)
+                var totalPosts = posts.Count;
+
+                if (totalPosts == 0)
                 {
-                    return NotFound("Does not have any Post in this Category");
+                    return NotFound("Does not have any Post for this Category");
                 }
 
-                return Ok(posts);
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception ex)
             {
@@ -138,6 +148,47 @@ namespace SE1614_Group4_Project_API.Controllers
 
         [HttpPost]
         public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
+        [HttpGet]
+        public ActionResult SearchPostByName(string title, int page, int pageSize)
+        {
+            try
+            {
+                var posts = _context.Posts
+                    .Where(x => x.Title.ToLower().Contains(title.ToLower()))
+                    .Select(x => new
+                    {
+                        Image = x.OgImageUrl,
+                        CategoryName = x.Cat.Name,
+                        Title = x.Title,
+                        NewTitle = x.NewTitle,
+                        Description = x.Description,
+                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatorName = x.Creator.DisplayName,
+                        CreatorId = x.CreatorId,
+                        ViewsCount = x.ViewsCount
+                    })
+                    .ToList();
+                var totalPosts = posts.Count;
+
+                if (totalPosts == 0)
+                {
+                    return NotFound("Does not have any Post for this Category");
+                }
+
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+            }
+            catch (Exception ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult UpdatePost(Post post)
         {
             try
             {

@@ -7,7 +7,5 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
         List<Cat> GetTop5Category();
 
         Cat GetCategoryById(int cateId);
-
-        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using System.Xml.Linq;
@@ -115,6 +116,65 @@ namespace SE1614_Group4_Project_API.Repository
 			var user = _.Users.FirstOrDefault(x => x.Email.Equals(email));
 			if (user != null) return true;
 			else return false;
+			throw new NotImplementedException();
+		}
+
+		public bool updateUserProfile(User user,UpdateUserProfile userUpdate)
+		{
+            if (user == null) throw new ArgumentNullException("user");
+            if (userUpdate == null) throw new ArgumentException("user");
+
+            if (user.Email == userUpdate.Email)
+            {
+				return updateUser(user, userUpdate);
+			} else
+            {
+                if (checkEmail(userUpdate.Email))
+                {
+                    return false;
+                } else
+                {
+					return updateUser(user, userUpdate);
+				}
+            }
+
+			if (user.Name == userUpdate.UserName)
+			{
+				return updateUser(user, userUpdate);
+			}
+			else
+			{
+				if (checkUsername(userUpdate.UserName))
+				{
+					return false;
+				}
+				else
+				{
+					return updateUser(user, userUpdate);
+				}
+			}
+			throw new NotImplementedException();
+		}
+
+        private bool updateUser(User user, UpdateUserProfile userUpdate)
+        {
+			user.Name = userUpdate.UserName;
+			user.Avatar = userUpdate.Avatar;
+			user.Email = userUpdate.Email;
+			user.PhoneNumber = userUpdate.PhoneNumber;
+			user.Birth = userUpdate.Birth;
+			user.Gender = userUpdate.Gender;
+			user.DisplayName = userUpdate.DisplayName;
+			_.Users.Update(user);
+			_.SaveChangesAsync();
+			return true;
+		}
+
+		public User findById(string id)
+        {
+			if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("userId");
+			var findResult = _.Users.FirstOrDefault(x => x.Id.Equals(id));
+			return findResult ?? throw new NullReferenceException("Record not found");
 			throw new NotImplementedException();
 		}
 	}

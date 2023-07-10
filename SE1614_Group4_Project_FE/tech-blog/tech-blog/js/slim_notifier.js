@@ -14,7 +14,7 @@ const SlimNotifierJs = {
     style: {
         rootPosition: {
             zIndex: 1000,
-            top: '0',
+            top: '70px',
             right: '0',
             bottom: 'auto',
             left: 'auto',

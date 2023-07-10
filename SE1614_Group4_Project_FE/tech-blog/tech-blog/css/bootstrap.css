@@ -4804,6 +4804,7 @@ tbody.collapse.show {
   color: #0275d8;
   background-color: #fff;
   border: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .page-link:focus, .page-link:hover {
@@ -9317,4 +9318,3 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
     display: none !important;
   }
 }
-/*# sourceMappingURL=bootstrap.css.map */

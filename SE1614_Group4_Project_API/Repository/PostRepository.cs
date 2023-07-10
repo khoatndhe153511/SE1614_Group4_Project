@@ -380,5 +380,10 @@ namespace SE1614_Group4_Project_API.Repository
             return _.Posts.OrderByDescending(x => x.ViewsCount).Take(3).ToList();
             throw new NotImplementedException();
         }
+
+        public List<Post> SearchPosts(string title)
+        {
+            return _.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).ToList();
+        }
     }
 }

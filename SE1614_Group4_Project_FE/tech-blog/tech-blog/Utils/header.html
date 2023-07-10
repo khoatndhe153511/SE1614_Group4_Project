@@ -29,6 +29,7 @@
 
 <!-- Custom styles for this template -->
 <link href="../css/style.css" rel="stylesheet">
+<link href="../css/search.css" rel="stylesheet">
 
 <!-- Responsive styles for this template -->
 <link href="../css/responsive.css" rel="stylesheet">
@@ -43,14 +44,75 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
 <style>
+    .user-pic {
+        width: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .sub-menu-wrap {
+        position: absolute;
+        top: 90%;
+        right: 0%;
+        width: 230px;
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 0.5s;
+    }
+
+    .sub-menu-wrap.open-menu {
+        max-height: 400px;
+    }
+
+    .sub-menu {
+        background: #fff;
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .sub-menu-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #525252;
+        margin: 12px 0;
+    }
+
+    .sub-menu-link p {
+        width: 100%;
+        margin-bottom: 0px;
+    }
+
+    .sub-menu-link img {
+        width: 40px;
+        background: #e5e5e5;
+        border-radius: 50%;
+        padding: 8px;
+        margin-right: 15px;
+    }
+
+    .sub-menu-link span {
+        font-size: 22px;
+        transition: transform 0.5s;
+    }
+
+    .sub-menu-link:hover span {
+        transform: translateX(5px);
+        color: #525252;
+        font-weight: 600;
+    }
+
+    .sub-menu-link:hover p {
+        font-weight: 600;
+    }
 </style>
+
 </head>
 
 <body>
-
     <div id="wrapper">
-
         <header class="tech-header header">
             <div class="container-fluid">
                 <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
@@ -65,23 +127,32 @@
                         <ul id="categories" class="navbar-nav mr-auto">
                         </ul>
 
-                        <div>
-                            <!-- <li
-                            class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down"> -->
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false"></a>
-                                <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
-                                    <li>
-                                        <div class="container">
-                                            <div class="mega-menu-content">
-                                                <div id="user-profile-location" class="tab" style="float: right;">
-                                                </div>
-                                            </div>
-                                        </div>  
-                                    </li>   
-                                </ul>                       
-                        </div>
-
+                        <ul class="navbar-nav mr-2" style="display: flex; align-items: center; justify-content: center;">
+                            <li class="nav-item">
+                                <div class="search">
+                                    <div class="icon"></div>
+                                    <div class="input">
+                                        <form class="search-form">
+                                            <input id="mysearch" type="text" placeholder="Search">
+                                        </form>
+                                    </div>
+                                    <span class="clear"></span>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        <ul id="user-profile-location" class="navbar-nav mr-2 drop" 
+                        style="display: flex; align-items: center; justify-content: center;">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../auth/login-form.html" style="padding-top: 0px!important;">
+                                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../auth/register-form.html" style="padding-top: 0px!important;">
+                                    <i class="fa-solid fa-right-to-bracket"></i> Sign up
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -96,47 +167,45 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
+    <script src="../js/search.js"></script>
     <script>
         $(document).ready(() => {
             var token = localStorage.getItem("token")
             var userProfile = $("#user-profile-location")
             if (token !== null) {
+                userProfile.empty()
                 userProfile.append(
-                    `<button class="tablinks_drop">
-                        <a class="nav-link reg" href="./tech-user-profile.html">
-                            <i class="fa-solid fa-user"></i> Profile
-                        </a>
-                    </button>
-                    <button class="tablinks_drop">
-                        <a id="logout-btn" class="nav-link reg" href="#">
-                            <i class="fa-solid fa-right-from-bracket"></i> Log out
-                        </a>
-                    </button>`
-                )
-            } else {
-                userProfile.append(
-                    `<button class="tablinks_drop">
-                        <a class="nav-link reg" href="./auth/login-form.html">
-                            <i class="fa-solid fa-right-to-bracket"></i> Login
-                        </a>
-                    </button>
-                    <button class="tablinks_drop">
-                        <a class="nav-link reg" href="./auth/register-form.html">
-                            <i class="fa-solid fa-right-to-bracket"></i> Sign up
-                        </a>
-                    </button>`
+                    `<img src="../images/user.png" class="user-pic">
+                    <div id="sub-menu" class="sub-menu-wrap">
+                        <div class="sub-menu">
+                            <a href="../tech-user-profile.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="#" id="logout-btn" class="sub-menu-link">
+                                <img src="../images/logout.png">
+                                <p>Logout</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>`
                 )
             }
+            
+            $(".user-pic").click(() => {
+                $("#sub-menu").toggleClass("open-menu")
+            })
 
             $("#logout-btn").click(() => {
                 localStorage.clear()
-                window.location.href = "./tech-index.html"
+                window.location.href = "../tech-index.html"
             })
 
             var categories = $("#categories")
 
             $.ajax({
-                url: "http://localhost:7065/api/Category/GetTop5Category",
+                url: "https://localhost:7065/api/Category/GetTop5Category",
                 method: "GET",
                 contentType: "application/json",
                 success: function (response) {
@@ -154,7 +223,7 @@
                     )
                     categories.append(
                         `<li class="nav-item">
-                            <a class="nav-link" href="../category/tech-category-01.html">Khác</a>
+                            <a class="nav-link" href="../category/tech-category-01.html">Tất Cả</a>
                         </li>`
                     )
                 },
@@ -163,7 +232,11 @@
                 },
             })
 
-
+            $(".search-form").submit((event) => {
+                event.preventDefault();
+                var input = $("#mysearch").val()
+                window.location.href = "../search/search-result.html?title=" + input;
+            })
         })
     </script>
 </body>
