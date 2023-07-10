@@ -26,6 +26,11 @@
     <!-- FontAwesome Icons core CSS -->
     <link href="../css/font-awesome.min.css" rel="stylesheet">
 
+    <!-- FontAwesome Icons core CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Custom styles for this template -->
     <link href="../css/style.css" rel="stylesheet">
 
@@ -49,46 +54,64 @@
     <div id="header"></div>
 
     <style>
-          body {
-      font-family:  'Poppins', serif !important;
-      background-color: #f1f1f1;
-    }
+        body {
+            font-family: 'Poppins', serif !important;
+            background-color: #f1f1f1;
+        }
 
-    .card {
-      max-width: 100%;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
-      padding: 20px;
-    }
+        .card {
+            max-width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .card p {
-      margin-bottom: 10px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 5px;
-    }
+        .card table {
+            width: 100%;
+            table-layout: fixed;
+        }
 
-    .card img {
-      max-width: 50%;
-      height: auto;
-      margin-bottom: 20px;
-      border-radius: 4px;
-    }
 
-    .card-title {
-      font-size: 28px;
-      margin-bottom: 15px;
-      color: #333;
-    }
+        .card td {
+            text-align: justify;
+            word-wrap: break-word;
+        }
 
-    .card-meta {
-      font-style: italic;
-      color: #888;
-      margin-bottom: 20px;
-    }
+        #postDescription {
+            white-space: pre-wrap;
+        }
 
-    table td,
+        .card p {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .card img {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .card-title {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .card-meta {
+            font-style: italic;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        table td,
         table th {
             font-family: 'Poppins', serif !important;
             text-overflow: ellipsis;
@@ -102,7 +125,6 @@
         }
 
 
-
         .table-scroll {
             border-radius: .5rem;
         }
@@ -113,88 +135,98 @@
 
         thead {
             top: 0;
-            position: sticky;
         }
 
+        select,
+        option {
+            background-color: #fff;
+            border: black;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 20px;
+            width: 10%;
+            height: auto;
+        }
+
+        input {
+            background: #337ab7;
+            border: none;
+            border-radius: 1.5rem;
+            width: 5%;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+
+        }
+
+        .hidden-div {
+            display: none;
+        }
     </style>
-
     <div id="wrapper" style="margin-top: 100px;">
-        <h2 style="margin-left: 200px;">Detail Post:<span id="postTitleHeading"></span></h2>
-        <div class="card col-lg-10">
-            <div id="postDetails">
-                <table class="table">
-                    <tr>
-                      <th>ID</th>
-                      <td><span id="postId"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Category</th>
-                      <td><span id="postCategory"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Status</th>
-                      <td><span id="postStatus"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Tag</th>
-                      <td><span id="postTag"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Image</th>
-                      <td><img id="postImage" src="" alt="Post Image"></td>
-                    </tr>
-                    <tr>
-                      <th>Title</th>
-                      <td><span id="postTitle"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Slug</th>
-                      <td><span id="postSlug"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Description</th>
-                      <td><span id="postDescription"></span></td>
-                    </tr>
-                    <tr>
-                      <th>Author</th>
-                      <td><span id="postAuthor"></span></td>
-                    </tr>
-                  </table>
-            </div>
+        <div style="display: flex;
+        margin-left: 200px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: baseline;">
+            <h2 style="width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Detail Post:<span id="postTitleHeading"></span></h2>
+            <select style="margin-right: -300px;" id="postStatusSelect">
+                <option value="null">Choose Status</option>
+                <option value="false">denied</option>
+                <option value="true">accept</option>
+            </select>
+            <a style="margin-right:-300px;" id="change" href="#"><i class="fa-solid fa-play fa-2xl"></i></a>
+            <a style="margin-right: 195px;" id="edit" href="#"><i class="fa-solid fa-pen-to-square fa-2xl"></i></a>
         </div>
-        <script>
-            $(document).ready(function () {
-                var urlParam = new URLSearchParams(window.location.search);
-                var postId = urlParam.get('postId');
+        <div class="card col-lg-10">
+            <table class="table col-lg-10">
+                <tr>
+                    <th>ID</th>
+                    <td><span id="postId"></span></td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td><span id="postCategory"></span></td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td><span id="postStatus"></span></td>
+                </tr>
+                <tr>
+                    <th>Image</th>
+                    <td><img id="postImage" src="" alt="Post Image"></td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td><span id="postTitle"></span></td>
+                </tr>
+                <tr>
+                    <th>Slug</th>
+                    <td><span id="postSlug"></span></td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>
+                        <div id="postDescription"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Content</th>
+                    <td>
+                        <a href="javascript:void(0);" onclick="toggleDiv();">Content</a>
+                        <div class="hidden-div" style="white-space: normal; word-wrap: break-word;" id="postContent">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Author</th>
+                    <td><span id="postAuthor"></span></td>
+                </tr>
+            </table>
+        </div>
 
-                function loadPostDetails() {
-                    if (postId !== null) {
-                        $.ajax({
-                            url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
-                            method: 'GET',
-                            dataType: 'json',
-                            success: function (response) {
-                                var data = response;
-                                $('#postId').text(data.id);
-                                $('#postCategory').text(data.categoryName);
-                                $('#postStatus').text(data.isEditorPick);
-                                $('#postImage').attr('src', data.ogImageUrl);
-                                $('#postTitle').text(data.title);
-                                $('#postSlug').text(data.slug);
-                                $('#postDescription').text(data.description);
-                                $('#postAuthor').text(data.authorName);
-                                $('#postTitleHeading').text(data.title);
-                            },
-                            error: function (xhr, status, error) {
-                                console.log('AJAX Error: ' + error);
-                            }
-                        });
-                    }
-                }
-
-                loadPostDetails();
-            });
-        </script>
 
     </div><!-- end wrapper -->
     <div id="footer"></div>
@@ -211,4 +243,82 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
 
+    <script>
+        function toggleDiv() {
+            var div = document.getElementById('postContent');
+            div.style.display = (div.style.display === 'none') ? 'block' : 'none';
+        }
+        $(document).ready(function () {
+            var urlParam = new URLSearchParams(window.location.search);
+            var postId = urlParam.get('postId');
+
+            function loadPostDetails() {
+                if (postId !== null) {
+                    $.ajax({
+                        url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            var data = response;
+
+                            var editLink = document.getElementById("edit");
+                            editLink.href = "post-edit.html?id=" + data.id;
+
+                            $('#postId').text(data.id);
+                            $('#postCategory').text(data.categoryName);
+                            var statusText = "";
+                            if (data.isEditorPick === null) {
+                                statusText = "processing";
+                            } else if (data.isEditorPick === true) {
+                                statusText = "accept";
+                            } else {
+                                statusText = "denied";
+                            }
+                            $('#postStatus').text(statusText);
+                            $('#postImage').attr('src', data.ogImageUrl);
+                            $('#postTitle').text(data.title);
+                            $('#postSlug').text(data.slug);
+                            $('#postDescription').text(data.description);
+                            var postDescription = document.getElementById("postContent");
+                            postDescription.innerHTML = data.content;
+                            $('#postAuthor').text(data.authorName);
+                            $('#postTitleHeading').text(data.title);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('AJAX Error: ' + error);
+                        }
+                    });
+                }
+            }
+
+            $('#postStatusSelect').change(function () {
+                var urlParam = new URLSearchParams(window.location.search);
+                var postId = urlParam.get('postId');
+                var selectedCategoryId = JSON.parse($(this).val());
+                var formData = {
+                    id: parseInt(postId),
+                    status: selectedCategoryId,
+                };
+                var updateApiUrl = 'https://localhost:44367/api/Post/UpdateStatus/';
+                fetch(
+                    updateApiUrl, {
+                    method: 'POST',
+                    mode: "cors",
+                    headers: { "Content-type": "application/json" },
+                    body: JSON.stringify(formData)
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                var editLink = document.getElementById("change");
+                editLink.href = "../Editor/Post-Detail.html?postId=" + postId;
+            });
+
+            loadPostDetails();
+        });
+    </script>
 </body>

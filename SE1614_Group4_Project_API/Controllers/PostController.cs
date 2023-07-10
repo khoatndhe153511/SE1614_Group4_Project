@@ -2,6 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using SE1614_Group4_Project_API.DTOs;
+using Microsoft.Extensions.Hosting;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -28,12 +32,13 @@ namespace SE1614_Group4_Project_API.Controllers
                 Description = _.Description,
                 Created = $"{_.CreatedAt:dd MMM,yyyy}",
                 Modified = $"{_.ModifiedAt:dd MMM,yyyy}",
+                isEditorPick = _.IsEditorPick,
                 title = _.Title,
                 CategoryName = _.Cat.Name,
                 AuthorId = _.CreatorId,
                 AuthorName = _.Creator.Name,
-                ViewsCount = _.ViewsCount
-            }).ToList();
+                ViewsCount = _.ViewsCount           
+            }).OrderByDescending(_ => _.Created).ToList();
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
@@ -82,21 +87,25 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
+                 var data = _postRepository.GetTextPost(id);
+                 var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
+                    postId = _.Id1,
                     title = _.Title,
                     isEditorPick = _.IsEditorPick,
                     categoryName = _.Cat.Name,
                     authorId = _.CreatorId,
                     authorName = _.Creator.Name,
+                    catId = _.CatId,
+                    content = data,
                     slug = _.Slug,
                     description = _.Description,
                     ogImageUrl = _.OgImageUrl
                 }).First();
                 return Ok(post);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Conflict();
             }
@@ -166,6 +175,20 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult UpdatePost([FromBody] UpdatePostDTO post)
+        {
+            try
+            {
+                _postRepository.UpdatePostRecently(post);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict();
+            }
+        }
+
         [HttpGet]
         public ActionResult SearchPostByName(string title, int page, int pageSize)
         {
@@ -205,12 +228,13 @@ namespace SE1614_Group4_Project_API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult UpdatePost(Post post)
+        [HttpPost]
+        public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
         {
             try
             {
-                return Ok(_postRepository.Update(post));
+                _postRepository.UpdateStatus(status);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -219,11 +243,12 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddPost(Post post)
+        public IActionResult AddPost([FromBody] AddPostDTO post)
         {
             try
             {
-                return Ok(_postRepository.Add(post));
+                _postRepository.AddPostRecently(post);
+                return Ok();
             }
             catch (Exception e)
             {
