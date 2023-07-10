@@ -30,11 +30,12 @@ namespace SE1614_Group4_Project_API.Controllers
                 id = _.Id,
                 Image = _.OgImageUrl,
                 Description = _.Description,
-                Created = string.Format("{0:dd MMM,yyyy}", _.CreatedAt),
-                Modified = string.Format("{0:dd MMM,yyyy}", _.ModifiedAt),
+                Created = $"{_.CreatedAt:dd MMM,yyyy}",
+                Modified = $"{_.ModifiedAt:dd MMM,yyyy}",
                 isEditorPick = _.IsEditorPick,
                 title = _.Title,
                 CategoryName = _.Cat.Name,
+                AuthorId = _.CreatorId,
                 AuthorName = _.Creator.Name,
                 ViewsCount = _.ViewsCount           
             }).OrderByDescending(_ => _.Created).ToList();
@@ -45,6 +46,40 @@ namespace SE1614_Group4_Project_API.Controllers
             var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
 
             return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+        }
+
+        [HttpGet]
+        public IActionResult GetRecentPosts(int page, int pageSize)
+        {
+            try
+            {
+                var posts = _context.Posts
+                    .OrderByDescending(x => x.CreatedAt)
+                    .Select(x => new
+                    {
+                        Id = x.Id,
+                        Image = x.OgImageUrl,
+                        Description = x.Description,
+                        Created = $"{x.CreatedAt:dd MMM,yyyy}",
+                        Modified = $"{x.ModifiedAt:dd MMM,yyyy}",
+                        Title = x.Title,
+                        CategoryName = x.Cat.Name,
+                        AuthorId = x.CreatorId,
+                        AuthorName = x.Creator.Name,
+                        ViewsCount = x.ViewsCount
+                    }).ToList();
+
+                var totalPosts = posts.Count;
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -60,6 +95,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     title = _.Title,
                     isEditorPick = _.IsEditorPick,
                     categoryName = _.Cat.Name,
+                    authorId = _.CreatorId,
                     authorName = _.Creator.Name,
                     catId = _.CatId,
                     content = data,
@@ -118,13 +154,20 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                var popularPosts = _postRepository.GetPopularPosts();
-                if (popularPosts.Count == 0)
+                var result = _context.Posts.Select(x => new
                 {
-                    return NotFound("Does not have Posts");
-                }
+                    Image = x.OgImageUrl,
+                    CategoryName = x.Cat.Name,
+                    Title = x.Title,
+                    NewTitle = x.NewTitle,
+                    Description = x.Description,
+                    CreatedAt = $"{x.CreatedAt:dd MMM,yyyy}",
+                    CreatorName = x.Creator.DisplayName,
+                    CreatorId = x.CreatorId,
+                    ViewsCount = x.ViewsCount
+                }).OrderByDescending(x => x.ViewsCount).Take(3).ToList();
 
-                return Ok(popularPosts);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -160,7 +203,7 @@ namespace SE1614_Group4_Project_API.Controllers
                         Title = x.Title,
                         NewTitle = x.NewTitle,
                         Description = x.Description,
-                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatedAt = $"{x.CreatedAt:dd MMM,yyyy}",
                         CreatorName = x.Creator.DisplayName,
                         CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
