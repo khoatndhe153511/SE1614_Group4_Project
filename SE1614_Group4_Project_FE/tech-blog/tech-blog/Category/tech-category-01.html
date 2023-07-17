@@ -235,7 +235,7 @@
                         response.map((post) =>
                             `<div class="blog-box">
                                 <div class="post-media">
-                                    <a href="../post/tech-single.html" title="">
+                                    <a href="../post/tech-single.html?id=${post.id}" title="">
                                         <img src="${post.image}" alt="" class="img-fluid">
                                         <div class="hovereffect">
                                             <span class="videohover"></span>
@@ -243,7 +243,7 @@
                                     </a>
                                 </div>
                                 <div class="blog-meta">
-                                    <h4><a href="../post/tech-single.html" title="">${truncate(post.title,50)}</a></h4>
+                                    <h4><a href="../post/tech-single.html?id=${post.id}" title="">${truncate(post.title,50)}</a></h4>
                                 </div>
                             </div>
 
@@ -287,7 +287,7 @@
                                 `<div class="col-md-6">
                                     <div class="blog-box">
                                         <div class="post-media">
-                                            <a href="../post/tech-single.html" title="">
+                                            <a href="../post/tech-single.html?id=${post.id}" title="">
                                                 <img src="${post.image}" alt="${post.title}" class="img-fluid post-img">
                                                 <div class="hovereffect">
                                                     <span></span>
@@ -295,12 +295,20 @@
                                             </a>
                                         </div>
                                         <div class="blog-meta big-meta">
-                                            <span class="color-orange"><a href="../post/tech-category-01.html" title="">${post.categoryName}</a></span>
-                                            <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
+                                            <span class="color-orange">
+                                                <a href="../category/tech-category-01.html?cateId=${post.categoryId}" title="">
+                                                    ${post.categoryName}
+                                                </a>
+                                            </span>
+                                            <h4><a href="../post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
                                             <p>${post.description}</p>
-                                            <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
+                                            <small><a href="../post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
                                             <small><a href="../author/tech-author.html?creatorId=${post.creatorId}" title="">by ${post.creatorName}</a></small>
-                                            <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
+                                            <small>
+                                                <a href="../post/tech-single.html?id=${post.id}" title="">
+                                                    <i class="fa fa-eye"></i> ${post.viewsCount}
+                                                </a>
+                                            </small>
                                         </div>
                                     </div>
                                 </div>`
@@ -375,7 +383,7 @@
                                 `<div class="col-md-6">
                                     <div class="blog-box">
                                         <div class="post-media">
-                                            <a href="../post/tech-single.html" title="">
+                                            <a href="../post/tech-single.html?id=${post.id}" title="">
                                                 <img src="${post.image}" alt="${post.title}" class="img-fluid post-img">
                                                 <div class="hovereffect">
                                                     <span></span>
@@ -383,16 +391,21 @@
                                             </a>
                                         </div>
                                         <div class="blog-meta big-meta">
-                                            <span class="color-orange"><a href="../post/tech-category-01.html" title="">${post.categoryName}</a></span>
-                                            <h4><a href="../post/tech-single.html" title="">${post.title}</a></h4>
+                                            <span class="color-orange">
+                                                <a href="../category/tech-category-01.html?cateId=${post.categoryId}" title="">
+                                                    ${post.categoryName}
+                                                </a>
+                                            </span>
+                                            <h4><a href="../post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
                                             <p>${post.description}</p>
-                                            <small><a href="../post/tech-single.html" title="">${post.createdAt}</a></small>
+                                            <small><a href="../post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
                                             <small>
                                                 <a href="../author/tech-author.html?creatorId=${post.authorId}" title="">
                                                     by ${post.creatorName}
                                                 </a>
                                             </small>
-                                            <small><a href="../post/tech-single.html" title=""><i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
+                                            <small><a href="../post/tech-single.html?id=${post.id}" title="">
+                                                <i class="fa fa-eye"></i> ${post.viewsCount}</a></small>
                                         </div>
                                     </div>
                                 </div>`
