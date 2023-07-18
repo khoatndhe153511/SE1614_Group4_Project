@@ -7,6 +7,7 @@ namespace SE1614_Group4_Project_API.Models
     {
         public User()
         {
+            Bookmarks = new HashSet<Bookmark>();
             Comments = new HashSet<Comment>();
             Posts = new HashSet<Post>();
         }
@@ -22,7 +23,9 @@ namespace SE1614_Group4_Project_API.Models
         public string? Email { get; set; }
         public DateTime? Birth { get; set; }
         public bool? Gender { get; set; }
+        public bool? Active { get; set; }
 
+        public virtual ICollection<Bookmark> Bookmarks { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }

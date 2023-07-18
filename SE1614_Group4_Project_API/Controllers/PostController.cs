@@ -1,13 +1,8 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using SE1614_Group4_Project_API.DTOs;
-using Microsoft.Extensions.Hosting;
-using SE1614_Group4_Project_API.Utils;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -281,6 +276,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     .Where(x => x.Title.ToLower().Contains(title.ToLower()))
                     .Select(x => new
                     {
+                        Id = x.Id,
                         Image = x.OgImageUrl,
                         CategoryId = x.CatId,
                         CategoryName = x.Cat.Name,
@@ -293,15 +289,9 @@ namespace SE1614_Group4_Project_API.Controllers
                         ViewsCount = x.ViewsCount
                     })
                     .ToList();
+
                 var totalPosts = posts.Count;
-
-                if (totalPosts == 0)
-                {
-                    return NotFound("Does not have any Post for this Category");
-                }
-
                 var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
-
                 var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
 
                 return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });

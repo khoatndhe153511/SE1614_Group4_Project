@@ -23,7 +23,7 @@ $(document).ready(() => {
                             `<div class="blog-box row">
                                 <div class="col-md-4">
                                     <div class="post-media">
-                                        <a href="../Post/tech-single.html" title="">
+                                        <a href="../Post/tech-single.html?id=${post.id}" title="">
                                             <img src="${post.image}" alt="${post.title}" class="img-fluid">
                                             <div class="hovereffect"></div>
                                         </a>
@@ -31,17 +31,17 @@ $(document).ready(() => {
                                 </div>
         
                                 <div class="blog-meta big-meta col-md-8">
-                                    <h4><a href="../Post/tech-single.html" title="">${post.title}</a></h4>
+                                    <h4><a href="../Post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
                                     <p>${post.description}</p>
                                     <small class="firstsmall">
-                                        <a class="bg-orange" href="../Category/tech-category-01.html" title="">${post.categoryName}</a>
+                                        <a class="bg-orange" href="../Category/tech-category-01.html?cateId=${post.categoryId}" title="">${post.categoryName}</a>
                                     </small>
-                                    <small><a href="../Post/tech-single.html" title="">${post.createdAt}</a></small>
+                                    <small><a href="../Post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
                                     <small>
-                                        <a href="../tech-author.html?creatorId=${post.creatorId}" title="">by ${post.creatorName}</a>
+                                        <a href="../author/tech-author.html?creatorId=${post.creatorId}" title="">by ${post.creatorName}</a>
                                     </small>
                                     <small>
-                                        <a href="../Post/tech-single.html" title="">
+                                        <a href="../Post/tech-single.html?id=${post.id}" title="">
                                             <i class="fa fa-eye"></i> ${post.viewsCount}
                                         </a>
                                     </small>

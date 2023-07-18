@@ -31,7 +31,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.CommentCount;
+                count += (int)post.CommentCount;
             }
 
             return count;
@@ -52,7 +52,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.ViewsCount;
+                count += (int)post.ViewsCount;
             }
 
             return count;
@@ -109,7 +109,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.Point;
+                count += (int)post.Point;
             }
 
             return count;

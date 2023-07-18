@@ -35,13 +35,7 @@
 		<link href="../css/bootstrap.css" rel="stylesheet" />
 
 		<!-- FontAwesome Icons core CSS -->
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-			integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-			crossorigin="anonymous"
-			referrerpolicy="no-referrer"
-		/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 		<!-- Custom styles for this template -->
 		<link href="../css/style.css" rel="stylesheet" />
@@ -129,13 +123,9 @@
 												>
 											</li>
 											<li>
-												<a
-													href="#"
-													class="gp-button btn btn-primary"
-													><i
-														class="fa fa-google-plus"
-													></i
-												></a>
+												<a href="#" class="bookmark-btn-up gp-button btn btn-primary">
+													<i class="fa-regular fa-bookmark"></i>
+												</a>
 											</li>
 										</ul>
 									</div>
@@ -178,13 +168,9 @@
 												>
 											</li>
 											<li>
-												<a
-													href="#"
-													class="gp-button btn btn-primary"
-													><i
-														class="fa fa-google-plus"
-													></i
-												></a>
+												<a href="#" class="bookmark-btn-down gp-button btn btn-primary">
+													<i class="fa-regular fa-bookmark"></i>
+												</a>
 											</li>
 										</ul>
 									</div>
@@ -514,12 +500,14 @@
 		<script src="../js/tether.min.js"></script>
 		<script src="../js/bootstrap.min.js"></script>
 		<script src="../js/custom.js"></script>
+		<script src="../js/slim_notifier.js"></script>
 		<script>
 			$(() => {
 				$("#header").load("../Utils/header.html");
 				$("#footer").load("../Utils/footer.html");
 			});
 		</script>
+		<script src="../js/jwt-decode.js"></script>
 		<script src="../js/post.js"></script>
 	</body>
 </html>
