@@ -25,7 +25,9 @@
 <link href="../css/bootstrap.css" rel="stylesheet">
 
 <!-- FontAwesome Icons core CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- Custom styles for this template -->
 <link href="../css/style.css" rel="stylesheet">
@@ -127,7 +129,8 @@
                         <ul id="categories" class="navbar-nav mr-auto">
                         </ul>
 
-                        <ul class="navbar-nav mr-2" style="display: flex; align-items: center; justify-content: center;">
+                        <ul class="navbar-nav mr-2"
+                            style="display: flex; align-items: center; justify-content: center;">
                             <li class="nav-item">
                                 <div class="search">
                                     <div class="icon"></div>
@@ -140,16 +143,17 @@
                                 </div>
                             </li>
                         </ul>
-                        
-                        <ul id="user-profile-location" class="navbar-nav mr-2 drop" 
-                        style="display: flex; align-items: center; justify-content: center;">
+
+                        <ul id="user-profile-location" class="navbar-nav mr-2 drop"
+                            style="display: flex; align-items: center; justify-content: center;">
                             <li class="nav-item">
                                 <a class="nav-link" href="../auth/login-form.html" style="padding-top: 0px!important;">
                                     <i class="fa-solid fa-right-to-bracket"></i> Login
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="../auth/register-form.html" style="padding-top: 0px!important;">
+                                <a class="nav-link" href="../auth/register-form.html"
+                                    style="padding-top: 0px!important;">
                                     <i class="fa-solid fa-right-to-bracket"></i> Sign up
                                 </a>
                             </li>
@@ -172,10 +176,17 @@
         $(document).ready(() => {
             var token = localStorage.getItem("token")
             var userProfile = $("#user-profile-location")
-            if (token !== null) {
-                userProfile.empty()
-                userProfile.append(
-                    `<img src="../images/user.png" class="user-pic">
+            if (token != null) {
+                let decoded = jwt_decode(token);
+                let userRole =
+                    decoded[
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                    ];
+                console.log(userRole)
+                if (userRole != 0) {
+                    userProfile.empty()
+                    userProfile.append(
+                        `<img src="../images/user.png" class="user-pic">
                     <div id="sub-menu" class="sub-menu-wrap">
                         <div class="sub-menu">
                             <a href="../tech-user-profile.html" class="sub-menu-link">
@@ -190,9 +201,36 @@
                             </a>
                         </div>
                     </div>`
-                )
+                    )
+                } else {
+                    userProfile.empty()
+                    userProfile.append(
+                        `<img src="../images/user.png" class="user-pic">
+                    <div id="sub-menu" class="sub-menu-wrap">
+                        <div class="sub-menu">
+                            <a href="../admin/tech-user.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Management</p>
+                                <span>></span>
+                            </a>
+                            <a href="../tech-user-profile.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="#" id="logout-btn" class="sub-menu-link">
+                                <img src="../images/logout.png">
+                                <p>Logout</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>`
+                    )
+                }
+
+
             }
-            
+
             $(".user-pic").click(() => {
                 $("#sub-menu").toggleClass("open-menu")
             })
@@ -239,6 +277,8 @@
             })
         })
     </script>
+    <script src="../js/jwt-decode.js"></script>
+
 </body>
 
 </html>

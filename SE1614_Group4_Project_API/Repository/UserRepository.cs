@@ -52,11 +52,12 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-		public User updateRole(string username, int role)
+		public User updateRoleAndActive(string _id, int role, bool active)
 		{
-			var findResult = _.Users.Where(x => x.Name == username).FirstOrDefault();
+			var findResult = _.Users.Where(x => x.Id == _id).FirstOrDefault();
             if (findResult == null) { throw new NullReferenceException("Record not found"); }
             findResult.Role = role;
+            findResult.Active = active;
             _.Users.UpdateRange(findResult);
             _.SaveChanges();
             return findResult;
