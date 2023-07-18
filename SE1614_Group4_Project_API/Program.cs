@@ -80,6 +80,7 @@ builder.Services.AddDbContext<spriderumContext>(opt =>
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(
     options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();

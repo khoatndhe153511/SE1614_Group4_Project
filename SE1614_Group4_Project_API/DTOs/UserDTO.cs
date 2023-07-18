@@ -14,7 +14,6 @@
 		public DateTime? Birth { get; set; }
 		public bool? Gender { get; set; }
         public bool? Active { get; set; }
-
         public int? TotalPost { get; set; }
 		public int? TotalComment { get; set; }
 	}

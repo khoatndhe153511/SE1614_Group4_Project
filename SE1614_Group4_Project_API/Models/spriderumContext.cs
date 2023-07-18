@@ -114,23 +114,16 @@ namespace SE1614_Group4_Project_API.Models
 
                 entity.Property(e => e.Content).HasColumnName("content");
 
-                entity.Property(e => e.CreatedDate)
-                    .HasColumnType("date")
-                    .HasColumnName("created_date");
-
-                entity.Property(e => e.IdParent).HasColumnName("id_parent");
+                entity.Property(e => e.CreatedDate).HasColumnName("created_date");
 
                 entity.Property(e => e.PostId).HasColumnName("post_id");
+                entity.Property(e => e.ReplyUserId).HasColumnName("reply_user_id");
+
 
                 entity.Property(e => e.UserId)
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("user_id");
-
-                entity.HasOne(d => d.IdParentNavigation)
-                    .WithMany(p => p.InverseIdParentNavigation)
-                    .HasForeignKey(d => d.IdParent)
-                    .HasConstraintName("FK_comment_comment");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Comments)
