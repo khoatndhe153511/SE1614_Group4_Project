@@ -7,7 +7,7 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
     {
 		User findById(string id);
 		User findByName(string name);
-        User updateRole(string username,int role);
+        User updateRoleAndActive(string _id,int role, bool active);
 
         User FindByEmail(string email);
 
