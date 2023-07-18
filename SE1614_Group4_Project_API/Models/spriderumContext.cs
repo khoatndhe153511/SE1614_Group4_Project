@@ -550,6 +550,8 @@ namespace SE1614_Group4_Project_API.Models
                     .HasColumnName("email");
 
                 entity.Property(e => e.Gender).HasColumnName("gender");
+                entity.Property(e => e.Active).HasColumnName("active");
+
 
                 entity.Property(e => e.Gravatar)
                     .HasMaxLength(255)
