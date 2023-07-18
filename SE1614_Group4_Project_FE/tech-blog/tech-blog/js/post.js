@@ -1,11 +1,99 @@
+var token = localStorage.getItem("token")
+if (token != null) {
+    var decoded = jwt_decode(token)
+    var userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
+}
+
 $(document).ready(() => {
     loadPopularPost()
 
     let urlParam = new URLSearchParams(window.location.search);
     let postId = urlParam.get("id");
 
-    loadPostInfo(postId)
-    loadPrevNextPost(postId)
+    loadPostInfo(postId);
+    loadPrevNextPost(postId);
+    
+    const makeApiCall = () => {
+        let bookBtnDown = $(".bookmark-btn-down")
+        let bookBtnUp = $(".bookmark-btn-up")
+
+        return new Promise((resolve) => {
+            $.ajax({
+                url: "https://localhost:7065/api/Bookmark/CheckBookmarkExist?userId=" + userId + "&postId=" + postId,
+                method: "GET",
+                contentType: "application/json",
+                headers:{
+                    Authorization: "Bearer " + token
+                },
+                success: function (response) {
+                    if (response == true) {
+                        bookBtnDown.empty()
+                        bookBtnDown.append(`<i class="fa-solid fa-bookmark"></i>`)
+
+                        bookBtnUp.empty()
+                        bookBtnUp.append(`<i class="fa-solid fa-bookmark"></i>`)
+
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                },
+                error: function (xhr) {
+                    SlimNotifierJs.notification(
+                        "error",
+                        "Error",
+                        xhr.responseText,
+                        3000
+                    );
+                },
+            });
+        });
+    };
+
+    (async function () {
+        try {
+            if (userId != null) {
+                const result = await makeApiCall();
+                if (result == true) {
+                    $(".bookmark-btn-down").click(() => {
+                        removeBookmark(postId, userId)
+                    })
+
+                    $(".bookmark-btn-up").click(() => {
+                        removeBookmark(postId, userId)
+                    })
+                } else {
+                    $(".bookmark-btn-down").click(() => {
+                        addBookmark(postId, userId)
+                    })
+
+                    $(".bookmark-btn-up").click(() => {
+                        addBookmark(postId, userId)
+                    })
+                }
+            } else {
+                $(".bookmark-btn-down").click(() => {
+                    SlimNotifierJs.notification(
+                        "info",
+                        "Information",
+                        "Need to Login First!",
+                        3000
+                    );
+                })
+
+                $(".bookmark-btn-up").click(() => {
+                    SlimNotifierJs.notification(
+                        "info",
+                        "Information",
+                        "Need to Login First!",
+                        3000
+                    );
+                })
+            }
+        } catch (error) {
+            console.error('API error:', error);
+        }
+    })();
 })
 
 function truncate(str, n) {
@@ -168,5 +256,91 @@ function loadPrevNextPost(postId) {
                 3000
             );
         }
+    })
+}
+
+function addBookmark(postId, userId) {
+    let data = {
+        postId: postId,
+        userId: userId
+    }
+
+    let bookBtnDown = $(".bookmark-btn-down")
+    let bookBtnUp = $(".bookmark-btn-up")
+
+    $.ajax({
+        url: "https://localhost:7065/api/Bookmark/AddBookmark",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        headers:{
+            Authorization: "Bearer " + token
+        },
+        success: function (response) {
+            SlimNotifierJs.notification(
+                "success",
+                "Success",
+                "Bookmark added successfully!",
+                3000
+            );
+            bookBtnDown.empty()
+            bookBtnDown.append(`<i class="fa-solid fa-bookmark"></i>`)
+            bookBtnDown.removeClass("add-down").addClass("added-down")
+
+            bookBtnUp.empty()
+            bookBtnUp.append(`<i class="fa-solid fa-bookmark"></i>`)
+            bookBtnUp.removeClass("add-up").addClass("added-up")
+        },
+        error: function (xhr, status, error) {
+            SlimNotifierJs.notification(
+                "error",
+                "Error",
+                xhr.responseText,
+                3000
+            );
+        },
+    })
+}
+
+function removeBookmark(postId, userId) {
+    let data = {
+        postId: postId,
+        userId: userId
+    }
+
+    let bookBtnDown = $(".bookmark-btn-down")
+    let bookBtnUp = $(".bookmark-btn-up")
+
+    $.ajax({
+        url: "https://localhost:7065/api/Bookmark/RemoveBookmark",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        headers:{
+            Authorization: "Bearer " + token
+        },
+        success: function (response) {
+            SlimNotifierJs.notification(
+                "success",
+                "Success",
+                "Bookmark removed successfully!",
+                3000
+            );
+            bookBtnDown.empty()
+            bookBtnDown.append(`<i class="fa-regular fa-bookmark"></i>`)
+            bookBtnDown.removeClass("added-down").addClass("add-down")
+
+            bookBtnUp.empty()
+            bookBtnUp.append(`<i class="fa-regular fa-bookmark"></i>`)
+            bookBtnUp.removeClass("added-up").addClass("add-up")
+        },
+        error: function (xhr, status, error) {
+            SlimNotifierJs.notification(
+                "error",
+                "Error",
+                xhr.responseText,
+                3000
+            );
+        },
     })
 }

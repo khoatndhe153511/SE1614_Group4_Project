@@ -17,6 +17,7 @@ namespace SE1614_Group4_Project_API.Models
         }
 
         public virtual DbSet<Block> Blocks { get; set; } = null!;
+        public virtual DbSet<Bookmark> Bookmarks { get; set; } = null!;
         public virtual DbSet<Cat> Cats { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Datum> Data { get; set; } = null!;
@@ -35,11 +36,8 @@ namespace SE1614_Group4_Project_API.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                IConfigurationRoot configuration = builder.Build();
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Spriderum"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server = localhost; database = spriderum; uid = sa; password = 123456789;TrustServerCertificate=True");
             }
         }
 
@@ -84,6 +82,41 @@ namespace SE1614_Group4_Project_API.Models
                     .HasPrincipalKey(p => p.Id1)
                     .HasForeignKey(d => d.PostId)
                     .HasConstraintName("FKaeb1kehuvgl9e7xfkkhoflfrd");
+            });
+
+            modelBuilder.Entity<Bookmark>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PostId })
+                    .HasName("bookmark_pk");
+
+                entity.ToTable("bookmark");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.PostId).HasColumnName("post_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.ModifiedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("modified_at");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("bookmark___fk_post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("bookmark___fk_user");
             });
 
             modelBuilder.Entity<Cat>(entity =>
@@ -496,6 +529,8 @@ namespace SE1614_Group4_Project_API.Models
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("_id");
+
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.Avatar)
                     .HasMaxLength(255)
