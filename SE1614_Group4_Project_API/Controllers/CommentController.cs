@@ -1,55 +1,53 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils;
-using System;
-using System.Security.Claims;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
-	[Route("api/[controller]/[action]")]
-	[ApiController]
-	public class CommentController : Controller
-	{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class CommentController : Controller
+    {
         private readonly spriderumContext _spriderumContext;
 
         private readonly ICommentRepository _commentRepository;
 
-		public CommentController(ICommentRepository commentRepository, spriderumContext spriderumContext)
+        public CommentController(ICommentRepository commentRepository, spriderumContext spriderumContext)
         {
             _commentRepository = commentRepository;
             _spriderumContext = spriderumContext;
         }
 
         [HttpGet]
-		public IActionResult GetAllComment()
-		{
-			return Ok(_commentRepository.GetAll());
-		}
+        public IActionResult GetAllComment()
+        {
+            return Ok(_commentRepository.GetAll());
+        }
 
-		[HttpGet("{did}")]
-		public IActionResult GetCommentById(int id)
-		{
-			try
-			{
-				return Ok(_commentRepository.Find(id));
-			}
-			catch (Exception e)
-			{
-				return Conflict();
-			}
-		}
+        [HttpGet("{did}")]
+        public IActionResult GetCommentById(int id)
+        {
+            try
+            {
+                return Ok(_commentRepository.Find(id));
+            }
+            catch (Exception e)
+            {
+                return Conflict();
+            }
+        }
 
-		[HttpPut("{id}")]
-        [Authorize(Roles ="0,1,2,3")]
-		public IActionResult UpdateComment(int id, CommentDTO commentDTO)
-		{
-			try
-			{
+        [HttpPut("{id}")]
+        [Authorize(Roles = "0,1,2,3")]
+        public IActionResult UpdateComment(int id, CommentDTO commentDTO)
+        {
+            try
+            {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
 
                 if (identity is not null)
@@ -63,27 +61,29 @@ namespace SE1614_Group4_Project_API.Controllers
                     {
                         if (_.UserId == userId)
                         {
-                            _.Content = commentDTO.Content;                          
+                            _.Content = commentDTO.Content;
                             _.ReplyUserId = commentDTO.ReplyUserId;
                             _spriderumContext.Comments.Update(_);
                             _spriderumContext.SaveChanges();
                         }
                         else return BadRequest("Can't Delete");
                     }
+
                     return Ok();
                 }
+
                 return BadRequest("Login!!");
             }
-			catch (Exception e)
-			{
-				return Conflict();
-			}
-		}
+            catch (Exception e)
+            {
+                return Conflict();
+            }
+        }
 
-		[HttpPost]
+        [HttpPost]
         [Authorize(Roles = "0,1,2,3")]
-		public IActionResult AddComment(CommentDTO commentDTO)
-		{
+        public IActionResult AddComment(CommentDTO commentDTO)
+        {
             try
             {
                 Comment comment = new Comment();
@@ -98,19 +98,19 @@ namespace SE1614_Group4_Project_API.Controllers
                 _spriderumContext.Comments.Add(comment);
                 _spriderumContext.SaveChanges();
                 return Ok();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return Conflict();
             }
-               
-		}
+        }
 
-		[HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "0,1,2,3")]
         public IActionResult DeleteComment(int id)
-		{
-			try
-			{
+        {
+            try
+            {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
 
                 if (identity is not null)
@@ -119,7 +119,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     var userId = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
 
                     Comment? _ = _spriderumContext.Comments.FirstOrDefault(x => x.Id == id);
-                   
+
                     if (_ != null)
                     {
                         if (_.UserId == userId)
@@ -129,18 +129,21 @@ namespace SE1614_Group4_Project_API.Controllers
                         }
                         else return BadRequest("Can't Delete");
                     }
-                    return Ok();
-                } return BadRequest("Login!!");
-			}
-			catch (DbUpdateException e)
-			{
-				return StatusCode(StatusCodes.Status500InternalServerError);
-			}
-		}
 
-		[HttpGet("{postId}")]
-		public async Task<IActionResult> GetAllCommentByPostId(int page, int pageSize, int postId) 
-		{
+                    return Ok();
+                }
+
+                return BadRequest("Login!!");
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("{postId}")]
+        public async Task<IActionResult> GetAllCommentByPostId(int page, int pageSize, int postId)
+        {
             var query = _spriderumContext.Comments.Include(x => x.Post).Include(x => x.User)
                 .Where(x => x.PostId == postId)
                 .OrderByDescending(x => x.CreatedDate)
@@ -154,7 +157,6 @@ namespace SE1614_Group4_Project_API.Controllers
                     CreatedDate = asTimeAgo(x.CreatedDate),
                     ReplyUserId = x.ReplyUserId,
                     imageUser = x.User.Avatar,
-
                 });
 
             var totalCount = await query.CountAsync();
@@ -187,11 +189,9 @@ namespace SE1614_Group4_Project_API.Controllers
 
             return Ok(result);
         }
-
         
-
-		private static string asTimeAgo(DateTime date)
-		{
+        private static string asTimeAgo(DateTime date)
+        {
             TimeSpan timeSpan = DateTime.Now.Subtract(date);
 
             return timeSpan.TotalSeconds switch
@@ -221,5 +221,5 @@ namespace SE1614_Group4_Project_API.Controllers
                 }
             };
         }
-	}
+    }
 }
