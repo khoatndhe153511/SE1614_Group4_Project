@@ -39,6 +39,7 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
                     .FirstOrDefault(x => (x.Email.Equals(loginModel.Email) || x.Name.Equals(loginModel.Email)) 
                                          && x.Password.Equals(loginModel.Password));
                 if (user == null) return NotFound("Email or password is wrong!");
+                if (user.Active == false) return BadRequest("Account Block!!!");
                 var tokenStr = GenerateJsonWebToken(user);
                 Response.Cookies.Append("ACCESS_TOKEN", tokenStr);
                 return Ok(new { token = tokenStr });
@@ -78,7 +79,9 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
 
             try
             {
+            
                 var newMem = _mapper.Map<User>(newUser);
+                newMem.Active = true;
                 _context.Users.Add(newMem);
                 _context.SaveChanges();
                 return Ok(newMem);
