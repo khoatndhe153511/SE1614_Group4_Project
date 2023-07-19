@@ -154,7 +154,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     PostId = x.PostId,
                     UserName = x.User.DisplayName,
                     Content = x.Content,
-                    CreatedDate = asTimeAgo(x.CreatedDate),
+                    CreatedDate = asTimeAgo((DateTime)x.CreatedDate),
                     ReplyUserId = x.ReplyUserId,
                     imageUser = x.User.Avatar,
                 });
