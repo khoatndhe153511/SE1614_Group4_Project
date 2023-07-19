@@ -43,13 +43,15 @@ namespace SE1614_Group4_Project_API.Controllers
 					.OrderByDescending(x => x.ViewsCount)
 					.Select(x => new
 					{
+						Id = x.Id,
 						Image = x.OgImageUrl,
+						CategoryId = x.CatId,
 						CategoryName = x.Cat.Name,
 						Title = x.Title,
 						NewTitle = x.NewTitle,
 						Description = x.Description,
 						CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
-						CreatorName = x.Creator.Name,
+						CreatorName = x.Creator.DisplayName,
 						CreatorId = x.CreatorId,
 						ViewsCount = x.ViewsCount
 					})

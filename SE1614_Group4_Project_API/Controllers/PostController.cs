@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using SE1614_Group4_Project_API.DTOs;
-using Microsoft.Extensions.Hosting;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -25,20 +22,23 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _context.Posts.OrderByDescending(_ => _.CreatedAt).Select(_ => new
-            {
-                id = _.Id,
-                Image = _.OgImageUrl,
-                Description = _.Description,
-                Created = $"{_.CreatedAt:dd MMM,yyyy}",
-                Modified = $"{_.ModifiedAt:dd MMM,yyyy}",
-                isEditorPick = _.IsEditorPick,
-                title = _.Title,
-                CategoryName = _.Cat.Name,
-                AuthorId = _.CreatorId,
-                AuthorName = _.Creator.Name,
-                ViewsCount = _.ViewsCount           
-            }).ToList();
+            var posts = _context.Posts
+                .OrderByDescending(_ => _.CreatedAt)
+                .Select(_ => new
+                {
+                    id = _.Id,
+                    Image = _.OgImageUrl,
+                    Description = _.Description,
+                    Created = $"{_.CreatedAt:dd MMM, yyyy}",
+                    Modified = $"{_.ModifiedAt:dd MMM, yyyy}",
+                    isEditorPick = _.IsEditorPick,
+                    title = _.Title,
+                    CategoryId = _.CatId,
+                    CategoryName = _.Cat.Name,
+                    AuthorId = _.CreatorId,
+                    AuthorName = _.Creator.Name,
+                    ViewsCount = _.ViewsCount
+                }).ToList();
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
@@ -60,9 +60,10 @@ namespace SE1614_Group4_Project_API.Controllers
                         Id = x.Id,
                         Image = x.OgImageUrl,
                         Description = x.Description,
-                        Created = $"{x.CreatedAt:dd MMM,yyyy}",
-                        Modified = $"{x.ModifiedAt:dd MMM,yyyy}",
+                        Created = $"{x.CreatedAt:dd MMM, yyyy}",
+                        Modified = $"{x.ModifiedAt:dd MMM, yyyy}",
                         Title = x.Title,
+                        CategoryId = x.CatId,
                         CategoryName = x.Cat.Name,
                         AuthorId = x.CreatorId,
                         AuthorName = x.Creator.Name,
@@ -87,8 +88,8 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                 var data = _postRepository.GetTextPost(id);
-                 var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
+                var data = _postRepository.GetTextPost(id);
+                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
                 {
                     id = _.Id,
                     postId = _.Id1,
@@ -101,13 +102,86 @@ namespace SE1614_Group4_Project_API.Controllers
                     content = data,
                     slug = _.Slug,
                     description = _.Description,
-                    ogImageUrl = _.OgImageUrl
+                    ogImageUrl = _.OgImageUrl,
+                    created = $"{_.CreatedAt:dd MMM, yyyy}",
+                    viewsCount = _.ViewsCount
                 }).First();
                 return Ok(post);
             }
             catch (Exception)
             {
                 return Conflict();
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public IActionResult GetReadingPostById(int id)
+        {
+            try
+            {
+                var readingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
+                if (readingPost is null) return NotFound();
+                readingPost.ViewsCount++;
+                _context.SaveChanges();
+
+                var data = _postRepository.GetTextPost(id);
+                var post = _context.Posts.Where(_ => _.Id == id).Select(_ => new
+                {
+                    id = _.Id,
+                    postId = _.Id1,
+                    title = _.Title,
+                    isEditorPick = _.IsEditorPick,
+                    categoryName = _.Cat.Name,
+                    authorId = _.CreatorId,
+                    authorName = _.Creator.DisplayName,
+                    catId = _.CatId,
+                    content = data,
+                    slug = _.Slug,
+                    description = _.Description,
+                    ogImageUrl = _.OgImageUrl,
+                    created = $"{_.CreatedAt:dd MMM, yyyy}",
+                    viewsCount = _.ViewsCount
+                }).First();
+                return Ok(post);
+            }
+            catch (Exception)
+            {
+                return Conflict();
+            }
+        }
+
+        [HttpGet("{currentPostId:int}")]
+        public IActionResult GetPrevAndNextPost(int currentPostId)
+        {
+            try
+            {
+                var previousPost = _context.Posts
+                    .OrderByDescending(x => x.Id)
+                    .Where(x => x.Id < currentPostId)
+                    .Select(p => new
+                    {
+                        Id = p.Id,
+                        Image = p.OgImageUrl,
+                        Title = p.Title
+                    })
+                    .FirstOrDefault();
+
+                var nextPost = _context.Posts
+                    .OrderBy(x => x.Id)
+                    .Where(x => x.Id > currentPostId)
+                    .Select(p => new
+                    {
+                        Id = p.Id,
+                        Image = p.OgImageUrl,
+                        Title = p.Title
+                    })
+                    .FirstOrDefault();
+
+                return Ok(new { previousPost, nextPost });
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
             }
         }
 
@@ -119,12 +193,14 @@ namespace SE1614_Group4_Project_API.Controllers
                 var posts = _context.Posts.Where(x => x.CatId == cateId)
                     .Select(x => new
                     {
+                        Id = x.Id,
                         Image = x.OgImageUrl,
+                        CategoryId = x.CatId,
                         CategoryName = x.Cat.Name,
                         Title = x.Title,
                         NewTitle = x.NewTitle,
                         Description = x.Description,
-                        CreatedAt = string.Format("{0:dd MMM,yyyy}", x.CreatedAt),
+                        CreatedAt = string.Format("{0:dd MMM, yyyy}", x.CreatedAt),
                         CreatorName = x.Creator.DisplayName,
                         CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
@@ -156,12 +232,14 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 var result = _context.Posts.Select(x => new
                 {
+                    Id = x.Id,
                     Image = x.OgImageUrl,
+                    CategoryId = x.CatId,
                     CategoryName = x.Cat.Name,
                     Title = x.Title,
                     NewTitle = x.NewTitle,
                     Description = x.Description,
-                    CreatedAt = $"{x.CreatedAt:dd MMM,yyyy}",
+                    CreatedAt = $"{x.CreatedAt:dd MMM, yyyy}",
                     CreatorName = x.Creator.DisplayName,
                     CreatorId = x.CreatorId,
                     ViewsCount = x.ViewsCount
@@ -198,7 +276,9 @@ namespace SE1614_Group4_Project_API.Controllers
                     .Where(x => x.Title.ToLower().Contains(title.ToLower()))
                     .Select(x => new
                     {
+                        Id = x.Id,
                         Image = x.OgImageUrl,
+                        CategoryId = x.CatId,
                         CategoryName = x.Cat.Name,
                         Title = x.Title,
                         NewTitle = x.NewTitle,
@@ -209,15 +289,9 @@ namespace SE1614_Group4_Project_API.Controllers
                         ViewsCount = x.ViewsCount
                     })
                     .ToList();
+
                 var totalPosts = posts.Count;
-
-                if (totalPosts == 0)
-                {
-                    return NotFound("Does not have any Post for this Category");
-                }
-
                 var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
-
                 var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
 
                 return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });

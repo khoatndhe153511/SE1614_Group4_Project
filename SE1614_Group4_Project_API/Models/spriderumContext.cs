@@ -17,6 +17,7 @@ namespace SE1614_Group4_Project_API.Models
         }
 
         public virtual DbSet<Block> Blocks { get; set; } = null!;
+        public virtual DbSet<Bookmark> Bookmarks { get; set; } = null!;
         public virtual DbSet<Cat> Cats { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Datum> Data { get; set; } = null!;
@@ -35,11 +36,8 @@ namespace SE1614_Group4_Project_API.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                IConfigurationRoot configuration = builder.Build();
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("Spriderum"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("server = localhost; database = spriderum; uid = sa; password = 123456789;TrustServerCertificate=True");
             }
         }
 
@@ -86,6 +84,41 @@ namespace SE1614_Group4_Project_API.Models
                     .HasConstraintName("FKaeb1kehuvgl9e7xfkkhoflfrd");
             });
 
+            modelBuilder.Entity<Bookmark>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PostId })
+                    .HasName("bookmark_pk");
+
+                entity.ToTable("bookmark");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.PostId).HasColumnName("post_id");
+
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("created_at");
+
+                entity.Property(e => e.ModifiedAt)
+                    .HasColumnType("datetime")
+                    .HasColumnName("modified_at");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("bookmark___fk_post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Bookmarks)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("bookmark___fk_user");
+            });
+
             modelBuilder.Entity<Cat>(entity =>
             {
                 entity.ToTable("cat");
@@ -114,23 +147,16 @@ namespace SE1614_Group4_Project_API.Models
 
                 entity.Property(e => e.Content).HasColumnName("content");
 
-                entity.Property(e => e.CreatedDate)
-                    .HasColumnType("date")
-                    .HasColumnName("created_date");
-
-                entity.Property(e => e.IdParent).HasColumnName("id_parent");
+                entity.Property(e => e.CreatedDate).HasColumnName("created_date");
 
                 entity.Property(e => e.PostId).HasColumnName("post_id");
+                entity.Property(e => e.ReplyUserId).HasColumnName("reply_user_id");
+
 
                 entity.Property(e => e.UserId)
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("user_id");
-
-                entity.HasOne(d => d.IdParentNavigation)
-                    .WithMany(p => p.InverseIdParentNavigation)
-                    .HasForeignKey(d => d.IdParent)
-                    .HasConstraintName("FK_comment_comment");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Comments)
@@ -497,6 +523,8 @@ namespace SE1614_Group4_Project_API.Models
                     .IsUnicode(false)
                     .HasColumnName("_id");
 
+                entity.Property(e => e.Active).HasColumnName("active");
+
                 entity.Property(e => e.Avatar)
                     .HasMaxLength(255)
                     .IsUnicode(false)
@@ -515,6 +543,8 @@ namespace SE1614_Group4_Project_API.Models
                     .HasColumnName("email");
 
                 entity.Property(e => e.Gender).HasColumnName("gender");
+                entity.Property(e => e.Active).HasColumnName("active");
+
 
                 entity.Property(e => e.Gravatar)
                     .HasMaxLength(255)

@@ -2,7 +2,6 @@
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
-using HtmlAgilityPack;
 using SE1614_Group4_Project_API.Utils.Interfaces;
 
 namespace SE1614_Group4_Project_API.Repository
@@ -32,7 +31,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.CommentCount;
+                count += (int)post.CommentCount;
             }
 
             return count;
@@ -53,7 +52,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.ViewsCount;
+                count += (int)post.ViewsCount;
             }
 
             return count;
@@ -110,7 +109,7 @@ namespace SE1614_Group4_Project_API.Repository
             var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).ToList();
             foreach (var post in posts)
             {
-                count += post.Point;
+                count += (int)post.Point;
             }
 
             return count;
@@ -129,7 +128,10 @@ namespace SE1614_Group4_Project_API.Repository
             List<string> contents = new List<string>();
             string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
 
-            string[] paragraphs = entity.Content.Split(new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] paragraphs =
+                entity.Content.Split(
+                    new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
+                    StringSplitOptions.RemoveEmptyEntries);
 
             for (int i = 0; i < paragraphs.Length; i++)
             {
@@ -139,14 +141,19 @@ namespace SE1614_Group4_Project_API.Repository
                 var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
                 while (paragraphs.Length > blocks.Count())
                 {
-                    var newBlock = new Block() { Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now };
-                    var newData = new Datum() {Id = lastDataId +1, BlockId = newBlock.Id1 };
+                    var newBlock = new Block()
+                    {
+                        Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId,
+                        CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now
+                    };
+                    var newData = new Datum() { Id = lastDataId + 1, BlockId = newBlock.Id1 };
                     _.Blocks.Add(newBlock);
                     _.Data.Add(newData);
                     lastDataId++;
                     lastBlockId++;
                     _.SaveChanges();
                 }
+
                 Block block = blocks.ElementAt(i);
                 Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
                 switch (firstTag)
@@ -182,6 +189,7 @@ namespace SE1614_Group4_Project_API.Repository
                         datum.Text = paragraphs[i].ToString();
                         break;
                 }
+
                 _.Blocks.Update(block);
                 _.Data.Update(datum);
                 _.SaveChanges();
@@ -212,35 +220,38 @@ namespace SE1614_Group4_Project_API.Repository
             string TempId = "";
             try
             {
-                    var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).FirstOrDefault();
-                    var category = _.Cats.Where(_ => _.Id == entity.CategoryId).First();
+                var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).FirstOrDefault();
+                var category = _.Cats.Where(_ => _.Id == entity.CategoryId).First();
 
-                    if (author != null)
+                if (author != null)
+                {
+                    var post = new Post
                     {
-                        var post = new Post
-                        {
-                            Id1 = Guid.NewGuid().ToString(),
-                            Creator = author,
-                            Cat = category,
-                            CatId = category.Id,
-                            Slug = entity.Slug,
-                            Description = entity.Description,
-                            Title = entity.Title,
-                            CreatedAt = DateTime.Now,
-                        };
+                        Id1 = Guid.NewGuid().ToString(),
+                        Creator = author,
+                        Cat = category,
+                        CatId = category.Id,
+                        Slug = entity.Slug,
+                        Description = entity.Description,
+                        Title = entity.Title,
+                        CreatedAt = DateTime.Now,
+                    };
 
-                        TempId = post.Id1;
-                        _.Posts.Add(post);
-                        _.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                
+                    TempId = post.Id1;
+                    _.Posts.Add(post);
+                    _.SaveChanges();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
                 List<string> contents = new List<string>();
                 string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
-                string[] paragraphs = entity.Content.Split(new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" }, StringSplitOptions.RemoveEmptyEntries);
+                string[] paragraphs =
+                    entity.Content.Split(
+                        new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
+                        StringSplitOptions.RemoveEmptyEntries);
 
                 for (int i = 0; i < paragraphs.Length; i++)
                 {
@@ -249,18 +260,24 @@ namespace SE1614_Group4_Project_API.Repository
 
                     for (int j = 0; j < paragraphs.Length; j++)
                     {
-                        _.Blocks.Add(new Block() {Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = TempId, CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now });
+                        _.Blocks.Add(new Block()
+                        {
+                            Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = TempId,
+                            CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now
+                        });
                         lastBlockId++;
                     }
+
                     _.SaveChanges();
-         
+
                     var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
                     var blocks = _.Blocks.Where(_ => _.PostId == TempId).ToList();
-                    foreach(var item in blocks)
+                    foreach (var item in blocks)
                     {
-                        _.Data.Add(new Datum() {Id = lastDataId + 1 ,BlockId = item.Id1});
-                        lastDataId++;                     
+                        _.Data.Add(new Datum() { Id = lastDataId + 1, BlockId = item.Id1 });
+                        lastDataId++;
                     }
+
                     _.SaveChanges();
                     Block block = blocks.ElementAt(i);
                     Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
@@ -298,6 +315,7 @@ namespace SE1614_Group4_Project_API.Repository
                             datum.Text = paragraphs[i].ToString();
                             break;
                     }
+
                     _.Blocks.Update(block);
                     _.Data.Update(datum);
                     _.SaveChanges();
@@ -316,7 +334,6 @@ namespace SE1614_Group4_Project_API.Repository
 
             _.Posts.Update(post);
             _.SaveChangesAsync();
-
         }
 
         public string GetTextPost(int id)
@@ -339,16 +356,19 @@ namespace SE1614_Group4_Project_API.Repository
                                 result = result + "<h3>" + item.Datum.Text + "</h3>";
                                 break;
                             case "image":
-                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url + "\" alt=\"PostImage\"> </img></figure>";
+                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url + "\" alt=\"" +
+                                         item.Datum.Caption + "\"> </img></figure>";
                                 break;
                             case "embed":
-                                result = result + "<iframe src=\"" + item.Datum.Embed + "\" width=\"" + item.Datum.Width + "\" height=\"" + item.Datum.Height + "\"></iframe>\r\n";
+                                result = result + "<iframe src=\"" + item.Datum.Embed + "\" width=\"" +
+                                         item.Datum.Width + "\" height=\"" + item.Datum.Height + "\"></iframe>\r\n";
                                 break;
                             case "linkTool":
                                 result = result + "<a href=\"" + item.Datum.Link + "\">" + item.Datum.Link + "</a>";
                                 break;
                             case "unsplash":
-                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url + "\" alt=\"PostImage\"> </img></figure>";
+                                result = result + "<figure class=\"image\"><img src=\"" + item.Datum.Url +
+                                         "\" alt=\"PostImage\"> </img></figure>";
                                 break;
                             case "quote":
                                 result = result + "<blockquote>" + item.Datum.Text + "</blockquote>";
@@ -360,7 +380,6 @@ namespace SE1614_Group4_Project_API.Repository
                                 result = result + "<p>" + item.Datum.Text + "</p>";
                                 break;
                         }
-
                     }
                     else
                     {
@@ -372,6 +391,7 @@ namespace SE1614_Group4_Project_API.Repository
             {
                 Console.WriteLine(ex.Message);
             }
+
             return result;
         }
 
