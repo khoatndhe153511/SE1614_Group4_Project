@@ -301,7 +301,7 @@
             var postId;
             function loadPostData() {
                 $.ajax({
-                    url: 'https://localhost:44367/api/Category/GetAllCat',
+                    url: 'https://localhost:7065/api/Category/GetAllCat',
                     method: 'GET',
                     dataType: 'json',
                     success: function (categoriesResponse) {
@@ -324,7 +324,6 @@
                 event.preventDefault();
                 var editorElement = document.querySelector('.ql-editor');
                 var c = editorElement.innerHTML;
-                debugger
                 var formData = {
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
@@ -335,7 +334,7 @@
                     author: document.getElementById("postAuthor").value
                 };
                 console.log(c);
-                var updateApiUrl = "https://localhost:44367/api/Post/AddPost";
+                var updateApiUrl = "https://localhost:7065/api/Post/AddPost";
                 fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",

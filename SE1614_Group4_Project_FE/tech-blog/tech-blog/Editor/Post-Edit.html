@@ -304,7 +304,7 @@
             var postId;
             function loadPostData() {
                 $.ajax({
-                    url: 'https://localhost:44367/api/Post/GetPostById/' + Id,
+                    url: 'https://localhost:7065/api/Post/GetPostById/' + Id,
                     method: 'GET',
                     dataType: 'json',
                     success: function (response) {
@@ -318,7 +318,7 @@
                         postId = post.postId;
                         quill.clipboard.dangerouslyPasteHTML(post.content);
                         $.ajax({
-                            url: 'https://localhost:44367/api/Category/GetAllCat',
+                            url: 'https://localhost:7065/api/Category/GetAllCat',
                             method: 'GET',
                             dataType: 'json',
                             success: function (categoriesResponse) {
@@ -365,7 +365,7 @@
                     author: document.getElementById("postAuthor").value
                 };
                 console.log(c);
-                var updateApiUrl = "https://localhost:44367/api/Post/UpdatePost";
+                var updateApiUrl = "https://localhost:7065/api/Post/UpdatePost";
                 fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",

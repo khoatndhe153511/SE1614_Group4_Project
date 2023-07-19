@@ -255,7 +255,7 @@
             function loadPostDetails() {
                 if (postId !== null) {
                     $.ajax({
-                        url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
+                        url: 'https://localhost:7065/api/Post/GetPostById/' + postId,
                         method: 'GET',
                         dataType: 'json',
                         success: function (response) {
@@ -299,7 +299,7 @@
                     id: parseInt(postId),
                     status: selectedCategoryId,
                 };
-                var updateApiUrl = 'https://localhost:44367/api/Post/UpdateStatus/';
+                var updateApiUrl = 'https://localhost:7065/api/Post/UpdateStatus/';
                 fetch(
                     updateApiUrl, {
                     method: 'POST',

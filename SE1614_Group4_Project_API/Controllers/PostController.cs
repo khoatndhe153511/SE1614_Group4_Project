@@ -25,7 +25,7 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpGet]
         public IActionResult GetAllPost(int page, int pageSize)
         {
-            var posts = _context.Posts.Select(_ => new
+            var posts = _context.Posts.OrderByDescending(_ => _.CreatedAt).Select(_ => new
             {
                 id = _.Id,
                 Image = _.OgImageUrl,
@@ -38,7 +38,7 @@ namespace SE1614_Group4_Project_API.Controllers
                 AuthorId = _.CreatorId,
                 AuthorName = _.Creator.Name,
                 ViewsCount = _.ViewsCount           
-            }).OrderByDescending(_ => _.Created).ToList();
+            }).ToList();
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
