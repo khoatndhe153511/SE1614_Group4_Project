@@ -3,6 +3,7 @@ using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils.Interfaces;
+using System.Text;
 
 namespace SE1614_Group4_Project_API.Repository
 {
@@ -128,43 +129,79 @@ namespace SE1614_Group4_Project_API.Repository
             List<string> contents = new List<string>();
             string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
 
-            string[] paragraphs =
-                entity.Content.Split(
+            string[] paragraphs = entity.Content.Split(
                     new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
                     StringSplitOptions.RemoveEmptyEntries);
 
+
+
+            var blocks = _.Blocks.Include(_ => _.Datum).OrderByDescending(p => p.Id).Where(_ => _.PostId == entity.PostId).ToList();
+            var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+            var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+            var blockCount = blocks.Count();
+            while (paragraphs.Length > blockCount)
+            {
+                var newBlock = new Block()
+                {
+                    Id = lastBlockId + 1,
+                    Id1 = Guid.NewGuid().ToString(),
+                    PostId = entity.PostId,
+                    CreatedAt = DateTime.Now,
+                    Status = 1,
+                    UpdatedAt = DateTime.Now
+                };
+                var newData = new Datum() { Id = lastDataId + 1, BlockId = newBlock.Id1 };
+                _.Blocks.Add(newBlock);
+                _.Data.Add(newData);
+                lastDataId++;
+                lastBlockId++;
+                _.SaveChanges();
+                blockCount++;
+            }
+
+            var nullBlocks = blocks.Where(p => p.Type == null).ToList();
+            foreach (var block in nullBlocks)
+            {
+                _.Database.ExecuteSqlRaw($"DELETE FROM data WHERE _block_id = '{block.Id1}'");
+            }
+            _.Blocks.RemoveRange(nullBlocks);
+            _.SaveChanges();
+
+            while (paragraphs.Length < blockCount)
+            {
+                var lastBlock = blocks.FirstOrDefault();
+                if (lastBlock != null)
+                {
+                    var lastData = _.Data.FirstOrDefault(d => d.BlockId == lastBlock.Id1);
+                    if (lastData != null)
+                    {
+                        _.Data.Remove(lastData);
+                        _.SaveChanges();
+                    }
+                    blocks.Remove(lastBlock);
+                    _.Blocks.Remove(lastBlock);
+
+                    _.SaveChanges();
+                    blockCount--;
+                }
+            }
+
+
             for (int i = 0; i < paragraphs.Length; i++)
             {
+                var newBlocks = _.Blocks.Where(_ => _.PostId == entity.PostId).ToList();
                 string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
-                var blocks = _.Blocks.Where(_ => _.PostId == entity.PostId).ToList();
-                var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
-                var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
-                while (paragraphs.Length > blocks.Count())
-                {
-                    var newBlock = new Block()
-                    {
-                        Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = entity.PostId,
-                        CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now
-                    };
-                    var newData = new Datum() { Id = lastDataId + 1, BlockId = newBlock.Id1 };
-                    _.Blocks.Add(newBlock);
-                    _.Data.Add(newData);
-                    lastDataId++;
-                    lastBlockId++;
-                    _.SaveChanges();
-                }
-
-                Block block = blocks.ElementAt(i);
+                Block block = newBlocks.ElementAt(i);
                 Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
                 switch (firstTag)
                 {
                     case "h2":
                         block.Type = "biggerHeader";
-                        datum.Text = paragraphs[i].Split("<h2>").ToString();
+                        datum.Text = paragraphs[i].Split("<h2>")[1].ToString();
                         break;
                     case "h3":
                         block.Type = "smallerHeader";
-                        datum.Text = paragraphs[i].Split("<h3>").ToString();
+                        datum.Text = paragraphs[i].Split("<h3>")[1].ToString();
                         break;
                     case "img":
                         block.Type = "image";
@@ -182,7 +219,7 @@ namespace SE1614_Group4_Project_API.Repository
                         break;
                     case "blockquote":
                         block.Type = "quote";
-                        datum.Text = paragraphs[i].Split("<blockquote>").ToString();
+                        datum.Text = paragraphs[i].Split("<blockquote>")[1].ToString();
                         break;
                     default:
                         block.Type = "paragraph";
@@ -207,7 +244,7 @@ namespace SE1614_Group4_Project_API.Repository
                 post.Slug = entity.Slug;
                 post.OgImageUrl = entity.ogImageUrl;
                 _.Posts.Update(post);
-                _.SaveChangesAsync();
+                _.SaveChanges();
             }
             else
             {
@@ -222,11 +259,13 @@ namespace SE1614_Group4_Project_API.Repository
             {
                 var author = _.Users.Where(_ => _.Name.Equals(entity.Author)).FirstOrDefault();
                 var category = _.Cats.Where(_ => _.Id == entity.CategoryId).First();
+                var postId = _.Posts.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
 
                 if (author != null)
                 {
                     var post = new Post
                     {
+                        Id = postId + 1,
                         Id1 = Guid.NewGuid().ToString(),
                         Creator = author,
                         Cat = category,
@@ -262,8 +301,12 @@ namespace SE1614_Group4_Project_API.Repository
                     {
                         _.Blocks.Add(new Block()
                         {
-                            Id = lastBlockId + 1, Id1 = Guid.NewGuid().ToString(), PostId = TempId,
-                            CreatedAt = DateTime.Now, Status = 1, UpdatedAt = DateTime.Now
+                            Id = lastBlockId + 1,
+                            Id1 = Guid.NewGuid().ToString(),
+                            PostId = TempId,
+                            CreatedAt = DateTime.Now,
+                            Status = 1,
+                            UpdatedAt = DateTime.Now
                         });
                         lastBlockId++;
                     }
@@ -286,11 +329,11 @@ namespace SE1614_Group4_Project_API.Repository
                     {
                         case "h2":
                             block.Type = "biggerHeader";
-                            datum.Text = paragraphs[i].Split("<h2>").ToString();
+                            datum.Text = paragraphs[i].Split("<h2>")[1].ToString();
                             break;
                         case "h3":
                             block.Type = "smallerHeader";
-                            datum.Text = paragraphs[i].Split("<h3>").ToString();
+                            datum.Text = paragraphs[i].Split("<h3>")[1].ToString();
                             break;
                         case "img":
                             block.Type = "image";
@@ -308,7 +351,7 @@ namespace SE1614_Group4_Project_API.Repository
                             break;
                         case "blockquote":
                             block.Type = "quote";
-                            datum.Text = paragraphs[i].Split("<blockquote>").ToString();
+                            datum.Text = paragraphs[i].Split("<blockquote>")[1].ToString();
                             break;
                         default:
                             block.Type = "paragraph";

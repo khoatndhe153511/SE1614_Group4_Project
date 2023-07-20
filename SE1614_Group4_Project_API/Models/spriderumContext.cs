@@ -24,6 +24,7 @@ namespace SE1614_Group4_Project_API.Models
         public virtual DbSet<File> Files { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Info> Infos { get; set; } = null!;
+        public virtual DbSet<Like> Likes { get; set; } = null!;
         public virtual DbSet<Metum> Meta { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<RelatedCat> RelatedCats { get; set; } = null!;
@@ -37,7 +38,7 @@ namespace SE1614_Group4_Project_API.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server = localhost; database = spriderum; uid = sa; password = 123456789;TrustServerCertificate=True");
+                optionsBuilder.UseSqlServer("server =(local); database = spriderum;uid=sa;pwd=123;Trust Server Certificate=true;");
             }
         }
 
@@ -150,8 +151,11 @@ namespace SE1614_Group4_Project_API.Models
                 entity.Property(e => e.CreatedDate).HasColumnName("created_date");
 
                 entity.Property(e => e.PostId).HasColumnName("post_id");
-                entity.Property(e => e.ReplyUserId).HasColumnName("reply_user_id");
 
+                entity.Property(e => e.ReplyUserId)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("reply_user_id");
 
                 entity.Property(e => e.UserId)
                     .HasMaxLength(255)
@@ -316,6 +320,34 @@ namespace SE1614_Group4_Project_API.Models
                     .HasPrincipalKey(p => p.DataId)
                     .HasForeignKey(d => d.FileId)
                     .HasConstraintName("FKgrpb8mq63ogby1kabtpkwvl9n");
+            });
+
+            modelBuilder.Entity<Like>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("like");
+
+                entity.Property(e => e.IsLike).HasColumnName("is_like");
+
+                entity.Property(e => e.PostId).HasColumnName("post_id");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("user_id");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany()
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_like_post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_like_user");
             });
 
             modelBuilder.Entity<Metum>(entity =>
@@ -543,8 +575,6 @@ namespace SE1614_Group4_Project_API.Models
                     .HasColumnName("email");
 
                 entity.Property(e => e.Gender).HasColumnName("gender");
-                entity.Property(e => e.Active).HasColumnName("active");
-
 
                 entity.Property(e => e.Gravatar)
                     .HasMaxLength(255)

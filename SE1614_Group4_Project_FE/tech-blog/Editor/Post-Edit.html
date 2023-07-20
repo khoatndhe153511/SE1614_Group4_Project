@@ -158,16 +158,45 @@
             text-align: center;
         }
 
-        input {
-            background: #337ab7;
+        input#buttonEdit.profile-edit-btn {
+            color: #ffffff !important;
+            background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important;
             border: none;
             border-radius: 1.5rem;
             width: 70%;
             padding: 2%;
             font-weight: 600;
-            color: #333;
+
             cursor: pointer;
 
+        }
+
+        #uploadButton {
+            color: #000000 !important;
+
+            border: none;
+            border-radius: 1.5rem;
+            width: 70%;
+            padding: 2%;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #uploadButton::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        #uploadButton::before {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important;
+            color: #ffffff;
+            border-radius: 1.5rem;
+            cursor: pointer;
+        }
+
+        #uploadButton:valid::before {
+            content: "Upload Image" attr(value);
         }
     </style>
 
@@ -181,7 +210,7 @@
         justify-content: space-around;
         align-items: baseline;">
             <h2 style=" width: 1500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Update Post:<span id="postTitleHeading"></span></h2>
+                Update Post : <span id="postTitleHeading"></span></h2>
         </div>
         <form id="postForm" class="card col-lg-10">
             <table class="table col-lg-10">
@@ -195,7 +224,7 @@
                     <th>Image</th>
                     <td><img id="postImage" src="">
                         <br>
-                        <input type="file" id="uploadButton">
+                        <input class="profile-edit-btn" type="file" id="uploadButton">
                     </td>
                 </tr>
                 <tr>
@@ -216,45 +245,45 @@
                         <div class="centered">
                             <div style=" overflow-x: auto;" id="toolbar-container">
                                 <span class="ql-formats">
-                                  <select class="ql-font"></select>
-                                  <select class="ql-size"></select>
+                                    <select class="ql-font"></select>
+                                    <select class="ql-size"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-bold"></button>
-                                  <button class="ql-italic"></button>
-                                  <button class="ql-underline"></button>
-                                  <button class="ql-strike"></button>
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <select class="ql-color"></select>
-                                  <select class="ql-background"></select>
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-header" value="1"></button>
-                                  <button class="ql-header" value="2"></button>
-                                  <button class="ql-blockquote"></button>
-                                  <button class="ql-code-block"></button>
+                                    <button class="ql-header" value="1"></button>
+                                    <button class="ql-header" value="2"></button>
+                                    <button class="ql-blockquote"></button>
+                                    <button class="ql-code-block"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-list" value="ordered"></button>
-                                  <button class="ql-list" value="bullet"></button>
-                                  <button class="ql-indent" value="-1"></button>
-                                  <button class="ql-indent" value="+1"></button>
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                    <button class="ql-indent" value="-1"></button>
+                                    <button class="ql-indent" value="+1"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-direction" value="rtl"></button>
-                                  <select class="ql-align"></select>
+                                    <button class="ql-direction" value="rtl"></button>
+                                    <select class="ql-align"></select>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-link"></button>
-                                  <button class="ql-image"></button>
-                                  <button class="ql-video"></button>
-                                  <button class="ql-formula"></button>
+                                    <button class="ql-link"></button>
+                                    <button class="ql-image"></button>
+                                    <button class="ql-video"></button>
+                                    <button class="ql-formula"></button>
                                 </span>
                                 <span class="ql-formats">
-                                  <button class="ql-clean"></button>
+                                    <button class="ql-clean"></button>
                                 </span>
-                              </div>
+                            </div>
                             <div id="editor">
                             </div>
                         </div>
@@ -266,8 +295,8 @@
                 </tr>
             </table>
             <div style="display: flex;">
-                <input class="profile-edit-btn" type="submit" value="Save">
-                <input class="profile-edit-btn" style="margin-left: 20px;" type="submit" value="Cancel">
+                <input class="profile-edit-btn" id="buttonEdit" type="submit" value="Save">
+                <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 20px;" type="submit" value="Cancel">
             </div>
         </form>
 
@@ -287,6 +316,8 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
     <script src="../Quill/quill.js"></script>
+    <script src="../js/slim_notifier.js"></script>
+
     <script>
         var quill = new Quill('#editor', {
             modules: {
@@ -297,14 +328,14 @@
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
             var urlParams = new URLSearchParams(window.location.search);
-            var Id = urlParams.get('id');
-            var postId;
+            var Id = urlParams.get('postId');
             function loadPostData() {
                 $.ajax({
-                    url: 'https://localhost:44367/api/Post/GetPostById/' + Id,
+                    url: 'https://localhost:7065/api/Post/GetPostById/' + Id,
                     method: 'GET',
                     dataType: 'json',
                     success: function (response) {
@@ -318,7 +349,7 @@
                         postId = post.postId;
                         quill.clipboard.dangerouslyPasteHTML(post.content);
                         $.ajax({
-                            url: 'https://localhost:44367/api/Category/GetAllCat',
+                            url: 'https://localhost:7065/api/Category/GetAllCat',
                             method: 'GET',
                             dataType: 'json',
                             success: function (categoriesResponse) {
@@ -350,12 +381,12 @@
             function handleFormSubmit(event) {
                 event.preventDefault();
                 var urlParams = new URLSearchParams(window.location.search);
-                var Id = urlParams.get('id');
+                var Id = urlParams.get('postId');
                 var editorElement = document.querySelector('.ql-editor');
                 var c = editorElement.innerHTML;
                 var formData = {
                     id: parseInt(Id),
-                    postId : postId,
+                    postId: postId,
                     categoryId: parseInt(document.getElementById("postCategorySelect").value),
                     title: document.getElementById("postTitle").value,
                     slug: document.getElementById("postSlug").value,
@@ -364,40 +395,31 @@
                     content: c,
                     author: document.getElementById("postAuthor").value
                 };
-                console.log(c);
-                var updateApiUrl = "https://localhost:44367/api/Post/UpdatePost";
+                var JWTToken = localStorage.getItem("token");
+                console.log(JSON.stringify(formData));
+                console.log(JWTToken);
+               
+                var updateApiUrl = "https://localhost:7065/api/Post/UpdatePost";
                 fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",
-                    headers: { "Content-type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': "Bearer " + JWTToken
+                    },
                     body: JSON.stringify(formData)
                 })
-                    .then(response => response.json())
                     .then(data => {
                         console.log('Success:', data);
+                        setTimeout(() => {
+                            window.location.href = '../Editor/Post-Detail.html?postId=' + Id
+                        }, 3000)
+                        SlimNotifierJs.notification('success', 'Successfully', 'Redirecting...', 3000);
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                window.location.href = '../Editor/Post-Detail.html?postId=' + Id;
             }
-
-            document.getElementById('uploadButton').addEventListener('change', function (event) {
-                var file = event.target.files[0];
-
-                if (file && file.type.startsWith('image/')) {
-                    var reader = new FileReader();
-
-                    reader.onload = function () {
-                        var imgDataUrl = reader.result;
-
-                        var imgElement = document.getElementById('postImage');
-                        imgElement.src = imgDataUrl;
-                    };
-
-                    reader.readAsDataURL(file);
-                }
-            });
 
             window.onload = function () {
                 loadPostData();
