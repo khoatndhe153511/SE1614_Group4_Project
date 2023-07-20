@@ -12,6 +12,8 @@ $(document).ready(() => {
 
     loadPostInfo(postId);
     loadPrevNextPost(postId);
+
+    var result;
     
     const makeApiCall = () => {
         let bookBtnDown = $(".bookmark-btn-down")
@@ -53,24 +55,7 @@ $(document).ready(() => {
     (async function () {
         try {
             if (userId != null) {
-                const result = await makeApiCall();
-                if (result == true) {
-                    $(".bookmark-btn-down").click(() => {
-                        removeBookmark(postId, userId)
-                    })
-
-                    $(".bookmark-btn-up").click(() => {
-                        removeBookmark(postId, userId)
-                    })
-                } else {
-                    $(".bookmark-btn-down").click(() => {
-                        addBookmark(postId, userId)
-                    })
-
-                    $(".bookmark-btn-up").click(() => {
-                        addBookmark(postId, userId)
-                    })
-                }
+                result = await makeApiCall();
             } else {
                 $(".bookmark-btn-down").click(() => {
                     SlimNotifierJs.notification(
@@ -94,6 +79,26 @@ $(document).ready(() => {
             console.error('API error:', error);
         }
     })();
+
+    $(".bookmark-btn-up").click(() => {
+        if (result == true) {
+            removeBookmark(postId, userId);
+            result = false;
+        } else {
+            addBookmark(postId, userId)
+            result = true;
+        }
+    })
+
+    $(".bookmark-btn-down").click(() => {
+        if (result == true) {
+            removeBookmark(postId, userId);
+            result = false;
+        } else {
+            addBookmark(postId, userId)
+            result = true;
+        }
+    })
 })
 
 function truncate(str, n) {
@@ -285,11 +290,9 @@ function addBookmark(postId, userId) {
             );
             bookBtnDown.empty()
             bookBtnDown.append(`<i class="fa-solid fa-bookmark"></i>`)
-            bookBtnDown.removeClass("add-down").addClass("added-down")
 
             bookBtnUp.empty()
             bookBtnUp.append(`<i class="fa-solid fa-bookmark"></i>`)
-            bookBtnUp.removeClass("add-up").addClass("added-up")
         },
         error: function (xhr, status, error) {
             SlimNotifierJs.notification(
@@ -328,11 +331,9 @@ function removeBookmark(postId, userId) {
             );
             bookBtnDown.empty()
             bookBtnDown.append(`<i class="fa-regular fa-bookmark"></i>`)
-            bookBtnDown.removeClass("added-down").addClass("add-down")
 
             bookBtnUp.empty()
             bookBtnUp.append(`<i class="fa-regular fa-bookmark"></i>`)
-            bookBtnUp.removeClass("added-up").addClass("add-up")
         },
         error: function (xhr, status, error) {
             SlimNotifierJs.notification(
