@@ -62,7 +62,10 @@ namespace SE1614_Group4_Project_API.Controllers
                         if (_.UserId == userId)
                         {
                             _.Content = commentDTO.Content;
-                            _.ReplyUserId = commentDTO.ReplyUserId;
+                            if (commentDTO.ReplyUserId != "null")
+                            {
+                                _.ReplyUserId = commentDTO?.ReplyUserId;
+                            }                      
                             _spriderumContext.Comments.Update(_);
                             _spriderumContext.SaveChanges();
                         }
@@ -91,7 +94,10 @@ namespace SE1614_Group4_Project_API.Controllers
                 comment.Content = commentDTO.Content;
                 comment.CreatedDate = DateTime.Now;
                 comment.UserId = commentDTO.UserId;
-                comment.ReplyUserId = commentDTO?.ReplyUserId;
+                if (commentDTO?.ReplyUserId != "null")
+                {
+                    comment.ReplyUserId = commentDTO?.ReplyUserId;
+                }
                 var lastComment = _spriderumContext.Comments.OrderBy(x => x.Id).LastOrDefault().Id;
                 comment.Id = lastComment + 1;
 
@@ -134,6 +140,32 @@ namespace SE1614_Group4_Project_API.Controllers
                 }
 
                 return BadRequest("Login!!");
+            }
+            catch (DbUpdateException e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("{uid}")]
+        [Authorize(Roles = "0,1,2,3")]
+        public IActionResult getUserReplyComment(string uid)
+        {
+            try
+            {
+                    User? _ = _spriderumContext.Users.FirstOrDefault(x => x.Id == uid);
+
+                    if (_ == null)
+                    {
+                    return BadRequest();
+
+                    }
+                    return Ok(new
+                    {
+                        Username = _.DisplayName,
+                        Id = _.Id
+                    });
+                
             }
             catch (DbUpdateException e)
             {
@@ -184,6 +216,7 @@ namespace SE1614_Group4_Project_API.Controllers
                     CreatedDate = x.CreatedDate,
                     ReplyUserId = x.ReplyUserId,
                     imageUser = x.imageUser,
+                    UserNameReply = x.ReplyUserId != null ? _spriderumContext.Users.FirstOrDefault(a => a.Id == x.ReplyUserId).DisplayName : null
                 })
             };
 
