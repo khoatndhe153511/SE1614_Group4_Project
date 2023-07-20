@@ -171,7 +171,7 @@
         justify-content: space-between;
         align-items: baseline;">
             <h2 style="width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Detail Post:<span id="postTitleHeading"></span></h2>
+                Detail Post : <span id="postTitleHeading"></span></h2>
             <select style="margin-right: -300px;" id="postStatusSelect">
                 <option value="null">Choose Status</option>
                 <option value="false">denied</option>
@@ -255,14 +255,14 @@
             function loadPostDetails() {
                 if (postId !== null) {
                     $.ajax({
-                        url: 'https://localhost:44367/api/Post/GetPostById/' + postId,
+                        url: 'https://localhost:7065/api/Post/GetPostById/' + postId,
                         method: 'GET',
                         dataType: 'json',
                         success: function (response) {
                             var data = response;
 
                             var editLink = document.getElementById("edit");
-                            editLink.href = "post-edit.html?id=" + data.id;
+                            editLink.href = "../Editor/Post-Edit.html?postId=" + data.id;
 
                             $('#postId').text(data.id);
                             $('#postCategory').text(data.categoryName);
@@ -299,7 +299,7 @@
                     id: parseInt(postId),
                     status: selectedCategoryId,
                 };
-                var updateApiUrl = 'https://localhost:44367/api/Post/UpdateStatus/';
+                var updateApiUrl = 'https://localhost:7065/api/Post/UpdateStatus/';
                 fetch(
                     updateApiUrl, {
                     method: 'POST',
