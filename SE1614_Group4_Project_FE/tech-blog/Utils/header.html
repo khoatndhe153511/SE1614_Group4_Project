@@ -183,31 +183,7 @@
                     "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
                     ];
                 console.log(userRole)
-                if (userRole != 0) {
-                    userProfile.empty()
-                    userProfile.append(
-                        `<img src="../images/user.png" class="user-pic">
-                    <div id="sub-menu" class="sub-menu-wrap">
-                        <div class="sub-menu">
-                            <a href="../tech-user-profile.html" class="sub-menu-link">
-                                <img src="../images/profile.png">
-                                <p>Profile</p>
-                                <span>></span>
-                            </a>
-                            <a href="../tech-bookmark.html" class="sub-menu-link">
-                                <img src="../images/bookmark.png">
-                                <p>Bookmark</p>
-                                <span>></span>
-                            </a>
-                            <a href="#" id="logout-btn" class="sub-menu-link">
-                                <img src="../images/logout.png">
-                                <p>Logout</p>
-                                <span>></span>
-                            </a>
-                        </div>
-                    </div>`
-                    )
-                } else {
+                if (userRole == 0) {
                     userProfile.empty()
                     userProfile.append(
                         `<img src="../images/user.png" class="user-pic">
@@ -221,6 +197,55 @@
                             <a href="../tech-user-profile.html" class="sub-menu-link">
                                 <img src="../images/profile.png">
                                 <p>Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="#" id="logout-btn" class="sub-menu-link">
+                                <img src="../images/logout.png">
+                                <p>Logout</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>`
+                  )
+                }else if(userRole == 1){
+                    userProfile.empty()
+                    userProfile.append(
+                        `<img src="../images/user.png" class="user-pic">
+                    <div id="sub-menu" class="sub-menu-wrap">
+                        <div class="sub-menu">
+                            <a href="../Editor/Post-Management.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Post Management</p>
+                                <span>></span>
+                            </a>
+                            <a href="../tech-user-profile.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="#" id="logout-btn" class="sub-menu-link">
+                                <img src="../images/logout.png">
+                                <p>Logout</p>
+                                <span>></span>
+                            </a>
+                        </div>
+                    </div>`
+                    )
+                }
+                else {
+                    userProfile.empty()
+                    userProfile.append(
+                        `<img src="../images/user.png" class="user-pic">
+                    <div id="sub-menu" class="sub-menu-wrap">
+                        <div class="sub-menu">
+                            <a href="../tech-user-profile.html" class="sub-menu-link">
+                                <img src="../images/profile.png">
+                                <p>Profile</p>
+                                <span>></span>
+                            </a>
+                            <a href="../tech-bookmark.html" class="sub-menu-link">
+                                <img src="../images/bookmark.png">
+                                <p>Bookmark</p>
                                 <span>></span>
                             </a>
                             <a href="#" id="logout-btn" class="sub-menu-link">

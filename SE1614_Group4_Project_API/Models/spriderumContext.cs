@@ -326,7 +326,7 @@ namespace SE1614_Group4_Project_API.Models
             {
                 entity.HasNoKey();
 
-                entity.ToTable("Like");
+                entity.ToTable("like");
 
                 entity.Property(e => e.IsLike).HasColumnName("is_like");
 
@@ -341,13 +341,13 @@ namespace SE1614_Group4_Project_API.Models
                     .WithMany()
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Like_post");
+                    .HasConstraintName("FK_like_post");
 
                 entity.HasOne(d => d.User)
                     .WithMany()
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Like_user");
+                    .HasConstraintName("FK_like_user");
             });
 
             modelBuilder.Entity<Metum>(entity =>

@@ -171,7 +171,7 @@
         justify-content: space-between;
         align-items: baseline;">
             <h2 style="width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Detail Post:<span id="postTitleHeading"></span></h2>
+                Detail Post : <span id="postTitleHeading"></span></h2>
             <select style="margin-right: -300px;" id="postStatusSelect">
                 <option value="null">Choose Status</option>
                 <option value="false">denied</option>
@@ -262,7 +262,7 @@
                             var data = response;
 
                             var editLink = document.getElementById("edit");
-                            editLink.href = "post-edit.html?id=" + data.id;
+                            editLink.href = "../Editor/Post-Edit.html?postId=" + data.id;
 
                             $('#postId').text(data.id);
                             $('#postCategory').text(data.categoryName);

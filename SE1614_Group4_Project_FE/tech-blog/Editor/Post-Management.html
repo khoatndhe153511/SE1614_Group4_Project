@@ -133,8 +133,6 @@
                                                 <th scope="col" class="text-center">Created Date</th>
                                                 <th scope="col" class="text-center">Modified Date</th>
                                                 <th scope="col"></th>
-                                                <th scope="col"></th>
-                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="tableBody" id="postsBody">
@@ -205,14 +203,12 @@
                                 statusText = "denied";
                             }
 
-                            $('<td>').text(statusText).appendTo(row);
+                            $('<td  class="text-center">').text(statusText).appendTo(row);
                             $('<td>').text(item.authorName).appendTo(row);
                             $('<td>').text(item.categoryName).appendTo(row);
                             $('<td class="text-center">').text(formatDate(item.created)).appendTo(row);
                             $('<td class="text-center">').text(formatDate(item.modified)).appendTo(row);
                             $('<td>').html('<a href="../Editor/Post-Detail.html?postId=' + item.id + '">detail</a>').appendTo(row);
-                            $('<td>').html('<a  style="color: green;" href="/delete/' + item.id + '">accept</a>').appendTo(row);
-                            $('<td>').html('<a  style="color: red;" href="/delete/' + item.id + '">denied</a>').appendTo(row);
                         });
 
                         var pagination = $('#pagination');

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
@@ -24,6 +25,7 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             var posts = _context.Posts
                 .OrderByDescending(_ => _.CreatedAt)
+                .Where(_ => _.IsEditorPick == null)
                 .Select(_ => new
                 {
                     id = _.Id,
@@ -254,7 +256,8 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdatePost([FromBody] UpdatePostDTO post)
+        [Authorize(Roles = "1")]
+        public ActionResult UpdatePost([FromBody] UpdatePostDTO post)
         {
             try
             {
@@ -303,6 +306,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "1")]
         public IActionResult UpdateStatus([FromBody] UpdateStatusDTO status)
         {
             try
@@ -317,6 +321,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "1")]
         public IActionResult AddPost([FromBody] AddPostDTO post)
         {
             try
