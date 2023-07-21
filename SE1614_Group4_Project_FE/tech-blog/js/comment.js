@@ -32,8 +32,9 @@ function AddComment(model) {
             userId: userId,
             replyUserId: userReplyId
         }
+        console.log(token)
         if (content != "") {
-            if (token !== "") {
+            if (token !== null) {
                 $.ajax({
                     url: "https://localhost:7065/api/Comment/AddComment",
                     method: "POST",
@@ -59,7 +60,7 @@ function AddComment(model) {
                         SlimNotifierJs.notification(
                             "error",
                             "Error",
-                            xhr.responseText,
+                            xhr.response,
                             3000
                         );
                     },
@@ -85,8 +86,7 @@ function AddComment(model) {
 }
 function replyComment(model) {
     var userReplyId = model.getAttribute("data-user-reply-id");
-
-    if (token !== "") {
+    if (token !== null) {
         $.ajax({
             url: "https://localhost:7065/api/Comment/getUserReplyComment/" + userReplyId,
             method: "GET",
@@ -111,7 +111,7 @@ function replyComment(model) {
                 SlimNotifierJs.notification(
                     "error",
                     "Error",
-                    xhr.responseText,
+                    "Please login!!",
                     3000
                 );
             },
@@ -147,8 +147,9 @@ function loadDataComment() {
                     href="../author/tech-author.html?creatorId=${item?.userId}"
                 >
                     <img
-                        src="${item?.imageUser}"
+                        src="../images/${item?.imageUser}"
                         alt=""
+                        style="height: 50%; width: 50%; border: solid 1px black"
                         class="rounded-circle"
                     />
                 </a>	
