@@ -25,6 +25,7 @@
     <link href="../Quill/quill.snow.css" rel="stylesheet">
     <!-- FontAwesome Icons core CSS -->
     <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/loading.css" rel="stylesheet">
 
     <!-- FontAwesome Icons core CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -163,10 +164,10 @@
             background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important;
             border: none;
             border-radius: 1.5rem;
-            width: 70%;
-            padding: 2%;
+            width: 10%;
+            padding: 5px;
             font-weight: 600;
-
+            height: 50px;
             cursor: pointer;
 
         }
@@ -198,111 +199,129 @@
         #uploadButton:valid::before {
             content: "Upload Image" attr(value);
         }
+
+        #loader {
+            display: none;
+        }
+
+        #toolbar-container.ql-toolbar.ql-snow {
+            overflow: visible;
+            display: flex;
+            flex-flow: wrap;
+        }
     </style>
 
 </head>
 
 <body>
-    <div id="header"></div>
-    <div id="wrapper" style="margin-top: 100px;">
-        <div style="display: flex;
+
+    <div id="loader">
+
+    </div>
+    <div id="data">
+        <div id="header"></div>
+        <div id="wrapper" style="margin-top: 100px;">
+            <div style="display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: baseline;">
-            <h2 style=" width: 1500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                Update Post : <span id="postTitleHeading"></span></h2>
-        </div>
-        <form id="postForm" class="card col-lg-10">
-            <table class="table col-lg-10">
-                <tr>
-                    <th>Category</th>
-                    <td><select id="postCategorySelect">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Image</th>
-                    <td><img id="postImage" src="">
-                        <br>
-                        <input class="profile-edit-btn" type="file" id="uploadButton">
-                    </td>
-                </tr>
-                <tr>
-                    <th>Title</th>
-                    <td><textarea id="postTitle"></textarea></td>
-                </tr>
-                <tr>
-                    <th>Slug</th>
-                    <td><textarea id="postSlug"></textarea></td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td><textarea id="postDescription"></textarea></td>
-                </tr>
-                <tr>
-                    <th>Content</th>
-                    <td>
-                        <div class="centered">
-                            <div style=" overflow-x: auto;" id="toolbar-container">
-                                <span class="ql-formats">
-                                    <select class="ql-font"></select>
-                                    <select class="ql-size"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-bold"></button>
-                                    <button class="ql-italic"></button>
-                                    <button class="ql-underline"></button>
-                                    <button class="ql-strike"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <select class="ql-color"></select>
-                                    <select class="ql-background"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-header" value="1"></button>
-                                    <button class="ql-header" value="2"></button>
-                                    <button class="ql-blockquote"></button>
-                                    <button class="ql-code-block"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                    <button class="ql-indent" value="-1"></button>
-                                    <button class="ql-indent" value="+1"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-direction" value="rtl"></button>
-                                    <select class="ql-align"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-link"></button>
-                                    <button class="ql-image"></button>
-                                    <button class="ql-video"></button>
-                                    <button class="ql-formula"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-clean"></button>
-                                </span>
-                            </div>
-                            <div id="editor">
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Author</th>
-                    <td><textarea id="postAuthor"></textarea></td>
-                </tr>
-            </table>
-            <div style="display: flex;">
-                <input class="profile-edit-btn" id="buttonEdit" type="submit" value="Save">
-                <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 20px;" type="submit" value="Cancel">
+                <h2 style=" width: 1500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    Update Post : <span id="postTitleHeading"></span></h2>
             </div>
-        </form>
+            <form id="postForm" class="card col-lg-10">
+                <table class="table col-lg-10">
+                    <tr>
+                        <th>Category</th>
+                        <td><select id="postCategorySelect">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Image</th>
+                        <td><img id="postImage" src="">
+                            <br>
+                            <input class="profile-edit-btn" type="file" id="uploadButton">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td><textarea id="postTitle"></textarea></td>
+                    </tr>
+                    <tr>
+                        <th>Slug</th>
+                        <td><textarea id="postSlug"></textarea></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td><textarea id="postDescription"></textarea></td>
+                    </tr>
+                    <tr>
+                        <th>Content</th>
+                        <td>
+                            <div class="centered">
+                                <div id="toolbar-container">
+                                    <span class="ql-formats">
+                                        <select class="ql-font"></select>
+                                        <select class="ql-size"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-header" value="1"></button>
+                                        <button class="ql-header" value="2"></button>
+                                        <button class="ql-blockquote"></button>
+                                        <button class="ql-code-block"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <button class="ql-indent" value="-1"></button>
+                                        <button class="ql-indent" value="+1"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-direction" value="rtl"></button>
+                                        <select class="ql-align"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-link"></button>
+                                        <button class="ql-image"></button>
+                                        <button class="ql-video"></button>
+                                        <button class="ql-formula"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-clean"></button>
+                                    </span>
+                                </div>
+                                <div id="editor">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Author</th>
+                        <td><textarea id="postAuthor"></textarea></td>
+                    </tr>
+                </table>
+                <div style="display: flex;">
+                    <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 670px;" type="submit"
+                        value="Save">
+                    <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 100px;" type="submit"
+                        value="Cancel">
+                </div>
+            </form>
 
 
-    </div><!-- end wrapper -->
-    <div id="footer"></div>
+        </div><!-- end wrapper -->
+        <div id="footer"></div>
+    </div>
     <!-- Core JavaScript
         ================================================== -->
     <script src="../js/jquery.min.js"></script>
@@ -316,8 +335,6 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
     <script src="../Quill/quill.js"></script>
-    <script src="../js/slim_notifier.js"></script>
-
     <script>
         var quill = new Quill('#editor', {
             modules: {
@@ -331,9 +348,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
+
+            function showLoadingPage() {
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("data").style.display = "none";
+            }
+
+            function hideLoadingPage() {
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("data").style.display = "block";
+            }
+
             var urlParams = new URLSearchParams(window.location.search);
             var Id = urlParams.get('postId');
             function loadPostData() {
+                showLoadingPage();
                 $.ajax({
                     url: 'https://localhost:7065/api/Post/GetPostById/' + Id,
                     method: 'GET',
@@ -363,6 +392,7 @@
 
                                     selectCategory.append(option);
                                 });
+                                hideLoadingPage();
                             },
                             error: function (xhr, status, error) {
                                 alert('Category Error!');
@@ -379,6 +409,7 @@
             }
 
             function handleFormSubmit(event) {
+                showLoadingPage();
                 event.preventDefault();
                 var urlParams = new URLSearchParams(window.location.search);
                 var Id = urlParams.get('postId');
@@ -398,7 +429,7 @@
                 var JWTToken = localStorage.getItem("token");
                 console.log(JSON.stringify(formData));
                 console.log(JWTToken);
-               
+
                 var updateApiUrl = "https://localhost:7065/api/Post/UpdatePost";
                 fetch(updateApiUrl, {
                     method: 'POST',
@@ -411,10 +442,9 @@
                 })
                     .then(data => {
                         console.log('Success:', data);
-                        setTimeout(() => {
-                            window.location.href = '../Editor/Post-Detail.html?postId=' + Id
-                        }, 3000)
-                        SlimNotifierJs.notification('success', 'Successfully', 'Redirecting...', 3000);
+                        hideLoadingPage();
+                        window.location.href = '../Editor/Post-Detail.html?postId=' + Id;
+
                     })
                     .catch(error => {
                         console.error('Error:', error);

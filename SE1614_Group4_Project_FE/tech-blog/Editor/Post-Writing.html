@@ -157,15 +157,51 @@
             text-align: center;
         }
 
-        input {
-            background: #337ab7;
+        input#buttonEdit.profile-edit-btn {
+            color: #ffffff !important;
+            background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important;
+            border: none;
+            border-radius: 1.5rem;
+            width: 10%;
+            padding: 5px;
+            font-weight: 600;
+            height: 50px;
+            cursor: pointer;
+
+        }
+
+        #uploadButton {
+            color: #000000 !important;
+
             border: none;
             border-radius: 1.5rem;
             width: 70%;
             padding: 2%;
             font-weight: 600;
-            color: #333;
             cursor: pointer;
+        }
+
+        #uploadButton::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        #uploadButton::before {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important;
+            color: #ffffff;
+            border-radius: 1.5rem;
+            cursor: pointer;
+        }
+
+        #uploadButton:valid::before {
+            content: "Upload Image" attr(value);
+        }
+
+        #toolbar-container.ql-toolbar.ql-snow {
+            overflow: visible;
+            display: flex;
+            flex-flow: wrap;
         }
     </style>
 </head>
@@ -192,7 +228,7 @@
                     <th>Image</th>
                     <td><img id="postImage" src="">
                         <br>
-                        <input type="file" id="uploadButton">
+                        <input class="profile-edit-btn" type="file" id="uploadButton">
                     </td>
                 </tr>
                 <tr>
@@ -211,7 +247,7 @@
                     <th>Content</th>
                     <td>
                         <div class="centered">
-                            <div style=" overflow-x: auto;" id="toolbar-container">
+                            <div id="toolbar-container">
                                 <span class="ql-formats">
                                     <select class="ql-font"></select>
                                     <select class="ql-size"></select>
@@ -263,8 +299,9 @@
                 </tr>
             </table>
             <div style="display: flex;">
-                <input class="profile-edit-btn" type="submit" value="Save">
-                <input class="profile-edit-btn" style="margin-left: 20px;" type="submit" value="Cancel">
+                <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 670px;" type="submit" value="Save">
+                <input class="profile-edit-btn" id="buttonEdit" style="margin-left: 100px;" type="submit"
+                    value="Cancel">
             </div>
         </form>
 
@@ -292,10 +329,16 @@
             theme: 'snow'
         });
     </script>
-
+		<script src="../js/jwt-decode.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            var token = localStorage.getItem("token");
+            if (token != null) {
+                var decoded = jwt_decode(token)
+                var userName = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+            }
+            document.getElementById("postAuthor").value = userName;
             var urlParams = new URLSearchParams(window.location.search);
             var Id = urlParams.get('id');
             var postId;
@@ -339,8 +382,10 @@
                 fetch(updateApiUrl, {
                     method: 'POST',
                     mode: "cors",
-                    headers: { "Content-Type": "application/json",
-                    'Authorization': "Bearer "+ JWTToken },
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': "Bearer " + JWTToken
+                    },
                     body: JSON.stringify(formData)
                 })
                     .then(response => {
@@ -351,6 +396,8 @@
                     })
                     .then(data => {
                         console.log('Success:', data);
+                        window.location.href = '../Writer/Post-Writer.html';
+
                     })
                     .catch(error => {
                         console.error('Error:', error);
