@@ -13,10 +13,10 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
 
         int TotalPointByUserId(string userId);
 
-        //Post GetAllPostsByUserId(string userId);
+        public List<PostResponseDTO> GetAllPostByUserId(string userId);
         public void UpdatePostRecently(UpdatePostDTO entity);
         public void AddPostRecently(AddPostDTO entity);
-
+        public List<PostResponseDTO> GetPostsRecently();
         public void UpdateStatus(UpdateStatusDTO entity);
 
         public string GetTextPost(int id);

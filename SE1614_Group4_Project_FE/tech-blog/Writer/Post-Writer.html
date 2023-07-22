@@ -129,6 +129,10 @@
                                             role="tab" aria-controls="Process" aria-selected="false">Process</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link" id="Denied-tab" data-toggle="tab" href="#Denied" role="tab"
+                                            aria-controls="Denied" aria-selected="false">Denied</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" id="Accept-tab" data-toggle="tab" href="#Accept" role="tab"
                                             aria-controls="Accept" aria-selected="false">Accept</a>
                                     </li>
@@ -182,6 +186,28 @@
                                         </div>
                                     </div>
 
+                                    <div class="tab-pane fade" id="Denied" role="tabpanel" aria-labelledby="Denied-tab">
+                                        <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
+                                            style="position: relative; height: 700px">
+                                            <table class="table table-striped mb-0">
+                                                <thead
+                                                    style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                                    <tr class="text-center">
+                                                        <th scope="col" class="text-center">No.</th>
+                                                        <th scope="col" class="text-center">Title</th>
+                                                        <th scope="col" class="text-center">Status</th>
+                                                        <th scope="col" class="text-center">Author</th>
+                                                        <th scope="col" class="text-center">Category</th>
+                                                        <th scope="col" class="text-center">Created Date</th>
+                                                        <th scope="col" class="text-center">Modified Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tableBody" id="deniedBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
 
                                     <div class="tab-pane fade" id="Accept" role="tabpanel" aria-labelledby="Accept-tab">
                                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
@@ -235,7 +261,8 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
-    <script src="../js/slim_notifier.js"></script>
+    <script src="../js/jwt-decode.js"></script>
+
     <script>
         $(document).ready(function () {
 
@@ -248,10 +275,18 @@
             var pageSize = 12;
             var status;
             var tabId;
+
+            var token = localStorage.getItem("token")
+            if (token != null) {
+                var decoded = jwt_decode(token)
+                var userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
+            }
+
             $("#myTab a").on("shown.bs.tab", function (e) {
                 tabId = $(e.target).attr("aria-controls");
                 loadData();
             });
+
 
             function loadData() {
 
@@ -269,19 +304,25 @@
                 }
 
                 $.ajax({
-                    url: 'https://localhost:7065/api/Post/GetAllPost?page=' + page + '&pageSize=' + pageSize + '&status=' + status,
+                    url: 'https://localhost:7065/api/Post/GetAllPostByUserId?userId=' + userId + '&page=' + page + '&pageSize=' + pageSize + '&status=' + status,
                     method: 'GET',
                     dataType: 'json',
+                    headers: {
+                        'Authorization': "Bearer " + token
+                    },
                     success: function (response) {
+                        debugger
+
                         var data = response.posts;
                         var totalPosts = response.totalPosts;
                         var totalPages = response.totalPages;
 
                         var allBody = $('#allBody');
+                        var deniedBody = $('#deniedBody');
                         var acceptBody = $('#acceptBody');
                         var processBody = $('#processBody');
-
                         allBody.empty();
+                        deniedBody.empty();
                         acceptBody.empty();
                         processBody.empty();
 
@@ -306,17 +347,18 @@
                                     </tr>`
                         })
 
-
                         if (status === "Process") {
                             processBody.append(rows);
                         }
                         if (status === "Accept") {
                             acceptBody.append(rows);
                         }
+                        if (status === "Denied") {
+                            deniedBody.append(rows);
+                        }
                         else {
                             allBody.append(rows);
                         }
-
                         var pagination = $('#pagination');
                         pagination.empty();
 

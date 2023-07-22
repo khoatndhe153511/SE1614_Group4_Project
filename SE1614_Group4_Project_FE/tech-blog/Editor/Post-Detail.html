@@ -172,12 +172,12 @@
         align-items: baseline;">
             <h2 style="width: 850px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 Detail Post : <span id="postTitleHeading"></span></h2>
-            <select style="margin-right: -300px;" id="postStatusSelect">
+            <select style="margin-right: -100px; width: 170px;" id="postStatusSelect">
                 <option value="null">Choose Status</option>
                 <option value="false">denied</option>
                 <option value="true">accept</option>
             </select>
-            <a style="margin-right:-300px;" id="change" href="#"><i class="fa-solid fa-play fa-2xl"></i></a>
+            <a style="margin-right:-130px;" id="change" href="#"><i class="fa-solid fa-play fa-2xl"></i></a>
             <a style="margin-right: 195px;" id="edit" href="#"><i class="fa-solid fa-pen-to-square fa-2xl"></i></a>
         </div>
         <div class="card col-lg-10">
@@ -242,7 +242,7 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
-
+    <script src="../js/jwt-decode.js"></script>
     <script>
         function toggleDiv() {
             var div = document.getElementById('postContent');
@@ -251,6 +251,25 @@
         $(document).ready(function () {
             var urlParam = new URLSearchParams(window.location.search);
             var postId = urlParam.get('postId');
+
+            var token = localStorage.getItem("token")
+            var userRole;
+            var userProfile = $("#user-profile-location")
+            if (token != null) {
+                let decoded = jwt_decode(token);
+                let userRole =
+                    decoded[
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                    ];
+            }
+
+            if (userRole != 1) {
+                debugger
+                $('#postStatusSelect').hide();
+                $('#change').hide();
+                $('#edit').hide();
+            }
+
 
             function loadPostDetails() {
                 if (postId !== null) {
@@ -295,6 +314,7 @@
                 var urlParam = new URLSearchParams(window.location.search);
                 var postId = urlParam.get('postId');
                 var selectedCategoryId = JSON.parse($(this).val());
+
                 var formData = {
                     id: parseInt(postId),
                     status: selectedCategoryId,
