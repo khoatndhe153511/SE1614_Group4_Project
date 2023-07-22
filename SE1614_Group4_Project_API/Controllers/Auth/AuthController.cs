@@ -68,19 +68,18 @@ namespace SE1614_Group4_Project_API.Controllers.Auth
         [HttpPost]
         public ActionResult<User> SignUp([FromBody] UserRegisterDto newUser)
         {
-            var existedUser = _context.Users
-                .Where(x => x.Email.Equals(newUser.Email) || x.Name.Equals(newUser.UserName));
-
-            if (existedUser != null) return BadRequest("Username or email already taken");
-            if (newUser.Password != newUser.ConfirmPassword)
+	        try
             {
-                return BadRequest("Confirm Password Failed!");
-            }
-
-            try
-            {
-            
-                var newMem = _mapper.Map<User>(newUser);
+	            var existedUser = _context.Users
+		            .FirstOrDefault(x => x.Email.Equals(newUser.Email) || x.Name.Equals(newUser.UserName));
+	            if (existedUser != null) return Conflict("Username or email already taken");
+	            
+	            if (newUser.Password != newUser.ConfirmPassword)
+	            {
+		            return BadRequest("Confirm Password Failed!");
+	            }
+	            
+	            var newMem = _mapper.Map<User>(newUser);
                 newMem.Active = true;
                 _context.Users.Add(newMem);
                 _context.SaveChanges();
