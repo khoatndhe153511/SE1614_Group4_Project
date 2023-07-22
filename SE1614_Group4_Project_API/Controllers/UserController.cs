@@ -379,7 +379,6 @@ namespace SE1614_Group4_Project_API.Controllers
         [HttpPost]
         [Authorize(Roles = "0,1,2,3")]
         public IActionResult uploadimage(IFormFile imageFile)
-
         {
             Random r = new Random();
             int random = r.Next();
@@ -394,19 +393,20 @@ namespace SE1614_Group4_Project_API.Controllers
                     var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
                     var user = _userRepository.findById(id);
 
-
                     // Kiểm tra xem tệp đã được chọn hay chưa
                     if (imageFile == null || imageFile.Length <= 0)
                     {
                         return BadRequest("Vui lòng chọn tệp ảnh để upload.");
                     }
+
                     string extension = Path.GetExtension(imageFile.FileName);
 
-                    if (extension.ToLower().Equals(".jpg") || extension.ToLower().Equals(".jpeg") || extension.ToLower().Equals(".png"))
-
+                    if (extension.ToLower().Equals(".jpg") || extension.ToLower().Equals(".jpeg") ||
+                        extension.ToLower().Equals(".png"))
                     {
                         // Đường dẫn tới thư mục bạn muốn lưu trữ tệp ảnh
-                        string targetFolderPath = "..\\..\\SE1614_Group4_Project\\SE1614_Group4_Project_FE\\tech-blog\\images";
+                        string targetFolderPath =
+                            "..\\..\\SE1614_Group4_Project\\SE1614_Group4_Project_FE\\tech-blog\\images";
 
                         // Tạo thư mục nếu nó không tồn tại
                         if (!Directory.Exists(targetFolderPath))
@@ -433,14 +433,16 @@ namespace SE1614_Group4_Project_API.Controllers
                     {
                         return BadRequest("file is not image");
                     }
-                } else { return BadRequest(); }
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Đã xảy ra lỗi: {ex.Message}");
             }
-
         }
-
     }
 }
