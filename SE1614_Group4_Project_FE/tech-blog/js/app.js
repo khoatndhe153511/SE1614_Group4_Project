@@ -193,7 +193,7 @@ function loadSidePost() {
                                             <span class="bg-orange">
                                                 <a href="./Category/tech-category-01.html?cateId=${response[i].categoryId}" title="">${response[i].categoryName}</a>
                                             </span>
-                                            <h4><a href="./Post/tech-single.htm?id=${response[i].id}l" title="">${response[i].title}</a></h4>
+                                            <h4><a href="./Post/tech-single.html?id=${response[i].id}" title="">${response[i].title}</a></h4>
                                             <small><a href="./Post/tech-single.html?id=${response[i].id}" title="">${response[i].createdAt}</a></small>
                                             <small>
                                                 <a href="./author/tech-author.html?creatorId=${response[i].creatorId}" title="">

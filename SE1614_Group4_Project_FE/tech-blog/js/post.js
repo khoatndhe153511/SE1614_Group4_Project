@@ -99,6 +99,14 @@ $(document).ready(() => {
             result = true;
         }
     })
+
+    let link = encodeURI(window.location.href)
+
+    $(".fb-button-up").attr("href", `https://www.facebook.com/sharer/sharer.php?u=${link}`)
+    $(".tw-button-up").attr("href", `http://twitter.com/share?&url=${link}`)
+
+    $(".fb-button-down").attr("href", `https://www.facebook.com/sharer/sharer.php?u=${link}`)
+    $(".tw-button-down").attr("href", `http://twitter.com/share?&url=${link}`)
 })
 
 function truncate(str, n) {
