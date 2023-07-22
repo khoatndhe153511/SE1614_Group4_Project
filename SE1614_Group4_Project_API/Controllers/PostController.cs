@@ -56,6 +56,7 @@ namespace SE1614_Group4_Project_API.Controllers
             try
             {
                 var posts = _context.Posts
+                    .Where(x => x.IsEditorPick == true)
                     .OrderByDescending(x => x.CreatedAt)
                     .Select(x => new
                     {
@@ -121,8 +122,8 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                var readingPost = _context.Posts.FirstOrDefault(p => p.Id == id);
-                if (readingPost is null) return NotFound();
+                var readingPost = _context.Posts.FirstOrDefault(p => p.Id == id && p.IsEditorPick == true);
+                if (readingPost is null) return NotFound("Required post not found!");
                 readingPost.ViewsCount++;
                 _context.SaveChanges();
 
@@ -159,7 +160,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 var previousPost = _context.Posts
                     .OrderByDescending(x => x.Id)
-                    .Where(x => x.Id < currentPostId)
+                    .Where(x => x.Id < currentPostId && x.IsEditorPick == true)
                     .Select(p => new
                     {
                         Id = p.Id,
@@ -170,7 +171,7 @@ namespace SE1614_Group4_Project_API.Controllers
 
                 var nextPost = _context.Posts
                     .OrderBy(x => x.Id)
-                    .Where(x => x.Id > currentPostId)
+                    .Where(x => x.Id > currentPostId && x.IsEditorPick == true)
                     .Select(p => new
                     {
                         Id = p.Id,
@@ -192,7 +193,7 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                var posts = _context.Posts.Where(x => x.CatId == cateId)
+                var posts = _context.Posts.Where(x => x.CatId == cateId && x.IsEditorPick == true)
                     .Select(x => new
                     {
                         Id = x.Id,
@@ -212,7 +213,7 @@ namespace SE1614_Group4_Project_API.Controllers
 
                 if (totalPosts == 0)
                 {
-                    return NotFound("Does not have any Post for this Category");
+                    return Ok("Does not have any Post for this Category");
                 }
 
                 var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
@@ -232,20 +233,22 @@ namespace SE1614_Group4_Project_API.Controllers
         {
             try
             {
-                var result = _context.Posts.Select(x => new
-                {
-                    Id = x.Id,
-                    Image = x.OgImageUrl,
-                    CategoryId = x.CatId,
-                    CategoryName = x.Cat.Name,
-                    Title = x.Title,
-                    NewTitle = x.NewTitle,
-                    Description = x.Description,
-                    CreatedAt = $"{x.CreatedAt:dd MMM, yyyy}",
-                    CreatorName = x.Creator.DisplayName,
-                    CreatorId = x.CreatorId,
-                    ViewsCount = x.ViewsCount
-                }).OrderByDescending(x => x.ViewsCount).Take(3).ToList();
+                var result = _context.Posts
+                    .Where(x => x.IsEditorPick == true)
+                    .Select(x => new
+                    {
+                        Id = x.Id,
+                        Image = x.OgImageUrl,
+                        CategoryId = x.CatId,
+                        CategoryName = x.Cat.Name,
+                        Title = x.Title,
+                        NewTitle = x.NewTitle,
+                        Description = x.Description,
+                        CreatedAt = $"{x.CreatedAt:dd MMM, yyyy}",
+                        CreatorName = x.Creator.DisplayName,
+                        CreatorId = x.CreatorId,
+                        ViewsCount = x.ViewsCount
+                    }).OrderByDescending(x => x.ViewsCount).Take(3).ToList();
 
                 return Ok(result);
             }
@@ -276,7 +279,7 @@ namespace SE1614_Group4_Project_API.Controllers
             try
             {
                 var posts = _context.Posts
-                    .Where(x => x.Title.ToLower().Contains(title.ToLower()))
+                    .Where(x => x.Title.ToLower().Contains(title.ToLower()) && x.IsEditorPick == true)
                     .Select(x => new
                     {
                         Id = x.Id,
