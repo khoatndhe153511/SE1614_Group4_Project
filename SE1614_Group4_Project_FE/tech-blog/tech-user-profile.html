@@ -70,9 +70,10 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog"
                         id="imgAvatar" alt="" />
                     <div class="file btn btn-lg btn-primary">
-                        Change Photo
-                        <input id="avatar" type="file" name="file" />
+                        Change avatar
+                        <input id="fileInput" type="file" name="file" />
                     </div>
+
                 </div>
             </div>
             <div class="col-md-6">
@@ -105,7 +106,8 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-primary" type="button" class="profile-edit-btn" onclick="handleChangeProfileUser()" name="btnAddMore" id="submitbtn" >Edit Profile </button>
+                <button class="btn btn-primary" type="button" class="profile-edit-btn"
+                    onclick="handleChangeProfileUser()" name="btnAddMore" id="submitbtn">Edit Profile </button>
             </div>
         </div>
         <div class="row">
@@ -126,7 +128,8 @@
                                 <label>UserName</label>
                             </div>
                             <div class="col-md-8">
-                                <input required placeholder="Input your user name" readonly name="userName" id="userName" />
+                                <input required placeholder="Input your user name" readonly name="userName"
+                                    id="userName" />
                                 <small id="usercheck" style="color: red;">
                                     **Username is missing
                                 </small>
@@ -360,24 +363,22 @@
 
             if ($("#gender1").is(":checked")) {
                 gender = true;
-            } 
-            if ($("#gender2").is(":checked")) { 
+            }
+            if ($("#gender2").is(":checked")) {
                 gender = false;
             }
             const avatar = $("#avatar").val();
 
-            var pathParts = avatar.split("\\");
+            // var pathParts = avatar.split("\\");
 
-            var fileName = pathParts[pathParts.length - 1];
+            // var fileName = pathParts[pathParts.length - 1];
 
-            console.log(fileName)
             const data = {
                 userName,
                 displayName,
                 email,
                 birth,
                 gender,
-                avatar: fileName,
                 phoneNumber
             }
             console.log(data)
@@ -395,7 +396,7 @@
                     // setTimeout(() => {
                     //     window.location.href = "../auth/login-form.html"
                     // }, 1000)
-                    window.location.reload();
+                     window.location.reload(1000);
 
                 } else {
                     SlimNotifierJs.notification('error', 'Error', 'Update failed!', 2000)
@@ -430,7 +431,7 @@
         }
         function padTo2Digits(num) {
             return num.toString().padStart(2, '0');
-            }
+        }
 
         function formatDate(date) {
             return [
@@ -473,40 +474,35 @@
         }
     </script>
     <script src="./js/validation_user.js"></script>
-    <script src="./js/slim_notifier.js"></script>
 
     <script>
-        // Add validation logic
-        (function () {
-            'use strict';
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation');
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms).forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity() || !validatePasswords(form)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
+         $(document).on('change', '#fileInput', function () {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append('imageFile', file);
+
+            // Thực hiện yêu cầu Ajax bằng jQuery
+            $.ajax({
+                url: 'https://localhost:7065/api/User/uploadimage',
+                type: 'POST',
+                data: formData,
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    SlimNotifierJs.notification('success', 'Successfully', 'Update image successful', 1000)
+                },
+                error: function () {
+                    SlimNotifierJs.notification('error', 'Error', 'Update error', 1000)
+
+                }
             });
-        })();
+        });
 
-        // Custom validation function to check if new password and confirm password match
-        function validatePasswords(form) {
-            var newPassword = form.getElementById('newPassword').value;
-            var confirmPassword = form.getElementById('confirmPassword').value;
-            var mismatchFeedback = form.querySelector('.mismatch-feedback');
-
-            if (newPassword !== confirmPassword) {
-                mismatchFeedback.style.display = 'block';
-                return false;
-            } else {
-                mismatchFeedback.style.display = 'none';
-                return true;
-            }
-        }
     </script>
 </body>
 
