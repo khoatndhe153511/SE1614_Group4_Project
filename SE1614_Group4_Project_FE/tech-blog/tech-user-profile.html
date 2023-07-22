@@ -452,7 +452,11 @@
                                     <td>
                                         ${item?.point}
                                     </td>
-                                    <td></td>
+                                    <td>
+                                        <button
+                                         class="w3-button w3-black"
+                                         ><a href="./Post/tech-single.html?id=${item?.id}" title="">Detail</a></button>
+                                    </td>
                                 </tr>`
             })
             $('#idTable').html(tableContent);
