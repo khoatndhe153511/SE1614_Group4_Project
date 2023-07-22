@@ -26,11 +26,12 @@ $(document).ready(function () {
                  document.getElementById("totalView").value = data?.totalView;
                  document.getElementById("totalComment").value = data?.totalComment;
                  document.getElementById("totalPoint").value = data?.totalPoint;                 
-                 $('#imgAvatar').attr("src", data?.avatar);
+                 $('#imgAvatar').attr("src", "../images/"+ data?.avatar);
  
                  const genderValue = data?.gender;
-                 var maleRadio = document.getElementById("male");
-                 var femaleRadio = document.getElementById("female");
+                 var maleRadio = document.getElementById("gender1");
+                 var femaleRadio = document.getElementById("gender2");
+
  
                  if (genderValue === true) {
                      maleRadio.checked = true;
