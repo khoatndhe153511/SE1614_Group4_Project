@@ -160,7 +160,6 @@ namespace SE1614_Group4_Project_API.Repository
         private bool updateUser(User user, UpdateUserProfile userUpdate)
         {
 			user.Name = userUpdate.UserName;
-			user.Avatar = userUpdate.Avatar;
 			user.Email = userUpdate.Email;
 			user.PhoneNumber = userUpdate.PhoneNumber;
 			user.Birth = userUpdate.Birth;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SE1614_Group4_Project_API.DTOs;
@@ -7,6 +8,7 @@ using SE1614_Group4_Project_API.Repository.Interfaces;
 using SE1614_Group4_Project_API.Utils;
 using SE1614_Group4_Project_API.Utils.Interfaces;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -18,14 +20,16 @@ namespace SE1614_Group4_Project_API.Controllers
         private readonly IPostRepository _postRepository;
         private readonly ILogicHandler _logicHandler;
         private readonly spriderumContext _spriderumContext;
+        private readonly IWebHostEnvironment _env;
 
         public UserController(IUserRepository userRepository, IPostRepository postRepository,
-            ILogicHandler logicHandler, spriderumContext spriderumContext)
+            ILogicHandler logicHandler, spriderumContext spriderumContext, IWebHostEnvironment env)
         {
             _userRepository = userRepository;
             _postRepository = postRepository;
             _logicHandler = logicHandler;
             _spriderumContext = spriderumContext;
+            _env = env;
         }
 
         [HttpGet]
@@ -256,6 +260,11 @@ namespace SE1614_Group4_Project_API.Controllers
                         Thumbnail = x.Thumbnail
                     });
 
+                if (query == null)
+                {
+                    return NotFound();
+                }
+
                 var totalCount = await query.CountAsync();
 
                 var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -265,32 +274,32 @@ namespace SE1614_Group4_Project_API.Controllers
                     .Take(pageSize)
                     .ToListAsync();
 
-				var result = new PageResult<Post>
-				{
+                var result = new PageResult<Post>
+                {
                     TotalPage = totalPages,
-					TotalCount = totalCount,
-					Page = currentPage,
-					PageSize = pageSize,
-					Results = posts.Select(x => new Post
-					{
-						Id = x.Id,
-						Id1 = x.Id1,
-						CommentCount = x.CommentCount,
-						CatId = x.CatId,
-						ControlversialPoint = x.ControlversialPoint,
-						DatePoint = x.DatePoint,
-						Description = x.Description,
-						CreatedAt = x.CreatedAt,
-						HotPoint = x.HotPoint,
-						NewTitle = x.NewTitle,
-						OgImageUrl = x.OgImageUrl,
-						Point = x.Point,
-						Slug = x.Slug,
-						Title = x.Title,
-						ViewsCount = x.ViewsCount,
-						Thumbnail = x.Thumbnail
-					})
-				};
+                    TotalCount = totalCount,
+                    Page = currentPage,
+                    PageSize = pageSize,
+                    Results = posts.Select(x => new Post
+                    {
+                        Id = x.Id,
+                        Id1 = x.Id1,
+                        CommentCount = x.CommentCount,
+                        CatId = x.CatId,
+                        ControlversialPoint = x.ControlversialPoint,
+                        DatePoint = x.DatePoint,
+                        Description = x.Description,
+                        CreatedAt = x.CreatedAt,
+                        HotPoint = x.HotPoint,
+                        NewTitle = x.NewTitle,
+                        OgImageUrl = x.OgImageUrl,
+                        Point = x.Point,
+                        Slug = x.Slug,
+                        Title = x.Title,
+                        ViewsCount = x.ViewsCount,
+                        Thumbnail = x.Thumbnail
+                    })
+                };
 
                 return Ok(result);
             }
@@ -338,23 +347,23 @@ namespace SE1614_Group4_Project_API.Controllers
             else return BadRequest();
         }
 
-		[HttpPost]
-		[Authorize(Roles = "0, 1, 2, 3")]
-		public IActionResult UpdateUserProfile([FromBody] UpdateUserProfile model)
-		{
-			var identity = HttpContext.User.Identity as ClaimsIdentity;
+        [HttpPost]
+        [Authorize(Roles = "0, 1, 2, 3")]
+        public IActionResult UpdateUserProfile([FromBody] UpdateUserProfile model)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-			if (identity is not null)
-			{
-				var userClaims = identity.Claims;
-				var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
-				var user = _userRepository.findById(id);
-				return Ok(_userRepository.updateUserProfile(user, model));
-			}
-			else return BadRequest();
-		}
+            if (identity is not null)
+            {
+                var userClaims = identity.Claims;
+                var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+                var user = _userRepository.findById(id);
+                return Ok(_userRepository.updateUserProfile(user, model));
+            }
+            else return BadRequest();
+        }
 
-		private bool checkCurrentPass(User user, string password)
+        private bool checkCurrentPass(User user, string password)
         {
             if (string.IsNullOrEmpty(password)) throw new ArgumentNullException("password");
             if (user != null)
@@ -366,5 +375,72 @@ namespace SE1614_Group4_Project_API.Controllers
 
             throw new NotImplementedException();
         }
+
+        [HttpPost]
+        [Authorize(Roles = "0,1,2,3")]
+        public IActionResult uploadimage(IFormFile imageFile)
+
+        {
+            Random r = new Random();
+            int random = r.Next();
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            try
+            {
+                if (identity is not null)
+                {
+                    var userClaims = identity.Claims;
+                    var id = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Sid)?.Value;
+                    var user = _userRepository.findById(id);
+
+
+                    // Kiểm tra xem tệp đã được chọn hay chưa
+                    if (imageFile == null || imageFile.Length <= 0)
+                    {
+                        return BadRequest("Vui lòng chọn tệp ảnh để upload.");
+                    }
+                    string extension = Path.GetExtension(imageFile.FileName);
+
+                    if (extension.ToLower().Equals(".jpg") || extension.ToLower().Equals(".jpeg") || extension.ToLower().Equals(".png"))
+
+                    {
+                        // Đường dẫn tới thư mục bạn muốn lưu trữ tệp ảnh
+                        string targetFolderPath = "..\\..\\SE1614_Group4_Project\\SE1614_Group4_Project_FE\\tech-blog\\images";
+
+                        // Tạo thư mục nếu nó không tồn tại
+                        if (!Directory.Exists(targetFolderPath))
+                        {
+                            Directory.CreateDirectory(targetFolderPath);
+                        }
+
+                        string imageNameFile = random + imageFile.FileName;
+                        // Tạo đường dẫn đầy đủ cho tệp ảnh mới
+                        string newImagePath = Path.Combine(targetFolderPath, imageNameFile);
+
+                        // Lưu tệp ảnh vào thư mục đã chỉ định
+                        using (var stream = new FileStream(newImagePath, FileMode.Create))
+                        {
+                            imageFile.CopyTo(stream);
+                        }
+
+                        user.Avatar = imageNameFile;
+                        _spriderumContext.Users.Update(user);
+                        _spriderumContext.SaveChanges();
+                        return Ok("Đã upload thành công ảnh.");
+                    }
+                    else
+                    {
+                        return BadRequest("file is not image");
+                    }
+                } else { return BadRequest(); }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Đã xảy ra lỗi: {ex.Message}");
+            }
+
+        }
+
     }
 }
