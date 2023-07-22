@@ -9,9 +9,7 @@
         public string UserId { get; set; } = null!;
         public string? ReplyUserId { get; set; }
         public string? imageUser { get; set; }
-        public string? UserName { get; set;}
+        public string? UserName { get; set; }
         public string? UserNameReply { get; set; }
-
-
     }
 }
