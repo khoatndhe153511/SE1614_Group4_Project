@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
@@ -21,26 +22,18 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllPost(int page, int pageSize)
+        public IActionResult GetAllPost(int page, int pageSize, string status)
         {
-            var posts = _context.Posts
-                .OrderByDescending(_ => _.CreatedAt)
-                .Where(_ => _.IsEditorPick == null)
-                .Select(_ => new
-                {
-                    id = _.Id,
-                    Image = _.OgImageUrl,
-                    Description = _.Description,
-                    Created = $"{_.CreatedAt:dd MMM, yyyy}",
-                    Modified = $"{_.ModifiedAt:dd MMM, yyyy}",
-                    isEditorPick = _.IsEditorPick,
-                    title = _.Title,
-                    CategoryId = _.CatId,
-                    CategoryName = _.Cat.Name,
-                    AuthorId = _.CreatorId,
-                    AuthorName = _.Creator.Name,
-                    ViewsCount = _.ViewsCount
-                }).ToList();
+            var posts = _postRepository.GetPostsRecently();
+
+            if (status.Equals("Accept"))
+            {
+                posts = posts.Where(_ => _.isEditorPick == true).ToList();
+            }
+            else if (status.Equals("Process"))
+            {
+                posts = posts.Where(_ => _.isEditorPick == null).ToList();
+            }
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
@@ -263,6 +256,39 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 _postRepository.UpdatePostRecently(post);
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict();
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "2")]
+        public ActionResult GetAllPostByUserId(string userId, int page, int pageSize, string status)
+        {
+            try
+            {
+                var posts = _postRepository.GetAllPostByUserId(userId);
+
+                if(status.Equals("Accept")) {
+                    posts = posts.Where(_ => _.isEditorPick == true).ToList();
+                }
+                else if (status.Equals("Denied"))
+                {
+                    posts = posts.Where(_ => _.isEditorPick == false).ToList();
+                }
+                else if(status.Equals("Process"))
+                {
+                    posts = posts.Where(_ => _.isEditorPick == null).ToList();
+                }
+
+                var totalPosts = posts.Count;
+                var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception e)
             {

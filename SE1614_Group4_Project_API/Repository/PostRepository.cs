@@ -89,13 +89,27 @@ namespace SE1614_Group4_Project_API.Repository
             throw new NotImplementedException();
         }
 
-        //public Post GetAllPostsByUserId(string userId)
-        //{
-        //	if (userId == null) throw new ArgumentNullException("userId");
-        //          var posts = _.Posts.Where(x => x.CreatorId.Equals(userId)).OrderByDescending(x => x.CreatedAt);
-        //          return posts;
-        //	throw new NotImplementedException();
-        //}
+        public List<PostResponseDTO> GetAllPostByUserId(string userId)
+        {
+            if (userId == null) throw new ArgumentNullException(nameof(userId));
+            var posts = _.Posts
+                .Include(_ => _.Cat)
+                .Include(_ => _.Creator)
+                .Where(x => x.CreatorId.Equals(userId)).OrderByDescending(x => x.CreatedAt).Select(
+                _ => new PostResponseDTO
+                {
+                    id = _.Id,
+                    Title = _.Title,
+                    isEditorPick = _.IsEditorPick,
+                    AuthorName = _.Creator.Name,
+                    CategoryName = _.Cat.Name,
+                    Created = $"{_.CreatedAt:dd MMM, yyyy}",
+                    Modified = $"{_.ModifiedAt:dd MMM, yyyy}"
+                })
+                .ToList();
+            return posts;
+            throw new NotImplementedException();
+        }
 
         public new DbSet<Post> GetDbSet()
         {
@@ -251,6 +265,29 @@ namespace SE1614_Group4_Project_API.Repository
                 throw new NotImplementedException();
             }
         }
+        public List<PostResponseDTO> GetPostsRecently()
+        {
+            return _.Posts
+                .Include(_ => _.Creator)
+                .Include(_ => _.Cat)
+                .Where(_ => _.IsEditorPick != false)
+                .OrderByDescending(_ => _.CreatedAt)
+                .Select(_ => new PostResponseDTO
+                {
+                    id = _.Id,
+                    Image = _.OgImageUrl,
+                    Description = _.Description,
+                    Created = $"{_.CreatedAt:dd MMM, yyyy}",
+                    Modified = $"{_.ModifiedAt:dd MMM, yyyy}",
+                    isEditorPick = _.IsEditorPick,
+                    Title = _.Title,
+                    CategoryId = _.CatId,
+                    CategoryName = _.Cat.Name,
+                    AuthorId = _.CreatorId,
+                    AuthorName = _.Creator.Name,
+                    ViewsCount = _.ViewsCount
+                }).ToList();
+        }
 
         public void AddPostRecently(AddPostDTO entity)
         {
@@ -271,6 +308,10 @@ namespace SE1614_Group4_Project_API.Repository
                         Cat = category,
                         CatId = category.Id,
                         Slug = entity.Slug,
+                        ViewsCount = 0,
+                        CommentCount = 0,
+                        Point = 0,
+                        OgImageUrl = entity.ogImageUrl,
                         Description = entity.Description,
                         Title = entity.Title,
                         CreatedAt = DateTime.Now,

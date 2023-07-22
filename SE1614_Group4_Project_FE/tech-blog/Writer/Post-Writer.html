@@ -117,147 +117,126 @@
             <div class="bg-image h-100">
                 <div class="mask d-flex align-items-center h-100">
                     <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-18">
+                        <div class="row justify-content-center" style="margin-top: 100px;">
+                            <div class="col-lg-12">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" id="All-tab" data-toggle="tab" href="#All" role="tab"
                                             aria-controls="All" aria-selected="true">All</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="Process-tab" data-toggle="tab" href="#Process" role="tab"
-                                            aria-controls="Process" aria-selected="false">Process</a>
+                                        <a class="nav-link" id="Process-tab" data-toggle="tab" href="#Process"
+                                            role="tab" aria-controls="Process" aria-selected="false">Process</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="Denied-tab" data-toggle="tab" href="#Denied" role="tab"
                                             aria-controls="Denied" aria-selected="false">Denied</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="Accept-tab" data-toggle="tab" href="#Accept"
-                                            role="tab" aria-controls="Accept" aria-selected="false">Accept</a>
+                                        <a class="nav-link" id="Accept-tab" data-toggle="tab" href="#Accept" role="tab"
+                                            aria-controls="Accept" aria-selected="false">Accept</a>
                                     </li>
                                 </ul>
-                                <!-- <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
-                                    style="position: relative; height: 700px">
-                                    <table class="table table-striped mb-0">
-                                        <thead
-                                            style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
-                                            <tr class="text-center">
-                                                <th scope="col" class="text-center">No.</th>
-                                                <th scope="col" class="text-center">Title</th>
-                                                <th scope="col" class="text-center">Status</th>
-                                                <th scope="col" class="text-center">Author</th>
-                                                <th scope="col" class="text-center">Category</th>
-                                                <th scope="col" class="text-center">Created Date</th>
-                                                <th scope="col" class="text-center">Modified Date</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="tableBody" id="postsBody">
-                                        </tbody>
-                                    </table>
-                                </div> -->
-
-
 
                                 <div class="tab-content profile-tab" id="myTabContent">
-                                    <div class="tab-pane fade show active" id="All" role="tabpanel" aria-labelledby="All-tab">
+                                    <div class="tab-pane fade show active" id="All" role="tabpanel"
+                                        aria-labelledby="All-tab">
                                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
-                                        style="position: relative; height: 700px">
-                                        <table class="table table-striped mb-0">
-                                            <thead
-                                                style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
-                                                <tr class="text-center">
-                                                    <th scope="col" class="text-center">No.</th>
-                                                    <th scope="col" class="text-center">Title</th>
-                                                    <th scope="col" class="text-center">Status</th>
-                                                    <th scope="col" class="text-center">Author</th>
-                                                    <th scope="col" class="text-center">Category</th>
-                                                    <th scope="col" class="text-center">Created Date</th>
-                                                    <th scope="col" class="text-center">Modified Date</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="tableBody" id="postsBody">
-                                            </tbody>
-                                        </table>
+                                            style="position: relative; height: 700px">
+                                            <table class="table table-striped mb-0">
+                                                <thead
+                                                    style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                                    <tr class="text-center">
+                                                        <th scope="col" class="text-center">No.</th>
+                                                        <th scope="col" class="text-center">Title</th>
+                                                        <th scope="col" class="text-center">Status</th>
+                                                        <th scope="col" class="text-center">Author</th>
+                                                        <th scope="col" class="text-center">Category</th>
+                                                        <th scope="col" class="text-center">Created Date</th>
+                                                        <th scope="col" class="text-center">Modified Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tableBody" id="allBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="Process" role="tabpanel" aria-labelledby="Process-tab">
+                                    <div class="tab-pane fade" id="Process" role="tabpanel"
+                                        aria-labelledby="Process-tab">
                                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
-                                        style="position: relative; height: 700px">
-                                        <table class="table table-striped mb-0">
-                                            <thead
-                                                style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
-                                                <tr class="text-center">
-                                                    <th scope="col" class="text-center">No.</th>
-                                                    <th scope="col" class="text-center">Title</th>
-                                                    <th scope="col" class="text-center">Status</th>
-                                                    <th scope="col" class="text-center">Author</th>
-                                                    <th scope="col" class="text-center">Category</th>
-                                                    <th scope="col" class="text-center">Created Date</th>
-                                                    <th scope="col" class="text-center">Modified Date</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="tableBody" id="postsBody">
-                                            </tbody>
-                                        </table>
+                                            style="position: relative; height: 700px">
+                                            <table class="table table-striped mb-0">
+                                                <thead
+                                                    style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                                    <tr class="text-center">
+                                                        <th scope="col" class="text-center">No.</th>
+                                                        <th scope="col" class="text-center">Title</th>
+                                                        <th scope="col" class="text-center">Status</th>
+                                                        <th scope="col" class="text-center">Author</th>
+                                                        <th scope="col" class="text-center">Category</th>
+                                                        <th scope="col" class="text-center">Created Date</th>
+                                                        <th scope="col" class="text-center">Modified Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tableBody" id="processBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    </div>
-                
+
                                     <div class="tab-pane fade" id="Denied" role="tabpanel" aria-labelledby="Denied-tab">
                                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
-                                        style="position: relative; height: 700px">
-                                        <table class="table table-striped mb-0">
-                                            <thead
-                                                style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
-                                                <tr class="text-center">
-                                                    <th scope="col" class="text-center">No.</th>
-                                                    <th scope="col" class="text-center">Title</th>
-                                                    <th scope="col" class="text-center">Status</th>
-                                                    <th scope="col" class="text-center">Author</th>
-                                                    <th scope="col" class="text-center">Category</th>
-                                                    <th scope="col" class="text-center">Created Date</th>
-                                                    <th scope="col" class="text-center">Modified Date</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="tableBody" id="postsBody">
-                                            </tbody>
-                                        </table>
+                                            style="position: relative; height: 700px">
+                                            <table class="table table-striped mb-0">
+                                                <thead
+                                                    style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                                    <tr class="text-center">
+                                                        <th scope="col" class="text-center">No.</th>
+                                                        <th scope="col" class="text-center">Title</th>
+                                                        <th scope="col" class="text-center">Status</th>
+                                                        <th scope="col" class="text-center">Author</th>
+                                                        <th scope="col" class="text-center">Category</th>
+                                                        <th scope="col" class="text-center">Created Date</th>
+                                                        <th scope="col" class="text-center">Modified Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tableBody" id="deniedBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    </div>
-                
-                                    <div class="tab-pane fade" id="Accept" role="tabpanel"
-                                        aria-labelledby="Accept-tab">
+
+                                    <div class="tab-pane fade" id="Accept" role="tabpanel" aria-labelledby="Accept-tab">
                                         <div class="table-responsive table-scroll" data-mdb-perfect-scrollbar="true"
-                                        style="position: relative; height: 700px">
-                                        <table class="table table-striped mb-0">
-                                            <thead
-                                                style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
-                                                <tr class="text-center">
-                                                    <th scope="col" class="text-center">No.</th>
-                                                    <th scope="col" class="text-center">Title</th>
-                                                    <th scope="col" class="text-center">Status</th>
-                                                    <th scope="col" class="text-center">Author</th>
-                                                    <th scope="col" class="text-center">Category</th>
-                                                    <th scope="col" class="text-center">Created Date</th>
-                                                    <th scope="col" class="text-center">Modified Date</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="tableBody" id="postsBody">
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            style="position: relative; height: 700px">
+                                            <table class="table table-striped mb-0">
+                                                <thead
+                                                    style="background: rgba(0, 0, 0, 0) linear-gradient(to right, #0091e5 0px, #00b7e5 100%) repeat scroll 0 0 !important">
+                                                    <tr class="text-center">
+                                                        <th scope="col" class="text-center">No.</th>
+                                                        <th scope="col" class="text-center">Title</th>
+                                                        <th scope="col" class="text-center">Status</th>
+                                                        <th scope="col" class="text-center">Author</th>
+                                                        <th scope="col" class="text-center">Category</th>
+                                                        <th scope="col" class="text-center">Created Date</th>
+                                                        <th scope="col" class="text-center">Modified Date</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tableBody" id="acceptBody">
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
 
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-9">
                                     <nav aria-label="Page navigation">
                                         <ul class="pagination justify-content-start" id="pagination"></ul>
                                     </nav>
@@ -269,7 +248,7 @@
             </div>
         </section>
     </div><!-- end wrapper -->
-    <div id="footer"></div>
+    <div id="footer" style="margin-top: 50px;"></div>
     <!-- Core JavaScript
     ================================================== -->
     <script src="../js/jquery.min.js"></script>
@@ -282,6 +261,7 @@
     <script src="../js/tether.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/custom.js"></script>
+    <script src="../js/jwt-decode.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -293,23 +273,60 @@
 
             var page = 1;
             var pageSize = 12;
+            var status;
+            var tabId;
+
+            var token = localStorage.getItem("token")
+            if (token != null) {
+                var decoded = jwt_decode(token)
+                var userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
+            }
+
+            $("#myTab a").on("shown.bs.tab", function (e) {
+                tabId = $(e.target).attr("aria-controls");
+                loadData();
+            });
+
 
             function loadData() {
+
+                if (tabId === "All") {
+                    status = "All";
+                }
+                if (tabId === "Denied") {
+                    status = "Denied";
+                }
+                if (tabId === "Process") {
+                    status = "Process";
+                }
+                if (tabId === "Accept") {
+                    status = "Accept";
+                }
+
                 $.ajax({
-                    url: 'https://localhost:7065/api/Post/GetAllPostByUser?page=' + page + '&pageSize=' + pageSize,
+                    url: 'https://localhost:7065/api/Post/GetAllPostByUserId?userId=' + userId + '&page=' + page + '&pageSize=' + pageSize + '&status=' + status,
                     method: 'GET',
                     dataType: 'json',
+                    headers: {
+                        'Authorization': "Bearer " + token
+                    },
                     success: function (response) {
+                        debugger
+
                         var data = response.posts;
                         var totalPosts = response.totalPosts;
                         var totalPages = response.totalPages;
-                        var tableBody = $('#postsBody');
-                        tableBody.empty();
 
-                        $.each(data, function (index, item) {
-                            var row = $('<tr>').appendTo(postsBody);
-                            $('<td class="text-center">').text(index + 1).appendTo(row);
-                            $('<td>').text(item.title).appendTo(row);
+                        var allBody = $('#allBody');
+                        var deniedBody = $('#deniedBody');
+                        var acceptBody = $('#acceptBody');
+                        var processBody = $('#processBody');
+                        allBody.empty();
+                        deniedBody.empty();
+                        acceptBody.empty();
+                        processBody.empty();
+
+                        const rows = data.map((item, index) => {
                             var statusText = "";
                             if (item.isEditorPick === null) {
                                 statusText = "processing";
@@ -318,15 +335,30 @@
                             } else {
                                 statusText = "denied";
                             }
+                            return `<tr>
+                                            <td class="text-center">${index + 1}</td>
+                                            <td class="text-center">${item.title}</td>
+                                            <td class="text-center">${statusText}</td>
+                                            <td class="text-center">${item.authorName}</td>
+                                            <td class="text-center">${item.categoryName}</td>
+                                            <td class="text-center">${item.created}</td>
+                                            <td class="text-center">${item.modified}</td>
+                                            <td class="text-center"><a href="../Editor/Post-Detail.html?postId=${item.id}">detail</a></td>
+                                    </tr>`
+                        })
 
-                            $('<td  class="text-center">').text(statusText).appendTo(row);
-                            $('<td>').text(item.authorName).appendTo(row);
-                            $('<td>').text(item.categoryName).appendTo(row);
-                            $('<td class="text-center">').text(formatDate(item.created)).appendTo(row);
-                            $('<td class="text-center">').text(formatDate(item.modified)).appendTo(row);
-                            $('<td>').html('<a href="../Editor/Post-Detail.html?postId=' + item.id + '">detail</a>').appendTo(row);
-                        });
-
+                        if (status === "Process") {
+                            processBody.append(rows);
+                        }
+                        if (status === "Accept") {
+                            acceptBody.append(rows);
+                        }
+                        if (status === "Denied") {
+                            deniedBody.append(rows);
+                        }
+                        else {
+                            allBody.append(rows);
+                        }
                         var pagination = $('#pagination');
                         pagination.empty();
 
