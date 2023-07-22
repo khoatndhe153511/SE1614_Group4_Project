@@ -24,69 +24,67 @@ $(document).ready(() => {
 var commentDto;
 
 function AddComment(model) {
-   var userReplyId = model.getAttribute("data-id-reply");
-        var content = $("#contentComment").val();
-        commentDto = {
-            content: content,
-            postId: postId,
-            userId: userId,
-            replyUserId: userReplyId
-        }
-        if (content != "") {
-            if (token !== "") {
-                $.ajax({
-                    url: "https://localhost:7065/api/Comment/AddComment",
-                    method: "POST",
-                    contentType: "application/json",
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem('token')
-                    },
-                    data: JSON.stringify(commentDto),
-                    success: function (response) {
-                        SlimNotifierJs.notification(
-                            "success",
-                            "Comment Successfully!",
-                            response,
-                            3000
-                        );
-                        $("#contentComment").val("");
-                        loadDataComment();
-                        refesh();
-                        $("#replyComment").empty();
+    var userReplyId = model.getAttribute("data-id-reply");
+    var content = $("#contentComment").val();
+    commentDto = {
+        content: content,
+        postId: postId,
+        userId: userId,
+        replyUserId: userReplyId
+    }
+    console.log(token)
+    if (content != "") {
+        if (token !== null) {
+            $.ajax({
+                url: "https://localhost:7065/api/Comment/AddComment",
+                method: "POST",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
+                data: JSON.stringify(commentDto),
+                success: function (response) {
+                    SlimNotifierJs.notification(
+                        "success",
+                        "Comment Successfully!",
+                        response,
+                        3000
+                    );
+                    $("#contentComment").val("");
+                    loadDataComment();
+                    refesh();
+                    $("#replyComment").empty();
 
-                    },
-                    error: function (xhr, status, error) {
-                        SlimNotifierJs.notification(
-                            "error",
-                            "Error",
-                            xhr.responseText,
-                            3000
-                        );
-                    },
-                });
-            } else {
-                SlimNotifierJs.notification(
-                    "error",
-                    "Error",
-                    "Please login!!",
-                    3000
-                );
-            }
-          
+                },
+                error: function (xhr, status, error) {
+                    SlimNotifierJs.notification(
+                        "error",
+                        "Error",
+                        xhr.response,
+                        3000
+                    );
+                },
+            });
         } else {
             SlimNotifierJs.notification(
                 "error",
                 "Error",
-                "Input comment please",
+                "Please login!!",
                 3000
             );
         }
-    
+    } else {
+        SlimNotifierJs.notification(
+            "error",
+            "Error",
+            "Input comment please",
+            3000
+        );
+    }
 }
 function replyComment(model) {
     var userReplyId = model.getAttribute("data-user-reply-id");
-
-    if (token !== "") {
+    if (token !== null) {
         $.ajax({
             url: "https://localhost:7065/api/Comment/getUserReplyComment/" + userReplyId,
             method: "GET",
@@ -104,14 +102,12 @@ function replyComment(model) {
                     <button style="margin-left: 5px;" class="btn btn-delete" onclick="refesh()"  type="button">Cancel</button>
                     `
                 )
-
-
             },
             error: function (xhr, status, error) {
                 SlimNotifierJs.notification(
                     "error",
                     "Error",
-                    xhr.responseText,
+                    "Please login!!",
                     3000
                 );
             },
@@ -142,55 +138,58 @@ function loadDataComment() {
             data.map((item, index) => {
                 commentContent += `
                 <div class="media">
-                <a
-                class="media-left"
-                    href="../author/tech-author.html?creatorId=${item?.userId}"
-                >
-                    <img
-                        src="${item?.imageUser}"
-                        alt=""
-                        class="rounded-circle"
-                    />
-                </a>	
-                <div class="media-body">
-                    <h4
-                        class="media-heading user_name"
+                    <a
+                        class="media-left"
+                        href="../author/tech-author.html?creatorId=${item?.userId}"
                     >
-                        ${item?.userName}
-                        <small>${item?.createdDate}</small
+                        <img
+                            src="../images/${item?.imageUser}"
+                            alt=""
+                            style="height: 50%; width: 50%; border: solid 1px black"
+                            class="rounded-circle"
+                        />
+                    </a>	
+                    <div class="media-body">
+                        <h4
+                            class="media-heading user_name"
                         >
-                    </h4>
-                    <p>
-                    
-                    <b> ${item?.userNameReply != null ?  item?.userNameReply+" "  : ""}
-                    </b>
-                    ${item?.content}
-                    </p>
-                    <div id="btnCommentUpdate">
-                    <button
-                    data-user-reply-id=${item.userId}
-                    onclick="replyComment(this)"
-                    class="btn btn-primary btn-sm"
-                    >Reply</button>
-                    ${ item?.userId === userId ? 
-                        `<button
-                        class="btn btn-primary btn-sm"
-                        data-comment-id=${item.id}
-                        data-comment-content="${item?.content}"
-                        data-reply=${item.replyUserId}
-                        onclick="updateComment(this)"
-                        >Update</button>
-                        
+                            ${item?.userName}
+                            <small>${item?.createdDate}</small>
+                        </h4>
+                        <p>
+                            <b> ${item?.userNameReply != null ?  item?.userNameReply+" "  : ""}
+                            </b>
+                            ${item?.content}
+                        </p>
+                        <div id="btnCommentUpdate">
                         <button
-                        data-comment-id=${item.id}
-                        onclick="deleteComment(this)"
-                        class="btn btn-primary btn-sm"
-                        >Delete</<button>
-                        `
-                        : ``} 
-                    </div>                
-                </div>
-            </div>`
+                            data-user-reply-id=${item.userId}
+                            onclick="replyComment(this)"
+                            class="btn btn-primary btn-sm"
+                        >
+                            Reply
+                        </button>
+                        ${ item?.userId === userId ? 
+                            `<button
+                                class="btn btn-primary btn-sm"
+                                data-comment-id=${item.id}
+                                data-comment-content="${item?.content}"
+                                data-reply=${item.replyUserId}
+                                onclick="updateComment(this)"
+                            >
+                                Update
+                            </button>
+                            
+                            <button
+                                data-comment-id=${item.id}
+                                onclick="deleteComment(this)"
+                                class="btn btn-primary btn-sm"
+                            >
+                                Delete
+                            </button>` : ``} 
+                        </div>                
+                    </div>
+                </div>`
 
             })
             $('#idComment').html(commentContent);
@@ -246,8 +245,8 @@ function loadDataComment() {
 }
 
 function deleteComment(model) {
-   var commentId = model.getAttribute("data-comment-id");
-   if (confirm("Delete this comment??") == true) {
+    var commentId = model.getAttribute("data-comment-id");
+    if (confirm("Delete this comment??") == true) {
     $.ajax({
         url: "https://localhost:7065/api/Comment/DeleteComment/" + commentId, 
         method: "DELETE",
@@ -263,8 +262,6 @@ function deleteComment(model) {
                 3000
             );
             loadDataComment();
-    
-    
         },
         error: function (xhr, status, error) {
             SlimNotifierJs.notification(
@@ -275,9 +272,8 @@ function deleteComment(model) {
             );
         },
     });
-   } else {
-  }
-  
+    } else {
+    }
 }
 var commentId;
 function updateComment(model) {
@@ -289,14 +285,11 @@ function updateComment(model) {
     $("#btnUpdate").empty();
     $("#btnUpdate").append(
         `<button class="btn btn-primary" data-id=${replyUserId} onclick="update(this)"  type="button">Comment</button>
-        <button style="margin-left: 5px;" class="btn btn-delete" onclick="refesh()"  type="button">Cancel</button>
-        `
+        <button style="margin-left: 5px;" class="btn btn-delete" onclick="refesh()"  type="button">Cancel</button>`
     )
+}
 
- }
-
- 
- function update(model) {
+function update(model) {
     var replyUserId = model.getAttribute("data-id");
     var updateComment = {
         userId: userId,
@@ -333,15 +326,13 @@ function updateComment(model) {
             );
         },
     });
- }
+}
 
- function refesh() {
+function refesh() {
     $("#contentComment").val("");
     $("#btnUpdate").empty();
     $("#btnUpdate").append(
-        `<button class="btn btn-primary" onclick="AddComment(this)" id="btnComment" type="button">Comment</button>
-        `
+        `<button class="btn btn-primary" onclick="AddComment(this)" id="btnComment" type="button">Comment</button>`
     )
     $("#replyComment").empty();
-
- }
+}

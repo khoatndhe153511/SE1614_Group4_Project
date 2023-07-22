@@ -15,7 +15,9 @@ namespace SE1614_Group4_Project_API.Mapper
                 .ForMember(des => des.Role,
                     otp => otp.MapFrom(src => Constants.Role.User))
                 .ForMember(des => des.Name,
-                    otp => otp.MapFrom(src => src.UserName));
+                    otp => otp.MapFrom(src => src.UserName))
+                .ForMember(des => des.Avatar,
+                    otp => otp.MapFrom(src => "default_avatar.jpg"));
 
             CreateMap<BookmarkDTO, Bookmark>()
                 .ForMember(des => des.CreatedAt,

@@ -126,7 +126,7 @@
                                 <label>UserName</label>
                             </div>
                             <div class="col-md-8">
-                                <input required placeholder="Input your user name" name="userName" id="userName" />
+                                <input required placeholder="Input your user name" readonly name="userName" id="userName" />
                                 <small id="usercheck" style="color: red;">
                                     **Username is missing
                                 </small>
@@ -145,7 +145,7 @@
                                 <label>Email</label>
                             </div>
                             <div class="col-md-8">
-                                <input required placeholder="Input your email" name="email" id="email" />
+                                <input required placeholder="Input your email" readonly name="email" id="email" />
                                 <small id="emailvalid" class="form-text text-muted invalid-feedback"
                                     style="color: red;">
                                     Your email must be a valid email
@@ -173,10 +173,10 @@
                                 <label>Gender</label>
                             </div>
                             <div class="col-md-2">
-                                <input type="radio" name="gender" id="male" value="Male" /> Male
+                                <input type="radio" name="gender" id="gender1" value="Male" /> Male
                             </div>
                             <div class="col-md-2">
-                                <input type="radio" name="gender" id="female" value="Female" /> Female
+                                <input type="radio" name="gender" id="gender2" value="Female" /> Female
                             </div>
                         </div>
                     </div>
@@ -357,23 +357,30 @@
             const email = $("#email").val();
             const birth = $("#birth").val();
             let gender = "";
-            if ($("#male").val() == "Male") {
+
+            if ($("#gender1").is(":checked")) {
                 gender = true;
             } 
-            if ($("#female").val() == "Female") { 
+            if ($("#gender2").is(":checked")) { 
                 gender = false;
             }
             const avatar = $("#avatar").val();
 
+            var pathParts = avatar.split("\\");
+
+            var fileName = pathParts[pathParts.length - 1];
+
+            console.log(fileName)
             const data = {
                 userName,
                 displayName,
                 email,
                 birth,
                 gender,
-                avatar,
+                avatar: fileName,
                 phoneNumber
             }
+            console.log(data)
             apiClient({
                 url: "https://localhost:7065/api/User/UpdateUserProfile",
                 headers: {
@@ -384,10 +391,12 @@
             }, (response) => {
                 if (response === true) {
                     SlimNotifierJs.notification('success', 'Successfully', 'Update successful', 1000)
-                    localStorage.removeItem('token')
-                    setTimeout(() => {
-                        window.location.href = "../auth/login-form.html"
-                    }, 1000)
+                    // localStorage.removeItem('token')
+                    // setTimeout(() => {
+                    //     window.location.href = "../auth/login-form.html"
+                    // }, 1000)
+                    window.location.reload();
+
                 } else {
                     SlimNotifierJs.notification('error', 'Error', 'Update failed!', 2000)
                 }
@@ -440,7 +449,7 @@
                                     <td>${formatDate(new Date(item?.createdAt))}</td>
                                     <td>${item?.viewsCount}</td>
                                     <td>
-                                       ${item?.point}
+                                        ${item?.point}
                                     </td>
                                     <td></td>
                                 </tr>`
@@ -463,8 +472,7 @@
 
         }
     </script>
-    <script src="js/validation_user.js"></script>
-    <script src="js/slim_notifier.js"></script>
+    <script src="./js/validation_user.js"></script>
 
     <script>
         // Add validation logic
