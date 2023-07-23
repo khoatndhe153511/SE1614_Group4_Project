@@ -10,6 +10,7 @@ namespace SE1614_Group4_Project_API.Models
             Blocks = new HashSet<Block>();
             Bookmarks = new HashSet<Bookmark>();
             Comments = new HashSet<Comment>();
+            Likes = new HashSet<Like>();
             RelatedCats = new HashSet<RelatedCat>();
             Tags = new HashSet<Tag>();
             YoutubeData = new HashSet<YoutubeDatum>();
@@ -43,6 +44,7 @@ namespace SE1614_Group4_Project_API.Models
         public virtual ICollection<Block> Blocks { get; set; }
         public virtual ICollection<Bookmark> Bookmarks { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<RelatedCat> RelatedCats { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
         public virtual ICollection<YoutubeDatum> YoutubeData { get; set; }

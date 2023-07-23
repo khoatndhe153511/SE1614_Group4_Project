@@ -1,5 +1,6 @@
 ﻿using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
+using System.ComponentModel;
 
 namespace SE1614_Group4_Project_API.Repository.Interfaces
 {
@@ -24,5 +25,8 @@ namespace SE1614_Group4_Project_API.Repository.Interfaces
         List<Post> GetPopularPosts();
 
         List<Post> SearchPosts(string title);
+        public RateResponseDTO GetRate(int id);
+        public bool? GetRatesbyUserId (int postId, string userId);
+        public void UpdateRate(int postId, string userId, bool? like);
     }
 }

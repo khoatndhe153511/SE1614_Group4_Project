@@ -322,9 +322,9 @@ namespace SE1614_Group4_Project_API.Models
 
             modelBuilder.Entity<Like>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("like");
+
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.IsLike).HasColumnName("is_like");
 
@@ -336,13 +336,13 @@ namespace SE1614_Group4_Project_API.Models
                     .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Post)
-                    .WithMany()
+                    .WithMany(p => p.Likes)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_like_post");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.Likes)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_like_user");

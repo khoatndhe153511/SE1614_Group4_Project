@@ -3,10 +3,15 @@ if (token != null) {
     var decoded = jwt_decode(token)
     var userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
 }
+let likeCount = 0;
+let dislikeCount = 0;
+let currentState = '';
+var rate;
 
 $(document).ready(() => {
     loadPopularPost()
-
+    loadRatebyUser()
+    loadRate()
     let urlParam = new URLSearchParams(window.location.search);
     let postId = urlParam.get("id");
 
@@ -14,7 +19,7 @@ $(document).ready(() => {
     loadPrevNextPost(postId);
 
     var result;
-    
+
     const makeApiCall = () => {
         let bookBtnDown = $(".bookmark-btn-down")
         let bookBtnUp = $(".bookmark-btn-up")
@@ -24,7 +29,7 @@ $(document).ready(() => {
                 url: "https://localhost:7065/api/Bookmark/CheckBookmarkExist?userId=" + userId + "&postId=" + postId,
                 method: "GET",
                 contentType: "application/json",
-                headers:{
+                headers: {
                     Authorization: "Bearer " + token
                 },
                 success: function (response) {
@@ -226,7 +231,7 @@ function loadPrevNextPost(postId) {
                     </div>`
                 )
             }
-            
+
             if (prevPost != null && nextPost != null) {
                 $(".prevnextpost").append(
                     `<div class="row">
@@ -286,7 +291,7 @@ function addBookmark(postId, userId) {
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),
-        headers:{
+        headers: {
             Authorization: "Bearer " + token
         },
         success: function (response) {
@@ -327,7 +332,7 @@ function removeBookmark(postId, userId) {
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),
-        headers:{
+        headers: {
             Authorization: "Bearer " + token
         },
         success: function (response) {
@@ -351,5 +356,129 @@ function removeBookmark(postId, userId) {
                 3000
             );
         },
+    })
+}
+
+function likePost() {
+    const likeButton = document.querySelector('.fa-thumbs-up');
+    const dislikeButton = document.querySelector('.fa-thumbs-down');
+
+    if (currentState === 'like') {
+        likeButton.classList.remove('fa-solid');
+        likeButton.classList.add('fa-regular');
+        likeCount--;
+        currentState = '';
+    } else {
+        likeButton.classList.add('fa-solid');
+        likeButton.classList.remove('fa-regular');
+        likeCount++;
+        currentState = 'like';
+
+        if (dislikeButton.classList.contains('fa-solid')) {
+            dislikeButton.classList.remove('fa-solid');
+            dislikeButton.classList.add('fa-regular');
+            dislikeCount--;
+        }
+    }
+    debugger
+    updateRate()
+    document.querySelector('.like-count').textContent = likeCount;
+    document.querySelector('.dislike-count').textContent = dislikeCount;
+}
+
+function dislikePost() {
+    const dislikeButton = document.querySelector('.fa-thumbs-down');
+    const likeButton = document.querySelector('.fa-thumbs-up');
+
+    if (currentState === 'dislike') {
+        dislikeButton.classList.remove('fa-solid');
+        dislikeButton.classList.add('fa-regular');
+        dislikeCount--;
+        currentState = '';
+    } else {
+        dislikeButton.classList.add('fa-solid');
+        dislikeButton.classList.remove('fa-regular');
+        dislikeCount++;
+        currentState = 'dislike';
+
+        if (likeButton.classList.contains('fa-solid')) {
+            likeButton.classList.remove('fa-solid');
+            likeButton.classList.add('fa-regular');
+            likeCount--;
+        }
+    }
+    debugger
+    updateRate()
+    document.querySelector('.like-count').textContent = likeCount;
+    document.querySelector('.dislike-count').textContent = dislikeCount;
+}
+
+function loadRate() {
+    let urlParam = new URLSearchParams(window.location.search);
+    let postId = urlParam.get("id");
+
+    $.ajax({
+        url: "https://localhost:7065/api/Post/GetRates?postId=" + postId,
+        method: "GET",
+        contentType: "application/json",
+        success: (response) => {
+            var data = response;
+            likeCount = data.likeCount;
+            dislikeCount = data.disLikeCount;
+
+            document.querySelector('.like-count').textContent = likeCount;
+            document.querySelector('.dislike-count').textContent = dislikeCount;
+        }
+    })
+    debugger
+    console.log(currentState);
+}
+
+
+function loadRatebyUser() {
+    const dislikeButton = document.querySelector('.fa-thumbs-down');
+    const likeButton = document.querySelector('.fa-thumbs-up');
+    let urlParam = new URLSearchParams(window.location.search);
+    let postId = urlParam.get("id");
+debugger
+    $.ajax({
+        url: "https://localhost:7065/api/Post/GetRatesbyUserId?postId=" + postId + "&userId=" + userId,
+        method: "GET",
+        contentType: "application/json",
+        success: (response) => {
+            debugger
+            var currentRate = response;
+            
+            if (currentRate === true) {
+                likeButton.classList.remove('fa-regular');
+                likeButton.classList.add('fa-solid');
+                currentState = "like";
+            }else if(currentRate === false){
+                dislikeButton.classList.remove('fa-regular');
+                dislikeButton.classList.add('fa-solid');
+                currentState = "dislike";
+            }
+        }
+    })
+}
+
+function updateRate() {
+    let urlParam = new URLSearchParams(window.location.search);
+    let postId = urlParam.get("id"); 
+    console.log(currentState);
+    if (currentState === "like") {
+        rate = true;
+    } else if (currentState === "dislike") {
+        rate = false;
+    } else {
+        rate = "";
+    }
+    debugger
+    $.ajax({
+        url: "https://localhost:7065/api/Post/UpdateRates?postId=" + postId + "&userId=" + userId + "&like=" + rate,
+        method: "GET",
+        contentType: "application/json",
+        success: (response) => {
+        }
     })
 }

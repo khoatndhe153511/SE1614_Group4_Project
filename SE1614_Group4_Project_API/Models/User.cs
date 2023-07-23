@@ -9,6 +9,7 @@ namespace SE1614_Group4_Project_API.Models
         {
             Bookmarks = new HashSet<Bookmark>();
             Comments = new HashSet<Comment>();
+            Likes = new HashSet<Like>();
             Posts = new HashSet<Post>();
         }
 
@@ -27,6 +28,7 @@ namespace SE1614_Group4_Project_API.Models
 
         public virtual ICollection<Bookmark> Bookmarks { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
     }
 }
