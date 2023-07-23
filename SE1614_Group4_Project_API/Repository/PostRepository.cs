@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
@@ -525,6 +526,7 @@ namespace SE1614_Group4_Project_API.Repository
                 .FirstOrDefault();
             if(rate  != null)
             {
+                checkPoint(postId, rate, like);
                 rate.IsLike = like;
                 _.Likes.Update(rate);
                 _.SaveChanges();
@@ -535,9 +537,70 @@ namespace SE1614_Group4_Project_API.Repository
                 newRate.PostId = postId;
                 newRate.UserId = userId;
                 newRate.IsLike = like;
+                var post = _.Posts.FirstOrDefault(x => x.Id == postId);
+                if (like != null)
+                {
+                    if (like == false)
+                    {
+                        if (post.Point >= 1)
+                        {
+                            post.Point -= 1;
+                            _.Posts.Update(post);
+                            _.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                         post.Point += 1;
+                        _.Posts.Update(post);
+                        _.SaveChanges();
+                    }
+                }
                 _.Likes.Add(newRate);
                 _.SaveChanges();
             }
+        }
+
+        private void checkPoint(int postId, Like rate, bool? like)
+        {
+            var post = _.Posts.FirstOrDefault(x => x.Id == postId);
+            if(post != null)
+            {
+                if (like != null)
+                {
+                    if (like == false)
+                    {
+                        if (post.Point >= 1)
+                        {
+                            post.Point -= 1;
+                            _.Posts.Update(post);
+                            _.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        post.Point += 1;
+                        _.Posts.Update(post);
+                        _.SaveChanges();
+                    }
+                } else
+                {
+                    if (rate.IsLike != null)
+                    {
+                        if (rate.IsLike == false)
+                        {
+                            post.Point += 1;
+                        }
+                        else
+                        {
+                            post.Point -= 1;
+                        }
+                    }
+                 
+                }
+              
+            }
+           
         }
     }
 }
