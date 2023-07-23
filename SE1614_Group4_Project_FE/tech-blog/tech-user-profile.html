@@ -210,7 +210,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <label>Total View</label>
+                                <label>Total Point</label>
                             </div>
                             <div class="col-md-8">
                                 <input style="border: 0px;" readonly name="totalPoint" id="totalPoint" />
@@ -234,9 +234,9 @@
                                                         <tr>
                                                             <th style="width: 10px">#</th>
                                                             <th>Title</th>
-                                                            <th>Comment Count</th>
+                                                            <th>Comment</th>
                                                             <th>Created At</th>
-                                                            <th>Views Count</th>
+                                                            <th>Views</th>
                                                             <th>Point</th>
                                                             <th style="width: 40px">Label</th>
                                                         </tr>
@@ -391,12 +391,14 @@
                 data
             }, (response) => {
                 if (response === true) {
-                    SlimNotifierJs.notification('success', 'Successfully', 'Update successful', 1000)
+                    SlimNotifierJs.notification('success', 'Successfully', 'Update successful', 2000)
                     // localStorage.removeItem('token')
                     // setTimeout(() => {
                     //     window.location.href = "../auth/login-form.html"
                     // }, 1000)
-                    window.location.reload(1000);
+                    setTimeout(function () {
+                        window.location.reload(1);
+                    }, 1000);
 
                 } else {
                     SlimNotifierJs.notification('error', 'Error', 'Update failed!', 2000)
