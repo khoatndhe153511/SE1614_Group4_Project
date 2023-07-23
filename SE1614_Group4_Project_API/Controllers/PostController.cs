@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using SE1614_Group4_Project_API.DTOs;
 using SE1614_Group4_Project_API.Models;
 using SE1614_Group4_Project_API.Repository.Interfaces;
+using System.Reflection.Metadata;
 
 namespace SE1614_Group4_Project_API.Controllers
 {
@@ -274,14 +275,15 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 var posts = _postRepository.GetAllPostByUserId(userId);
 
-                if(status.Equals("Accept")) {
+                if (status.Equals("Accept"))
+                {
                     posts = posts.Where(_ => _.isEditorPick == true).ToList();
                 }
                 else if (status.Equals("Denied"))
                 {
                     posts = posts.Where(_ => _.isEditorPick == false).ToList();
                 }
-                else if(status.Equals("Process"))
+                else if (status.Equals("Process"))
                 {
                     posts = posts.Where(_ => _.isEditorPick == null).ToList();
                 }
@@ -380,6 +382,39 @@ namespace SE1614_Group4_Project_API.Controllers
             catch (DbUpdateException e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetRates(int postId)
+        {
+            try
+            {
+                return Ok(_postRepository.GetRate(postId));
+            }
+            catch (Exception e)
+            {
+                return Conflict(e);
+            }
+        }
+
+        [HttpGet]
+        public bool? GetRatesbyUserId(int postId, string userId)
+        {
+            return _postRepository.GetRatesbyUserId(postId, userId);
+        }
+
+        [HttpGet]
+        public IActionResult UpdateRates(int postId, string userId, bool? like)
+        {
+            try
+            {
+                _postRepository.UpdateRate(postId, userId, like);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Conflict();
             }
         }
     }

@@ -489,5 +489,55 @@ namespace SE1614_Group4_Project_API.Repository
         {
             return _.Posts.Where(x => x.Title.ToLower().Contains(title.ToLower())).ToList();
         }
+        public RateResponseDTO GetRate(int id)
+        {
+            var like = _.Likes.Include(_ => _.Post).Where(_ => _.PostId == id && _.IsLike == true).Count();
+            var dislike = _.Likes.Include(_ => _.Post).Where(_ => _.PostId == id && _.IsLike == false).Count();
+
+            RateResponseDTO rate = new RateResponseDTO();
+
+            rate.likeCount = like;
+            rate.disLikeCount = dislike;
+            return rate;
+        }
+        public bool? GetRatesbyUserId(int postId, string userId)
+        {
+            var rate = _.Likes
+                .Include(_ => _.User)
+                .Include(_ => _.Post)
+                .Where(_ => _.UserId.Equals(userId) && _.PostId == postId)
+                .FirstOrDefault();
+            if(rate != null)
+            {
+                return rate.IsLike;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public void UpdateRate(int postId, string userId, bool? like)
+        {
+            var rate = _.Likes
+                .Include(_ => _.User)
+                .Include(_ => _.Post)
+                .Where(_ => _.UserId.Equals(userId) && _.PostId == postId)
+                .FirstOrDefault();
+            if(rate  != null)
+            {
+                rate.IsLike = like;
+                _.Likes.Update(rate);
+                _.SaveChanges();
+            }
+            else
+            {
+                Like newRate = new Like();
+                newRate.PostId = postId;
+                newRate.UserId = userId;
+                newRate.IsLike = like;
+                _.Likes.Add(newRate);
+                _.SaveChanges();
+            }
+        }
     }
 }
