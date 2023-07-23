@@ -65,14 +65,12 @@ namespace SE1614_Group4_Project_API.Controllers
                         AuthorId = x.CreatorId,
                         AuthorName = x.Creator.Name,
                         ViewsCount = x.ViewsCount
-                    }).ToList();
+                    }).Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
                 var totalPosts = posts.Count;
                 var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
 
-                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
-
-                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+                return Ok(new { Posts = posts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception e)
             {
@@ -229,6 +227,7 @@ namespace SE1614_Group4_Project_API.Controllers
             {
                 var result = _context.Posts
                     .Where(x => x.IsEditorPick == true)
+                    .OrderByDescending(x => x.ViewsCount).Take(3)
                     .Select(x => new
                     {
                         Id = x.Id,
@@ -242,7 +241,7 @@ namespace SE1614_Group4_Project_API.Controllers
                         CreatorName = x.Creator.DisplayName,
                         CreatorId = x.CreatorId,
                         ViewsCount = x.ViewsCount
-                    }).OrderByDescending(x => x.ViewsCount).Take(3).ToList();
+                    }).ToList();
 
                 return Ok(result);
             }
