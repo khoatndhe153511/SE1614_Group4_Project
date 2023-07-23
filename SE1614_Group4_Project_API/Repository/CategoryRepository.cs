@@ -51,7 +51,8 @@ namespace SE1614_Group4_Project_API.Repository
 
         public List<Cat> GetTop5Category()
         {
-            return _context.Cats.Take(5).ToList();
+            var result = _context.Cats.Take(5).ToList();
+            return result;
         }
 
         public new DbSet<Cat> GetDbSet()
