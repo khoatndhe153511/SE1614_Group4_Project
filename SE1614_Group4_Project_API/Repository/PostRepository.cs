@@ -145,10 +145,47 @@ namespace SE1614_Group4_Project_API.Repository
             string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
 
             string[] paragraphs = entity.Content.Split(
-                    new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
+                    new[] { "</p>" },
                     StringSplitOptions.RemoveEmptyEntries);
 
+            for (int i = 0; i < paragraphs.Length; i++)
+            {
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("p"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
 
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("a"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</a>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("img"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</img>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("h3"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</h3>"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("h2"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</h2>"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("blockquote"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</blockquote>"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+                if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("iframe"))
+                {
+                    paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</iframe>"}, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+
+            }
 
             var blocks = _.Blocks.Include(_ => _.Datum).OrderByDescending(p => p.Id).Where(_ => _.PostId == entity.PostId).ToList();
             var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
@@ -201,6 +238,29 @@ namespace SE1614_Group4_Project_API.Repository
                 }
             }
 
+
+            var newBlocksUpdate = _.Blocks.Include(_ => _.Datum).OrderByDescending(p => p.Id).Where(_ => _.PostId == entity.PostId).ToList();
+            var newblockCount = newBlocksUpdate.Count();
+
+            while (paragraphs.Length > newblockCount)
+            {
+                var newBlock = new Block()
+                {
+                    Id = lastBlockId + 1,
+                    Id1 = Guid.NewGuid().ToString(),
+                    PostId = entity.PostId,
+                    CreatedAt = DateTime.Now,
+                    Status = 1,
+                    UpdatedAt = DateTime.Now
+                };
+                var newData = new Datum() { Id = lastDataId + 1, BlockId = newBlock.Id1 };
+                _.Blocks.Add(newBlock);
+                _.Data.Add(newData);
+                lastDataId++;
+                lastBlockId++;
+                _.SaveChanges();
+                newblockCount++;
+            }
 
             for (int i = 0; i < paragraphs.Length; i++)
             {
@@ -335,35 +395,35 @@ namespace SE1614_Group4_Project_API.Repository
                         new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
                         StringSplitOptions.RemoveEmptyEntries);
 
-                
-                    var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
 
-                    for (int j = 0; j < paragraphs.Length; j++)
+                var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+
+                for (int j = 0; j < paragraphs.Length; j++)
+                {
+                    _.Blocks.Add(new Block()
                     {
-                        _.Blocks.Add(new Block()
-                        {
-                            Id = lastBlockId + 1,
-                            Id1 = Guid.NewGuid().ToString(),
-                            PostId = TempId,
-                            CreatedAt = DateTime.Now,
-                            Status = 1,
-                            UpdatedAt = DateTime.Now
-                        });
-                        lastBlockId++;
-                    }
+                        Id = lastBlockId + 1,
+                        Id1 = Guid.NewGuid().ToString(),
+                        PostId = TempId,
+                        CreatedAt = DateTime.Now,
+                        Status = 1,
+                        UpdatedAt = DateTime.Now
+                    });
+                    lastBlockId++;
+                }
 
-                    _.SaveChanges();
+                _.SaveChanges();
 
-                    var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
-                    var blocks = _.Blocks.Where(_ => _.PostId == TempId).ToList();
-                    foreach (var item in blocks)
-                    {
-                        _.Data.Add(new Datum() { Id = lastDataId + 1, BlockId = item.Id1 });
-                        lastDataId++;
-                    }
+                var lastDataId = _.Data.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
+                var blocks = _.Blocks.Where(_ => _.PostId == TempId).ToList();
+                foreach (var item in blocks)
+                {
+                    _.Data.Add(new Datum() { Id = lastDataId + 1, BlockId = item.Id1 });
+                    lastDataId++;
+                }
 
-                    _.SaveChanges();
-                    
+                _.SaveChanges();
+
                 for (int i = 0; i < paragraphs.Length; i++)
                 {
                     Block block = blocks.ElementAt(i);
@@ -509,7 +569,7 @@ namespace SE1614_Group4_Project_API.Repository
                 .Include(_ => _.Post)
                 .Where(_ => _.UserId.Equals(userId) && _.PostId == postId)
                 .FirstOrDefault();
-            if(rate != null)
+            if (rate != null)
             {
                 return rate.IsLike;
             }
@@ -525,7 +585,7 @@ namespace SE1614_Group4_Project_API.Repository
                 .Include(_ => _.Post)
                 .Where(_ => _.UserId.Equals(userId) && _.PostId == postId)
                 .FirstOrDefault();
-            if(rate  != null)
+            if (rate != null)
             {
                 checkPoint(postId, rate, like);
                 rate.IsLike = like;
@@ -552,7 +612,7 @@ namespace SE1614_Group4_Project_API.Repository
                     }
                     else
                     {
-                         post.Point += 1;
+                        post.Point += 1;
                         _.Posts.Update(post);
                         _.SaveChanges();
                     }
@@ -565,7 +625,7 @@ namespace SE1614_Group4_Project_API.Repository
         private void checkPoint(int postId, Like rate, bool? like)
         {
             var post = _.Posts.FirstOrDefault(x => x.Id == postId);
-            if(post != null)
+            if (post != null)
             {
                 if (like != null)
                 {
@@ -584,7 +644,8 @@ namespace SE1614_Group4_Project_API.Repository
                         _.Posts.Update(post);
                         _.SaveChanges();
                     }
-                } else
+                }
+                else
                 {
                     if (rate.IsLike != null)
                     {
@@ -597,11 +658,11 @@ namespace SE1614_Group4_Project_API.Repository
                             post.Point -= 1;
                         }
                     }
-                 
+
                 }
-              
+
             }
-           
+
         }
     }
 }
