@@ -370,7 +370,7 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "1")]
+        [Authorize(Roles = "2")]
         public IActionResult AddPost([FromBody] AddPostDTO post)
         {
             try
