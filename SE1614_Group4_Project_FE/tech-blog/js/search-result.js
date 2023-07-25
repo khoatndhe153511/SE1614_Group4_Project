@@ -17,40 +17,49 @@ $(document).ready(() => {
                 var totalPages = response.totalPages;
                 var postList = $("#post-list");
                 postList.empty();
-                postList.append(
-                    data.map(
-                        (post) =>
-                            `<div class="blog-box row">
-                                <div class="col-md-4">
-                                    <div class="post-media">
-                                        <a href="../Post/tech-single.html?id=${post.id}" title="">
-                                            <img src="${post.image}" alt="${post.title}" class="img-fluid">
-                                            <div class="hovereffect"></div>
-                                        </a>
+                if (response.totalPosts == 0) {
+                    postList.append(
+                        `<div class="blog-box row">
+                            Không có bài viết nào được tìm thấy!
+                        </div>`
+                    )
+                } else {
+                    postList.append(
+                        data.map(
+                            (post) =>
+                                `<div class="blog-box row">
+                                    <div class="col-md-4">
+                                        <div class="post-media">
+                                            <a href="../Post/tech-single.html?id=${post.id}" title="">
+                                                <img src="${post.image}" alt="${post.title}" class="img-fluid">
+                                                <div class="hovereffect"></div>
+                                            </a>
+                                        </div>
+                                    </div>
+            
+                                    <div class="blog-meta big-meta col-md-8">
+                                        <h4><a href="../Post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
+                                        <p>${post.description}</p>
+                                        <small class="firstsmall">
+                                            <a class="bg-orange" href="../Category/tech-category-01.html?cateId=${post.categoryId}" title="">${post.categoryName}</a>
+                                        </small>
+                                        <small><a href="../Post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
+                                        <small>
+                                            <a href="../author/tech-author.html?creatorId=${post.creatorId}" title="">by ${post.creatorName}</a>
+                                        </small>
+                                        <small>
+                                            <a href="../Post/tech-single.html?id=${post.id}" title="">
+                                                <i class="fa fa-eye"></i> ${post.viewsCount}
+                                            </a>
+                                        </small>
                                     </div>
                                 </div>
-        
-                                <div class="blog-meta big-meta col-md-8">
-                                    <h4><a href="../Post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
-                                    <p>${post.description}</p>
-                                    <small class="firstsmall">
-                                        <a class="bg-orange" href="../Category/tech-category-01.html?cateId=${post.categoryId}" title="">${post.categoryName}</a>
-                                    </small>
-                                    <small><a href="../Post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
-                                    <small>
-                                        <a href="../author/tech-author.html?creatorId=${post.creatorId}" title="">by ${post.creatorName}</a>
-                                    </small>
-                                    <small>
-                                        <a href="../Post/tech-single.html?id=${post.id}" title="">
-                                            <i class="fa fa-eye"></i> ${post.viewsCount}
-                                        </a>
-                                    </small>
-                                </div>
-                            </div>
-        
-                            <hr class="invis">`
+            
+                                <hr class="invis">`
+                        )
                     )
-                )
+                }
+                
                 var pagination = $("#pagination");
                 pagination.empty();
     
