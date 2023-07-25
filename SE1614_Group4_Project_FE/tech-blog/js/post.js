@@ -380,7 +380,6 @@ function likePost() {
             dislikeCount--;
         }
     }
-    debugger
     updateRate()
     document.querySelector('.like-count').textContent = likeCount;
     document.querySelector('.dislike-count').textContent = dislikeCount;
@@ -407,7 +406,6 @@ function dislikePost() {
             likeCount--;
         }
     }
-    debugger
     updateRate()
     document.querySelector('.like-count').textContent = likeCount;
     document.querySelector('.dislike-count').textContent = dislikeCount;
@@ -430,7 +428,6 @@ function loadRate() {
             document.querySelector('.dislike-count').textContent = dislikeCount;
         }
     })
-    debugger
     console.log(currentState);
 }
 
@@ -440,13 +437,11 @@ function loadRatebyUser() {
     const likeButton = document.querySelector('.fa-thumbs-up');
     let urlParam = new URLSearchParams(window.location.search);
     let postId = urlParam.get("id");
-debugger
     $.ajax({
         url: "https://localhost:7065/api/Post/GetRatesbyUserId?postId=" + postId + "&userId=" + userId,
         method: "GET",
         contentType: "application/json",
         success: (response) => {
-            debugger
             var currentRate = response;
             
             if (currentRate === true) {
@@ -473,7 +468,6 @@ function updateRate() {
     } else {
         rate = "";
     }
-    debugger
     $.ajax({
         url: "https://localhost:7065/api/Post/UpdateRates?postId=" + postId + "&userId=" + userId + "&like=" + rate,
         method: "GET",
