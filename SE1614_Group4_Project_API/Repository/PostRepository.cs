@@ -253,6 +253,7 @@ namespace SE1614_Group4_Project_API.Repository
             if (post != null)
             {
                 post.Title = entity.Title;
+                post.ModifiedAt = DateTime.Now;
                 post.Description = entity.Description;
                 post.CreatorId = author;
                 post.CatId = entity.CategoryId;
@@ -416,7 +417,7 @@ namespace SE1614_Group4_Project_API.Repository
         {
             var post = _.Posts.Find(entity.Id);
             post.IsEditorPick = entity.Status;
-
+            post.ModifiedAt = DateTime.Now;
             _.Posts.Update(post);
             _.SaveChangesAsync();
         }

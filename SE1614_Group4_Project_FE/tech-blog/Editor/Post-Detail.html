@@ -257,14 +257,9 @@
             var userProfile = $("#user-profile-location")
             if (token != null) {
                 let decoded = jwt_decode(token);
-                let userRole =
-                    decoded[
-                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-                    ];
+                var userRole = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
             }
-
             if (userRole != 1) {
-                debugger
                 $('#postStatusSelect').hide();
                 $('#change').hide();
                 $('#edit').hide();
@@ -314,7 +309,6 @@
                 var urlParam = new URLSearchParams(window.location.search);
                 var postId = urlParam.get('postId');
                 var selectedCategoryId = JSON.parse($(this).val());
-
                 var formData = {
                     id: parseInt(postId),
                     status: selectedCategoryId,
@@ -324,7 +318,7 @@
                     updateApiUrl, {
                     method: 'POST',
                     mode: "cors",
-                    headers: { "Content-type": "application/json" },
+                    headers: { "Content-type": "application/json",'Authorization': "Bearer " + token },
                     body: JSON.stringify(formData)
                 }).then(response => response.json())
                     .then(data => {
