@@ -390,10 +390,48 @@ namespace SE1614_Group4_Project_API.Repository
 
                 List<string> contents = new List<string>();
                 string[] tags = { "<p>", "<img>", "<a>", "<h2>", "<h3>", "<blockquote>", "<iframe>" };
-                string[] paragraphs =
-                    entity.Content.Split(
-                        new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
-                        StringSplitOptions.RemoveEmptyEntries);
+                string[] paragraphs = entity.Content.Split(
+                     new[] { "</p>" },
+                     StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < paragraphs.Length; i++)
+                {
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("p"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("a"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</a>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("img"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</img>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("h3"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</h3>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("h2"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</h2>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("blockquote"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</blockquote>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                    if (_logicHandler.GetFirstTag(paragraphs[i]).Contains("iframe"))
+                    {
+                        paragraphs[i] = paragraphs[i].Split(new[] { "<p>", "</iframe>" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    }
+
+                }
 
 
                 var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
