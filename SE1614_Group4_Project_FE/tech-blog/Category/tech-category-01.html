@@ -370,7 +370,7 @@
             
             function loadAllPost() {
                 $.ajax({
-                    url: "https://localhost:7065/api/Post/GetAllPost?page=" + page + "&pageSize=" + pageSize,
+                    url: "https://localhost:7065/api/Post/GetAllPostCat?page=" + page + "&pageSize=" + pageSize,
                     method: "GET",
                     contentType: "application/json",
                     success: function (response) {
@@ -398,10 +398,10 @@
                                             </span>
                                             <h4><a href="../post/tech-single.html?id=${post.id}" title="">${post.title}</a></h4>
                                             <p>${post.description}</p>
-                                            <small><a href="../post/tech-single.html?id=${post.id}" title="">${post.createdAt}</a></small>
+                                            <small><a href="../post/tech-single.html?id=${post.id}" title="">${post.created}</a></small>
                                             <small>
                                                 <a href="../author/tech-author.html?creatorId=${post.authorId}" title="">
-                                                    by ${post.creatorName}
+                                                    by ${post.authorName}
                                                 </a>
                                             </small>
                                             <small><a href="../post/tech-single.html?id=${post.id}" title="">

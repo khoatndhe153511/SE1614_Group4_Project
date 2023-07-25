@@ -23,18 +23,36 @@ namespace SE1614_Group4_Project_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllPost(int page, int pageSize, string status)
+        public IActionResult GetAllPost(int page, int pageSize, string? status)
         {
             var posts = _postRepository.GetPostsRecently();
 
-            if (status.Equals("Accept"))
+            if (status != null)
             {
-                posts = posts.Where(_ => _.isEditorPick == true).ToList();
+                if (status.Equals("Accept"))
+                {
+                    posts = posts.Where(_ => _.isEditorPick == true).ToList();
+                }
+                else if (status.Equals("Process"))
+                {
+                    posts = posts.Where(_ => _.isEditorPick == null).ToList();
+                }
             }
-            else if (status.Equals("Process"))
-            {
-                posts = posts.Where(_ => _.isEditorPick == null).ToList();
-            }
+
+            var totalPosts = posts.Count;
+            var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+            var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
+        }
+
+        [HttpGet]
+        public IActionResult GetAllPostCat(int page, int pageSize)
+        {
+            var posts = _postRepository.GetPostsRecently();
+
+            posts = posts.Where(_ => _.isEditorPick == true).ToList();
 
             var totalPosts = posts.Count;
             var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
