@@ -335,9 +335,7 @@ namespace SE1614_Group4_Project_API.Repository
                         new[] { "<p>", "</p>", "</img>", "</h3>", "</h2>", "</blockquote>", "</a>", "</iframe>" },
                         StringSplitOptions.RemoveEmptyEntries);
 
-                for (int i = 0; i < paragraphs.Length; i++)
-                {
-                    string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
+                
                     var lastBlockId = _.Blocks.OrderByDescending(p => p.Id).Select(p => p.Id).FirstOrDefault();
 
                     for (int j = 0; j < paragraphs.Length; j++)
@@ -365,9 +363,12 @@ namespace SE1614_Group4_Project_API.Repository
                     }
 
                     _.SaveChanges();
+                    
+                for (int i = 0; i < paragraphs.Length; i++)
+                {
                     Block block = blocks.ElementAt(i);
                     Datum datum = _.Data.Where(_ => _.BlockId == block.Id1).First();
-
+                    string firstTag = _logicHandler.GetFirstTag(paragraphs[i]);
                     switch (firstTag)
                     {
                         case "h2":
@@ -401,9 +402,8 @@ namespace SE1614_Group4_Project_API.Repository
                             datum.Text = paragraphs[i].ToString();
                             break;
                     }
-
-                    _.Blocks.Update(block);
                     _.Data.Update(datum);
+                    _.Blocks.Update(block);
                     _.SaveChanges();
                 }
             }
