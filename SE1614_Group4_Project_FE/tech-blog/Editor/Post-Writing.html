@@ -392,11 +392,11 @@
                         if (!response.ok) {
                             throw new Error('Network response was not ok.');
                         }
-                        return response.json();
+                        // return response.json();
                     })
                     .then(data => {
                         console.log('Success:', data);
-                        window.location.href = '../Writer/Post-Writer.html';
+                        window.location.href = '../tech-index.html';
 
                     })
                     .catch(error => {

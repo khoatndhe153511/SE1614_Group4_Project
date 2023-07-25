@@ -224,9 +224,6 @@
                                 <div class="row container d-flex justify-content-center">
                                     <div class="col-md-12">
                                         <div class="box">
-                                            <div class="box-header with-border">
-                                                <h3 class="box-title">Bordered Table with pagination</h3>
-                                            </div>
                                             <!-- /.box-header -->
                                             <div class="box-body">
                                                 <table class="table table-bordered">
@@ -238,7 +235,7 @@
                                                             <th>Created At</th>
                                                             <th>Views</th>
                                                             <th>Point</th>
-                                                            <th style="width: 40px">Label</th>
+                                                            <th style="width: 40px">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="idTable">
@@ -456,8 +453,8 @@
                                     </td>
                                     <td>
                                         <button
-                                         class="w3-button w3-black"
-                                         ><a href="./Post/tech-single.html?id=${item?.id}" title="">Detail</a></button>
+                                            class="w3-button w3-black"
+                                            ><a href="./Editor/Post-Detail.html?postId=${item?.id}" title="">Detail</a></button>
                                     </td>
                                 </tr>`
             })
