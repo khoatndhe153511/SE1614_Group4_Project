@@ -83,12 +83,13 @@ namespace SE1614_Group4_Project_API.Controllers
                         AuthorId = x.CreatorId,
                         AuthorName = x.Creator.Name,
                         ViewsCount = x.ViewsCount
-                    }).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    }).ToList();
 
                 var totalPosts = posts.Count;
                 var totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
-
-                return Ok(new { Posts = posts, TotalPosts = totalPosts, TotalPages = totalPages });
+                var pagedPosts = posts.Skip((page - 1) * pageSize).Take(pageSize);
+                
+                return Ok(new { Posts = pagedPosts, TotalPosts = totalPosts, TotalPages = totalPages });
             }
             catch (Exception e)
             {
