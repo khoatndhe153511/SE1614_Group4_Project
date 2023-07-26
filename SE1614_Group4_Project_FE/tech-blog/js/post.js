@@ -360,55 +360,63 @@ function removeBookmark(postId, userId) {
 }
 
 function likePost() {
-    const likeButton = document.querySelector('.fa-thumbs-up');
-    const dislikeButton = document.querySelector('.fa-thumbs-down');
+    if (token != null) {
+        const likeButton = document.querySelector('.fa-thumbs-up');
+        const dislikeButton = document.querySelector('.fa-thumbs-down');
 
-    if (currentState === 'like') {
-        likeButton.classList.remove('fa-solid');
-        likeButton.classList.add('fa-regular');
-        likeCount--;
-        currentState = '';
-    } else {
-        likeButton.classList.add('fa-solid');
-        likeButton.classList.remove('fa-regular');
-        likeCount++;
-        currentState = 'like';
-
-        if (dislikeButton.classList.contains('fa-solid')) {
-            dislikeButton.classList.remove('fa-solid');
-            dislikeButton.classList.add('fa-regular');
-            dislikeCount--;
-        }
-    }
-    updateRate()
-    document.querySelector('.like-count').textContent = likeCount;
-    document.querySelector('.dislike-count').textContent = dislikeCount;
-}
-
-function dislikePost() {
-    const dislikeButton = document.querySelector('.fa-thumbs-down');
-    const likeButton = document.querySelector('.fa-thumbs-up');
-
-    if (currentState === 'dislike') {
-        dislikeButton.classList.remove('fa-solid');
-        dislikeButton.classList.add('fa-regular');
-        dislikeCount--;
-        currentState = '';
-    } else {
-        dislikeButton.classList.add('fa-solid');
-        dislikeButton.classList.remove('fa-regular');
-        dislikeCount++;
-        currentState = 'dislike';
-
-        if (likeButton.classList.contains('fa-solid')) {
+        if (currentState === 'like') {
             likeButton.classList.remove('fa-solid');
             likeButton.classList.add('fa-regular');
             likeCount--;
+            currentState = '';
+        } else {
+            likeButton.classList.add('fa-solid');
+            likeButton.classList.remove('fa-regular');
+            likeCount++;
+            currentState = 'like';
+
+            if (dislikeButton.classList.contains('fa-solid')) {
+                dislikeButton.classList.remove('fa-solid');
+                dislikeButton.classList.add('fa-regular');
+                dislikeCount--;
+            }
         }
+        updateRate()
+        document.querySelector('.like-count').textContent = likeCount;
+        document.querySelector('.dislike-count').textContent = dislikeCount;
+    } else {
+        SlimNotifierJs.notification('error', 'Error', 'please Login!', 3000)
     }
-    updateRate()
-    document.querySelector('.like-count').textContent = likeCount;
-    document.querySelector('.dislike-count').textContent = dislikeCount;
+}
+
+function dislikePost() {
+    if (token != null) {
+        const dislikeButton = document.querySelector('.fa-thumbs-down');
+        const likeButton = document.querySelector('.fa-thumbs-up');
+
+        if (currentState === 'dislike') {
+            dislikeButton.classList.remove('fa-solid');
+            dislikeButton.classList.add('fa-regular');
+            dislikeCount--;
+            currentState = '';
+        } else {
+            dislikeButton.classList.add('fa-solid');
+            dislikeButton.classList.remove('fa-regular');
+            dislikeCount++;
+            currentState = 'dislike';
+
+            if (likeButton.classList.contains('fa-solid')) {
+                likeButton.classList.remove('fa-solid');
+                likeButton.classList.add('fa-regular');
+                likeCount--;
+            }
+        }
+        updateRate()
+        document.querySelector('.like-count').textContent = likeCount;
+        document.querySelector('.dislike-count').textContent = dislikeCount;
+    } else {
+        SlimNotifierJs.notification('error', 'Error', 'please Login!', 3000)
+    }
 }
 
 function loadRate() {
@@ -443,12 +451,12 @@ function loadRatebyUser() {
         contentType: "application/json",
         success: (response) => {
             var currentRate = response;
-            
+
             if (currentRate === true) {
                 likeButton.classList.remove('fa-regular');
                 likeButton.classList.add('fa-solid');
                 currentState = "like";
-            }else if(currentRate === false){
+            } else if (currentRate === false) {
                 dislikeButton.classList.remove('fa-regular');
                 dislikeButton.classList.add('fa-solid');
                 currentState = "dislike";
@@ -459,7 +467,7 @@ function loadRatebyUser() {
 
 function updateRate() {
     let urlParam = new URLSearchParams(window.location.search);
-    let postId = urlParam.get("id"); 
+    let postId = urlParam.get("id");
     console.log(currentState);
     if (currentState === "like") {
         rate = true;
